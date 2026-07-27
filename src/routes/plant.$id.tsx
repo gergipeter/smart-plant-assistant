@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PlantThumb } from "@/components/AppShell";
 import { getPlant, type Plant, type TimelineEntry } from "@/lib/plants";
-import { useGardenPlant, updatePlantInGarden } from "@/lib/myGarden";
+import { useGardenPlant, updatePlantInGarden, propagatePlant, getFromMyGarden } from "@/lib/myGarden";
+import { useAuth } from "@/lib/auth";
+import { createPost } from "@/lib/socialFeatures";
+import type { DiseaseMatch } from "@/lib/plantnet.server";
 import { savePhoto } from "@/lib/photoStore";
 import { saveEmbedding, getEmbedding, cosineSimilarity } from "@/lib/embeddingStore";
 import { scoreFromSimilarity, adjustEntryForDisease } from "@/lib/healthScoring";
@@ -36,6 +39,8 @@ import {
   Check,
   ScanEye,
   Printer,
+  GitBranch,
+  Scissors,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -287,6 +292,12 @@ function PlantDetailView({ plant }: { plant: Plant }) {
   const [expanded, setExpanded] = useState<string | null>(highlight ?? null);
   const [flashId, setFlashId] = useState<string | null>(null);
   const [addingPhotoTo, setAddingPhotoTo] = useState<string | null>(null);
+  const [propagating, setPropagating] = useState(false);
+  const [propagatedId, setPropagatedId] = useState<string | null>(null);
+  const [shareDiseaseMatch, setShareDiseaseMatch] = useState<DiseaseMatch | null>(null);
+  const [sharingDisease, setSharingDisease] = useState(false);
+  const [diseaseShared, setDiseaseShared] = useState(false);
+  const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
   const pendingBlobRef = useRef<Blob | null>(null);
   const entryRefs = useRef<Record<string, HTMLLIElement | null>>({});
@@ -408,6 +419,20 @@ function PlantDetailView({ plant }: { plant: Plant }) {
     }, 1600);
   };
 
+  // Creates a new "cutting" plant linked back to this one via
+  // propagatePlant() in myGarden.ts, then shows a quick confirmation with a
+  // link to the new plant rather than navigating away immediately — the
+  // user is often mid-way through looking at the parent's care info.
+  const handlePropagate = () => {
+    setPropagating(true);
+    try {
+      const newId = propagatePlant(plant);
+      setPropagatedId(newId);
+    } finally {
+      setPropagating(false);
+    }
+  };
+
   // Adds an extra angle photo (e.g. a close-up of a problem area) to an
   // existing entry, alongside its primary photo. Stored under a synthetic id
   // in the same photoStore.ts used for primary photos, but never fed into
@@ -453,6 +478,39 @@ function PlantDetailView({ plant }: { plant: Plant }) {
       updatePlantInGarden({ ...plant, timeline: next });
       return next;
     });
+  };
+
+  // Opens the share confirmation for a disease match found by HealthChecks —
+  // actual posting happens in handleConfirmShareDisease once the user
+  // reviews/confirms, not immediately, since this is community-visible.
+  const handleShareDisease = (match: DiseaseMatch) => {
+    setShareDiseaseMatch(match);
+    setDiseaseShared(false);
+  };
+
+  const handleConfirmShareDisease = async () => {
+    if (!user || !shareDiseaseMatch || !lastUploadedPhoto) return;
+    setSharingDisease(true);
+    try {
+      const res = await createPost({
+        userId: user.uid,
+        plantId: plant.id,
+        plantName: plant.name,
+        caption: t("plant.shareDiseaseCaption", {
+          name: plant.name,
+          disease: shareDiseaseMatch.name,
+        }),
+        photo: lastUploadedPhoto,
+        diseaseLabel: shareDiseaseMatch.name,
+        diseaseConfidence: shareDiseaseMatch.score,
+      });
+      if (res.ok) {
+        setDiseaseShared(true);
+        setShareDiseaseMatch(null);
+      }
+    } finally {
+      setSharingDisease(false);
+    }
   };
 
   return (
@@ -569,6 +627,48 @@ function PlantDetailView({ plant }: { plant: Plant }) {
               {t("plant.nativeTo", { origin: plant.origin })}
             </div>
           </button>
+
+          {/* Propagation: lineage + take-a-cutting action */}
+          <div className="leaf-card p-4 mt-4">
+            {plant.propagatedFromId &&
+              (() => {
+                const parent = getFromMyGarden(plant.propagatedFromId!);
+                return parent ? (
+                  <Link
+                    to="/plant/$id"
+                    params={{ id: parent.id }}
+                    className="ios-tap flex items-center gap-2 text-xs text-muted-foreground mb-3"
+                  >
+                    <GitBranch className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
+                    {t("plant.propagatedFrom", { name: parent.name })}
+                  </Link>
+                ) : null;
+              })()}
+            {(plant.childPlantIds?.length ?? 0) > 0 && (
+              <p className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                <Scissors className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
+                {t("plant.cuttingsTaken", { count: plant.childPlantIds!.length })}
+              </p>
+            )}
+            {propagatedId ? (
+              <Link
+                to="/plant/$id"
+                params={{ id: propagatedId }}
+                className="ios-tap w-full h-11 rounded-full bg-primary/15 text-primary text-sm font-semibold flex items-center justify-center gap-2"
+              >
+                <Check className="h-4 w-4" strokeWidth={1.75} /> {t("plant.viewCutting")}
+              </Link>
+            ) : (
+              <button
+                onClick={handlePropagate}
+                disabled={propagating}
+                className="ios-tap w-full h-11 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-70"
+              >
+                <Scissors className="h-4 w-4" strokeWidth={1.75} />
+                {t("plant.propagate")}
+              </button>
+            )}
+          </div>
         </section>
       )}
 
@@ -688,6 +788,7 @@ function PlantDetailView({ plant }: { plant: Plant }) {
               photo={lastUploadedPhoto}
               variant="standalone"
               onDiseaseDetected={handleDiseaseDetected}
+              onShareDisease={user ? handleShareDisease : undefined}
             />
           </div>
         )}
@@ -819,6 +920,7 @@ function PlantDetailView({ plant }: { plant: Plant }) {
               photo={lastUploadedPhoto}
               variant="standalone"
               onDiseaseDetected={handleDiseaseDetected}
+              onShareDisease={user ? handleShareDisease : undefined}
             />
             </div>
           )}
@@ -945,6 +1047,47 @@ function PlantDetailView({ plant }: { plant: Plant }) {
           plantName={plant.name}
           onClose={() => setShowCompare(false)}
         />
+      )}
+
+      {shareDiseaseMatch && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-end" onClick={() => setShareDiseaseMatch(null)}>
+          <div
+            className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="font-display text-lg mb-2">{t("plant.shareDiseaseTitle")}</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              {t("plant.shareDiseaseBody", {
+                disease: shareDiseaseMatch.name,
+                pct: Math.round(shareDiseaseMatch.score * 100),
+              })}
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShareDiseaseMatch(null)}
+                className="ios-tap flex-1 h-11 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold"
+              >
+                {t("plant.shareDiseaseCancel")}
+              </button>
+              <button
+                onClick={handleConfirmShareDisease}
+                disabled={sharingDisease}
+                className="ios-tap flex-1 h-11 rounded-full bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-70"
+              >
+                {sharingDisease ? t("plant.sharing") : t("plant.shareDiseaseConfirm")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {diseaseShared && (
+        <div className="fixed left-1/2 -translate-x-1/2 bottom-24 z-40 px-4 w-full max-w-md pointer-events-none">
+          <div className="flex items-center gap-2 h-11 px-4 rounded-full bg-foreground text-background text-sm font-medium mx-auto w-fit shadow-lg">
+            <Check className="h-4 w-4" strokeWidth={1.75} />
+            {t("plant.sharedToFeed")}
+          </div>
+        </div>
       )}
     </AppShell>
   );

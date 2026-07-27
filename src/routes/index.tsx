@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PlantThumb } from "@/components/AppShell";
 import { todaysTasks, getPlant, type Plant, type PlantStatus } from "@/lib/plants";
-import { useGardenPlants, hideDemoCatalog, showDemoCatalog } from "@/lib/myGarden";
+import { useGardenPlants, hideDemoCatalog, showDemoCatalog, updatePlantInGarden } from "@/lib/myGarden";
+import { isDueForFertilizing, isDueForRepotting, markFertilized, markRepotted } from "@/lib/careDueStatus";
 import {
   CloudSun,
   Check,
@@ -18,6 +19,8 @@ import {
   Sprout,
   Search,
   X,
+  Leaf,
+  CircleDot,
 } from "lucide-react";
 import {
   useEffect,
@@ -29,6 +32,7 @@ import {
 import { getCurrentStreak, recordDayCompleted } from "@/lib/streaks";
 import { WaterCalendar } from "@/components/WaterCalendar";
 import { AdvancedWateringInsights } from "@/components/AdvancedWateringInsights";
+import { GardenDigest } from "@/components/GardenDigest";
 import { seedDemoData } from "@/lib/seedDemoData";
 import { useT, statusLabelKeys, type TranslationKey } from "@/lib/i18n";
 
@@ -394,6 +398,43 @@ function Dashboard() {
     });
   };
 
+  const [careDone, setCareDone] = useState<Record<string, boolean>>({});
+  const duePlants = useMemo(
+    () => ({
+      fertilize: gardenPlants.filter((p) => isDueForFertilizing(p) && !careDone[`${p.id}-fertilize`]),
+      repot: gardenPlants.filter((p) => isDueForRepotting(p) && !careDone[`${p.id}-repot`]),
+    }),
+    [gardenPlants, careDone],
+  );
+
+  // Batch fertilize/repot: unlike watering (which is purely a session-only
+  // "done" checkbox — see handleWaterAll above), these actually persist the
+  // new last-done date onto each Plant via updatePlantInGarden, since
+  // fertilize/repot dates are stored on the plant itself (see plants.ts's
+  // lastFertilized/lastRepotted) rather than derived from a static seed
+  // string the way lastWatered currently is.
+  const handleFertilizeAll = () => {
+    for (const plant of duePlants.fertilize) {
+      updatePlantInGarden(markFertilized(plant));
+    }
+    setCareDone((d) => {
+      const next = { ...d };
+      for (const plant of duePlants.fertilize) next[`${plant.id}-fertilize`] = true;
+      return next;
+    });
+  };
+
+  const handleRepotAll = () => {
+    for (const plant of duePlants.repot) {
+      updatePlantInGarden(markRepotted(plant));
+    }
+    setCareDone((d) => {
+      const next = { ...d };
+      for (const plant of duePlants.repot) next[`${plant.id}-repot`] = true;
+      return next;
+    });
+  };
+
   const handleRefresh = () => new Promise<void>((resolve) => setTimeout(resolve, 900));
 
   return (
@@ -484,6 +525,50 @@ function Dashboard() {
               </button>
             )}
 
+            {duePlants.fertilize.length > 0 && (
+              <button
+                onClick={handleFertilizeAll}
+                className="ios-tap w-full leaf-card flex items-center gap-3 p-4 mb-7 text-left border border-primary/30"
+              >
+                <div className="h-9 w-9 shrink-0 rounded-full bg-primary/15 grid place-items-center">
+                  <Leaf className="h-[1.125rem] w-[1.125rem] text-primary" strokeWidth={1.75} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">
+                    {t("home.fertilizeAll.title", { count: duePlants.fertilize.length })}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {duePlants.fertilize.map((p) => p.name).join(", ")}
+                  </p>
+                </div>
+                <span className="ios-tap shrink-0 h-8 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold grid place-items-center">
+                  {t("home.waterAll.done")}
+                </span>
+              </button>
+            )}
+
+            {duePlants.repot.length > 0 && (
+              <button
+                onClick={handleRepotAll}
+                className="ios-tap w-full leaf-card flex items-center gap-3 p-4 mb-7 text-left border border-primary/30"
+              >
+                <div className="h-9 w-9 shrink-0 rounded-full bg-primary/15 grid place-items-center">
+                  <CircleDot className="h-[1.125rem] w-[1.125rem] text-primary" strokeWidth={1.75} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">
+                    {t("home.repotAll.title", { count: duePlants.repot.length })}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {duePlants.repot.map((p) => p.name).join(", ")}
+                  </p>
+                </div>
+                <span className="ios-tap shrink-0 h-8 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold grid place-items-center">
+                  {t("home.waterAll.done")}
+                </span>
+              </button>
+            )}
+
             {/* Watering calendar */}
             <section className="mb-7">
               <button
@@ -503,6 +588,8 @@ function Dashboard() {
             </section>
 
             <AdvancedWateringInsights plants={gardenPlants} />
+
+            <GardenDigest plants={gardenPlants} />
 
             {/* My Garden */}
             <section className="mb-8">

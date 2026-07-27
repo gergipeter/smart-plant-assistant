@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bug, Tag, Loader2 } from "lucide-react";
+import { Bug, Tag, Loader2, Share2 } from "lucide-react";
 import {
   identifyDisease,
   identifyVarieties,
@@ -28,6 +28,7 @@ export function HealthChecks({
   photo,
   variant = "inset",
   onDiseaseDetected,
+  onShareDisease,
 }: {
   photo: Blob | null;
   // "inset" sits inside a sheet/card that already has its own container
@@ -39,6 +40,12 @@ export function HealthChecks({
   // healthScoring.ts). Omitted where there's no timeline entry to adjust
   // (e.g. the Scan result sheet, before anything's been saved).
   onDiseaseDetected?: (topScore: number) => void;
+  // Offers a "share to feed" action on the top disease match, pre-filling a
+  // community post with the disease name + confidence so other growers can
+  // weigh in on an uncertain diagnosis (see socialFeatures.ts's
+  // diseaseLabel/diseaseConfidence). Omitted where there's no signed-in
+  // user/feed context (e.g. the Scan result sheet, before the plant is saved).
+  onShareDisease?: (match: DiseaseMatch) => void;
 }) {
   const t = useT();
   const [disease, setDisease] = useState<CheckState<DiseaseMatch>>({ phase: "idle" });
@@ -107,6 +114,15 @@ export function HealthChecks({
           matches={disease.matches}
           emptyText={t("healthChecks.noDisease")}
         />
+      )}
+      {disease.phase === "done" && disease.matches.length > 0 && onShareDisease && (
+        <button
+          onClick={() => onShareDisease(disease.matches[0])}
+          className="ios-tap w-full h-10 rounded-full bg-secondary text-secondary-foreground text-sm font-medium flex items-center justify-center gap-1.5 mt-2"
+        >
+          <Share2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+          {t("healthChecks.shareToFeed")}
+        </button>
       )}
       {disease.phase === "error" && <ErrorNote message={disease.message} />}
 

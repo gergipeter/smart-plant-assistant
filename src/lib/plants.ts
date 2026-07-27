@@ -32,6 +32,28 @@ export type Plant = {
   drainageQuality?: "poor" | "normal" | "excellent";
   sunExposure?: "full-sun" | "partial" | "shade";
   containerSizeLiters?: number;
+  // Fertilizing/repotting tracking, mirroring lastWatered/waterIntervalDays'
+  // string-based "N days ago" convention (see waterCalendar.ts's
+  // parseLastWatered) so the same due-date math applies. Optional and unset
+  // until the user first logs one of these — home.tsx's batch actions only
+  // consider a plant "due" once it has a last-done date to compare against;
+  // undefined never counts as due (avoids nagging about a task the user
+  // hasn't opted into tracking for that plant — matches careSchedule.ts's
+  // toggle intent).
+  lastFertilized?: string;
+  fertilizerIntervalDays?: number;
+  lastRepotted?: string;
+  repotIntervalDays?: number;
+  // Set when this plant was created via the "Propagate" action on another
+  // garden plant (a cutting) — points at the parent's garden id. Undefined
+  // for everything else (catalog plants, scans, manually added plants).
+  // The parent's `childPlantIds` is the inverse edge; both are kept in sync
+  // by propagatePlant() in myGarden.ts rather than derived at read time,
+  // since the parent may later be deleted while the cutting lives on.
+  propagatedFromId?: string;
+  // Ids of plants propagated FROM this one (cuttings taken from it). Only
+  // meaningful on plants that have been propagated at least once.
+  childPlantIds?: string[];
 };
 
 // "changed" means the photo-comparison detected a visible difference from

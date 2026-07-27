@@ -16,6 +16,11 @@ export type SocialPost = {
   likeCount: number;
   likedByMe: boolean;
   createdAt: string;
+  // Set when shared from a HealthChecks disease-identify result — see
+  // createPost's diseaseLabel/diseaseConfidence input and plant.$id.tsx's
+  // "share to feed" flow. Undefined for an ordinary post.
+  diseaseLabel?: string;
+  diseaseConfidence?: number;
 };
 
 const POST_PHOTO_BUCKET = "post-photos";
@@ -44,6 +49,8 @@ type PostRow = {
   plant_name: string;
   caption: string;
   photo_path: string | null;
+  disease_label: string | null;
+  disease_confidence: number | null;
   created_at: string;
 };
 
@@ -76,6 +83,8 @@ async function attachLikeInfo(posts: PostRow[]): Promise<SocialPost[]> {
     likeCount: likeCounts.get(row.id) ?? 0,
     likedByMe: likedByMeSet.has(row.id),
     createdAt: row.created_at,
+    diseaseLabel: row.disease_label ?? undefined,
+    diseaseConfidence: row.disease_confidence ?? undefined,
   }));
 }
 
@@ -138,6 +147,8 @@ export async function createPost(input: {
   plantName: string;
   caption: string;
   photo?: Blob;
+  diseaseLabel?: string;
+  diseaseConfidence?: number;
 }): Promise<{ ok: true } | { ok: false; message: string }> {
   const client = requireSupabase();
 
@@ -156,6 +167,8 @@ export async function createPost(input: {
     plant_name: input.plantName,
     caption: input.caption,
     photo_path: photoPath,
+    disease_label: input.diseaseLabel ?? null,
+    disease_confidence: input.diseaseConfidence ?? null,
   });
 
   if (error) return { ok: false, message: "Could not create post." };

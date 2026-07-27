@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { plants, type Plant, type PlantStatus } from "@/lib/plants";
-import type { PlantNetResult } from "@/lib/plantnet.server";
+import type { PlantNetResult, ProjectSpeciesEntry } from "@/lib/plantnet.server";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { getSubscriptionAsync, TIER_FEATURES } from "@/lib/premium";
 
@@ -179,6 +179,48 @@ export function updatePlantInGarden(plant: Plant): void {
   }
 }
 
+// Creates a new "cutting" plant linked back to `parent`, and records the
+// cutting on the parent's `childPlantIds` — both writes go through
+// updatePlantInGarden/addToMyGarden's normal upsert-and-sync path, so the
+// lineage survives across devices the same way any other garden edit does.
+// Returns the new cutting's id.
+export function propagatePlant(parent: Plant, cuttingName?: string): string {
+  const now = new Date();
+  const id = `${parent.id}-cutting-${now.getTime().toString(36)}`;
+  const monthShort = now.toLocaleString("en-US", { month: "short", year: "numeric" });
+  const dateLong = now.toLocaleString("en-US", { month: "long", day: "numeric" });
+
+  const cutting: Plant = {
+    ...parent,
+    id,
+    name: cuttingName?.trim() || `${parent.name} (cutting)`,
+    health: parent.health,
+    status: "healthy",
+    lastWatered: "Just added",
+    nextTask: "Let it root",
+    propagatedFromId: parent.id,
+    childPlantIds: undefined,
+    timeline: [
+      {
+        id: `${id}-1`,
+        month: monthShort,
+        date: dateLong,
+        emoji: parent.emoji,
+        gradient: parent.gradient,
+        health: parent.health,
+        change: "new",
+        headline: "Propagated as a cutting",
+        detail: `Taken from ${parent.name}. Track its own rooting and growth here.`,
+      },
+    ],
+  };
+
+  addToMyGarden(cutting);
+  updatePlantInGarden({ ...parent, childPlantIds: [...(parent.childPlantIds ?? []), id] });
+
+  return id;
+}
+
 // Client-only lookup for a single saved plant, used as a fallback when the
 // SSR-safe getPlant() (static catalog only) doesn't find a match. `hydrated`
 // distinguishes "still resolving" from "genuinely not found" so callers
@@ -256,6 +298,50 @@ export function buildScannedPlant(top: PlantNetResult): Plant {
         change: "new",
         headline: "Added to your garden",
         detail: `Identified as ${top.scientificName} via Pl@ntNet scan.`,
+      },
+    ],
+  };
+}
+
+// Same shape as buildScannedPlant, but for a species picked from the
+// Explore reference library (plantnet.server.ts's getSpecies/getVarieties)
+// rather than an identify scan — no confidence score exists here, so the
+// fact/detail text says "from Pl@ntNet's species database" instead.
+export function buildPlantFromSpecies(entry: ProjectSpeciesEntry): Plant {
+  const id = `species-${slugify(entry.scientificNameWithoutAuthor)}-${Date.now().toString(36)}`;
+  const name = entry.commonNames[0] ?? entry.scientificNameWithoutAuthor;
+  const status: PlantStatus = "healthy";
+
+  return {
+    id,
+    name,
+    scientific: entry.scientificNameWithoutAuthor,
+    emoji: "🌱",
+    gradient: PLACEHOLDER_GRADIENT,
+    tone: PLACEHOLDER_TONE,
+    status,
+    health: 75,
+    origin: "Unknown",
+    toxicity: "Mildly toxic",
+    water:
+      "We don't have verified care guidance for this species yet — check a trusted plant-care source.",
+    sunlight:
+      "We don't have verified care guidance for this species yet — check a trusted plant-care source.",
+    soil: "We don't have verified care guidance for this species yet — check a trusted plant-care source.",
+    fact: `From Pl@ntNet's species database${entry.family ? ` (${entry.family})` : ""}. Not yet in our curated catalog.`,
+    lastWatered: "Just added",
+    nextTask: "Research care needs",
+    timeline: [
+      {
+        id: `${id}-1`,
+        month: new Date().toLocaleString("en-US", { month: "short", year: "numeric" }),
+        date: new Date().toLocaleString("en-US", { month: "long", day: "numeric" }),
+        emoji: "🌱",
+        gradient: PLACEHOLDER_GRADIENT,
+        health: 75,
+        change: "new",
+        headline: "Added to your garden",
+        detail: `Added from Explore as ${entry.scientificNameWithoutAuthor}.`,
       },
     ],
   };
