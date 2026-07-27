@@ -2,17 +2,23 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { hideDemoCatalog, showDemoCatalog, useGardenPlants } from "@/lib/myGarden";
 import { seedDemoData } from "@/lib/seedDemoData";
-import { Terminal, Wand2, Sprout, ChevronRight, Settings2, Languages, Check, User, Crown, MessageCircle, LogOut, LogIn, Users, Bell } from "lucide-react";
+import { Wand2, Sprout, ChevronRight, Settings2, Languages, Check, User, Crown, MessageCircle, LogOut, LogIn, Users, Bell, Smartphone, Shield, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useI18n, LOCALES } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 import { getNotificationPreferences, updateNotificationPreferences } from "@/lib/notifications.server";
+import {
+  isPushConfigured,
+  getPushPermissionState,
+  subscribeToPush,
+  unsubscribeFromPush,
+} from "@/lib/pushNotifications";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
       { title: "Settings — Verdant" },
-      { name: "description", content: "App settings, demo data, and the Pl@ntNet API Explorer." },
+      { name: "description", content: "App settings, notifications, and account preferences." },
     ],
   }),
   component: SettingsPage,
@@ -68,6 +74,9 @@ function SettingsPage() {
   const { user, signOut } = useAuth();
   const [wateringReminders, setWateringReminders] = useState(true);
   const [prefsLoaded, setPrefsLoaded] = useState(false);
+  const [pushPermission, setPushPermission] = useState<ReturnType<typeof getPushPermissionState>>("default");
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushError, setPushError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -77,11 +86,36 @@ function SettingsPage() {
     });
   }, [user]);
 
+  useEffect(() => {
+    setPushPermission(getPushPermissionState());
+  }, []);
+
   const handleToggleWateringReminders = async () => {
     if (!user) return;
     const next = !wateringReminders;
     setWateringReminders(next);
     await updateNotificationPreferences({ data: { userId: user.uid, wateringReminders: next } });
+  };
+
+  const handleTogglePush = async () => {
+    if (!user) return;
+    setPushBusy(true);
+    setPushError(null);
+    try {
+      if (pushPermission === "granted") {
+        await unsubscribeFromPush(user.uid);
+        // Browser permission itself can't be revoked by the page — only the
+        // server-side token registration. Reflect that we stopped sending.
+        setPushPermission("default");
+      } else {
+        const res = await subscribeToPush(user.uid);
+        if (res.status === "ok") setPushPermission("granted");
+        else if (res.status === "denied") setPushPermission("denied");
+        else setPushError(res.status === "error" ? res.message : "Push notifications aren't supported in this browser.");
+      }
+    } finally {
+      setPushBusy(false);
+    }
   };
 
   const handleSeedDemoData = async () => {
@@ -191,6 +225,36 @@ function SettingsPage() {
                 />
               </div>
             </button>
+            {isPushConfigured && pushPermission !== "unsupported" && (
+              <button
+                onClick={handleTogglePush}
+                disabled={pushBusy || pushPermission === "denied"}
+                className="ios-tap flex items-center gap-3 px-4 py-3.5 w-full disabled:opacity-60"
+              >
+                <div className="h-9 w-9 shrink-0 rounded-full bg-secondary grid place-items-center">
+                  <Smartphone className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
+                </div>
+                <div className="flex-1 min-w-0 text-left">
+                  <p className="text-sm font-medium">{t("settings.pushNotifications")}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {pushPermission === "denied"
+                      ? t("settings.pushBlocked")
+                      : pushError ?? t("settings.pushSub")}
+                  </p>
+                </div>
+                <div
+                  className={`shrink-0 h-6 w-10 rounded-full transition-colors relative ${
+                    pushPermission === "granted" ? "bg-primary" : "bg-muted"
+                  }`}
+                >
+                  <div
+                    className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                      pushPermission === "granted" ? "translate-x-4" : "translate-x-0.5"
+                    }`}
+                  />
+                </div>
+              </button>
+            )}
           </div>
         </section>
       )}
@@ -222,14 +286,20 @@ function SettingsPage() {
 
       <section className="mb-6">
         <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-2 px-1">
-          {t("settings.section.plantnet")}
+          Legal
         </h2>
         <div className="ios-group">
           <SettingsRow
-            icon={<Terminal className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />}
-            label={t("settings.apiExplorer")}
-            sub={t("settings.apiExplorerSub")}
-            to="/api-explorer"
+            icon={<Shield className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />}
+            label="Privacy Policy"
+            sub="How we collect and use your data"
+            to="/privacy"
+          />
+          <SettingsRow
+            icon={<FileText className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />}
+            label="Terms of Service"
+            sub="The terms that govern your use of Verdant"
+            to="/terms"
           />
         </div>
       </section>

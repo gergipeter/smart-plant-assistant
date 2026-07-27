@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { I18nProvider, useT } from "@/lib/i18n";
@@ -80,6 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#be6438" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "Verdant" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -87,6 +91,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "icon",
         href: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🌱</text></svg>",
       },
+      { rel: "manifest", href: "/manifest.json" },
+      { rel: "apple-touch-icon", href: "/icons/icon.svg" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -117,6 +123,17 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // Registers the offline-shell/push service worker on every load, without
+  // requesting notification permission — that stays a deliberate opt-in from
+  // Settings (see pushNotifications.ts's subscribeToPush). Safe to call with
+  // no Firebase config: the worker's messaging init just no-ops.
+  useEffect(() => {
+    if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/firebase-messaging-sw.js").catch((err) => {
+      console.error("Service worker registration failed:", err);
+    });
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

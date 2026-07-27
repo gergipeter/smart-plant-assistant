@@ -153,6 +153,12 @@ create table if not exists public.posts (
   plant_name text not null,
   caption text not null,
   photo_path text,
+  -- Set when this post was created from a HealthChecks disease-identify
+  -- result (see plant.$id.tsx's "share to feed" flow) — lets the feed show
+  -- "possible: X (62% confidence)" so other growers can weigh in on
+  -- uncertain diagnoses. Both null for an ordinary post.
+  disease_label text,
+  disease_confidence numeric,
   created_at timestamptz not null default now()
 );
 
@@ -269,5 +275,28 @@ alter table public.notification_preferences enable row level security;
 drop policy if exists "Users manage their own notification preferences" on public.notification_preferences;
 create policy "Users manage their own notification preferences"
   on public.notification_preferences for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+-- ============================================================
+-- push_subscriptions — FCM device tokens for web push. One row per
+-- (user, device): a user can have multiple registered devices/browsers,
+-- and a token is replaced (not duplicated) if the same device re-registers
+-- (browsers rotate FCM tokens periodically). Read by any Edge Function that
+-- sends push notifications (e.g. send-watering-reminders) to look up all of
+-- a user's active tokens and call firebase.server.ts's sendNotificationToMany.
+-- ============================================================
+create table if not exists public.push_subscriptions (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  fcm_token text not null,
+  created_at timestamptz not null default now(),
+  primary key (user_id, fcm_token)
+);
+
+alter table public.push_subscriptions enable row level security;
+
+drop policy if exists "Users manage their own push subscriptions" on public.push_subscriptions;
+create policy "Users manage their own push subscriptions"
+  on public.push_subscriptions for all
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);

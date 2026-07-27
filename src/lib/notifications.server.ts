@@ -85,3 +85,58 @@ export const updateNotificationPreferences = createServerFn({ method: "POST" })
       },
     };
   });
+
+// Registers (or refreshes) this browser's FCM token against the signed-in
+// user, so a push-sending Edge Function can look up all of a user's devices
+// later. Upsert on (user_id, fcm_token) — see schema.sql's push_subscriptions
+// table — so re-registering the same device is a no-op, not a duplicate row.
+export const savePushSubscription = createServerFn({ method: "POST" })
+  .validator((data: unknown) => {
+    if (typeof data !== "object" || data === null) throw new Error("Invalid data");
+    const d = data as Record<string, unknown>;
+    if (typeof d.userId !== "string" || !d.userId) throw new Error("Missing userId");
+    if (typeof d.fcmToken !== "string" || !d.fcmToken) throw new Error("Missing fcmToken");
+    return { userId: d.userId, fcmToken: d.fcmToken };
+  })
+  .handler(async ({ data }): Promise<ApiResult<null>> => {
+    const client = getSupabaseServerClient();
+    if (!client) return { status: "error", message: "Push notifications are not configured." };
+
+    const { error } = await client
+      .from("push_subscriptions")
+      .upsert({ user_id: data.userId, fcm_token: data.fcmToken }, { onConflict: "user_id,fcm_token" });
+
+    if (error) {
+      console.error("Push subscription save error:", error);
+      return { status: "error", message: "Could not save push subscription." };
+    }
+
+    return { status: "ok", data: null };
+  });
+
+// Removes this device's token — called when the user turns push off.
+export const removePushSubscription = createServerFn({ method: "POST" })
+  .validator((data: unknown) => {
+    if (typeof data !== "object" || data === null) throw new Error("Invalid data");
+    const d = data as Record<string, unknown>;
+    if (typeof d.userId !== "string" || !d.userId) throw new Error("Missing userId");
+    if (typeof d.fcmToken !== "string" || !d.fcmToken) throw new Error("Missing fcmToken");
+    return { userId: d.userId, fcmToken: d.fcmToken };
+  })
+  .handler(async ({ data }): Promise<ApiResult<null>> => {
+    const client = getSupabaseServerClient();
+    if (!client) return { status: "error", message: "Push notifications are not configured." };
+
+    const { error } = await client
+      .from("push_subscriptions")
+      .delete()
+      .eq("user_id", data.userId)
+      .eq("fcm_token", data.fcmToken);
+
+    if (error) {
+      console.error("Push subscription remove error:", error);
+      return { status: "error", message: "Could not remove push subscription." };
+    }
+
+    return { status: "ok", data: null };
+  });
