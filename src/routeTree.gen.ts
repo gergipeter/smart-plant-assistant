@@ -9,23 +9,29 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StreakRouteImport } from './routes/streak'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as DoctorRouteImport } from './routes/doctor'
 import { Route as AskExpertRouteImport } from './routes/ask-expert'
-import { Route as ApiExplorerRouteImport } from './routes/api-explorer'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlantIdRouteImport } from './routes/plant.$id'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api.stripe-webhook'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StreakRoute = StreakRouteImport.update({
   id: '/streak',
   path: '/streak',
@@ -54,6 +60,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PremiumRoute = PremiumRouteImport.update({
@@ -86,11 +97,6 @@ const AskExpertRoute = AskExpertRouteImport.update({
   path: '/ask-expert',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiExplorerRoute = ApiExplorerRouteImport.update({
-  id: '/api-explorer',
-  path: '/api-explorer',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -109,56 +115,59 @@ const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/api-explorer': typeof ApiExplorerRoute
   '/ask-expert': typeof AskExpertRoute
   '/doctor': typeof DoctorRoute
   '/explore': typeof ExploreRoute
   '/feed': typeof FeedRoute
   '/login': typeof LoginRoute
   '/premium': typeof PremiumRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/streak': typeof StreakRoute
+  '/terms': typeof TermsRoute
   '/api/stripe-webhook': typeof ApiStripeWebhookRoute
   '/plant/$id': typeof PlantIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/api-explorer': typeof ApiExplorerRoute
   '/ask-expert': typeof AskExpertRoute
   '/doctor': typeof DoctorRoute
   '/explore': typeof ExploreRoute
   '/feed': typeof FeedRoute
   '/login': typeof LoginRoute
   '/premium': typeof PremiumRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/streak': typeof StreakRoute
+  '/terms': typeof TermsRoute
   '/api/stripe-webhook': typeof ApiStripeWebhookRoute
   '/plant/$id': typeof PlantIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/api-explorer': typeof ApiExplorerRoute
   '/ask-expert': typeof AskExpertRoute
   '/doctor': typeof DoctorRoute
   '/explore': typeof ExploreRoute
   '/feed': typeof FeedRoute
   '/login': typeof LoginRoute
   '/premium': typeof PremiumRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/streak': typeof StreakRoute
+  '/terms': typeof TermsRoute
   '/api/stripe-webhook': typeof ApiStripeWebhookRoute
   '/plant/$id': typeof PlantIdRoute
 }
@@ -166,80 +175,91 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/api-explorer'
     | '/ask-expert'
     | '/doctor'
     | '/explore'
     | '/feed'
     | '/login'
     | '/premium'
+    | '/privacy'
     | '/profile'
     | '/reset-password'
     | '/scan'
     | '/settings'
     | '/signup'
     | '/streak'
+    | '/terms'
     | '/api/stripe-webhook'
     | '/plant/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/api-explorer'
     | '/ask-expert'
     | '/doctor'
     | '/explore'
     | '/feed'
     | '/login'
     | '/premium'
+    | '/privacy'
     | '/profile'
     | '/reset-password'
     | '/scan'
     | '/settings'
     | '/signup'
     | '/streak'
+    | '/terms'
     | '/api/stripe-webhook'
     | '/plant/$id'
   id:
     | '__root__'
     | '/'
-    | '/api-explorer'
     | '/ask-expert'
     | '/doctor'
     | '/explore'
     | '/feed'
     | '/login'
     | '/premium'
+    | '/privacy'
     | '/profile'
     | '/reset-password'
     | '/scan'
     | '/settings'
     | '/signup'
     | '/streak'
+    | '/terms'
     | '/api/stripe-webhook'
     | '/plant/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ApiExplorerRoute: typeof ApiExplorerRoute
   AskExpertRoute: typeof AskExpertRoute
   DoctorRoute: typeof DoctorRoute
   ExploreRoute: typeof ExploreRoute
   FeedRoute: typeof FeedRoute
   LoginRoute: typeof LoginRoute
   PremiumRoute: typeof PremiumRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ScanRoute: typeof ScanRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   StreakRoute: typeof StreakRoute
+  TermsRoute: typeof TermsRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
   PlantIdRoute: typeof PlantIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/streak': {
       id: '/streak'
       path: '/streak'
@@ -280,6 +300,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/premium': {
@@ -324,13 +351,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AskExpertRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api-explorer': {
-      id: '/api-explorer'
-      path: '/api-explorer'
-      fullPath: '/api-explorer'
-      preLoaderRoute: typeof ApiExplorerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -357,19 +377,20 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ApiExplorerRoute: ApiExplorerRoute,
   AskExpertRoute: AskExpertRoute,
   DoctorRoute: DoctorRoute,
   ExploreRoute: ExploreRoute,
   FeedRoute: FeedRoute,
   LoginRoute: LoginRoute,
   PremiumRoute: PremiumRoute,
+  PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ScanRoute: ScanRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   StreakRoute: StreakRoute,
+  TermsRoute: TermsRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
   PlantIdRoute: PlantIdRoute,
 }

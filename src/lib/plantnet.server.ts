@@ -139,12 +139,11 @@ export type PlantNetSpecies = {
 // hybrid-genus entries (~100), NOT the general flora — confirmed by probing
 // it directly. Pl@ntNet's project-species endpoints are paginated with no
 // documented offset/cursor param; an undocumented `pageSize` raises the cap
-// (confirmed up to several thousand rows) but even at pageSize=6000 the
-// returned rows stayed within the A-range alphabetically and never reached
-// common genera like "Monstera" — so full coverage of any project's species
-// list isn't reliably fetchable from here. "useful" (cultivated/ornamental
-// plants) is used as the best available subset for a plant-care app; the
-// Explore UI discloses that results may still be incomplete.
+// (confirmed up to several thousand rows). At pageSize=6000 the "useful"
+// project returns 5545 entries covering the full A-Z alphabet, including
+// common genera like Monstera — full coverage IS reliably fetchable this
+// way; an earlier version of this comment claiming otherwise was wrong,
+// caused by ProjectSpeciesEntry not matching the API's actual (flat) shape.
 const SPECIES_PROJECT = "useful";
 const SPECIES_PAGE_SIZE = "6000";
 
@@ -157,21 +156,19 @@ export const getSpecies = createServerFn({ method: "GET" })
     }),
   );
 
-// `species` and its fields are marked optional/possibly-missing because a
-// live check against /v2/projects/k-world-flora/species showed some rows
-// don't carry a fully populated species record — callers must guard, not
-// assume every field is present.
+// Confirmed live against /v2/projects/useful/species: fields are flat on
+// each entry, not nested under a `species` key. `genus`/`family` are
+// nullable on some rows (e.g. hybrid entries) — callers must guard.
 export type ProjectSpeciesEntry = {
-  name: string;
-  species?: {
-    scientificName: string;
-    scientificNameWithoutAuthor: string;
-    scientificNameAuthorship: string;
-    genus: string;
-    family: string;
-    commonNames?: string[];
-    gbif?: { id: string };
-  };
+  id: string;
+  commonNames: string[];
+  genus: string | null;
+  family: string | null;
+  scientificNameWithoutAuthor: string;
+  scientificNameAuthorship: string;
+  gbifId?: number;
+  powoId?: string | null;
+  iucnCategory?: string | null;
 };
 
 export const getProjectSpecies = createServerFn({ method: "GET" })
@@ -187,10 +184,20 @@ export const getProjectSpecies = createServerFn({ method: "GET" })
 // varieties
 // ---------------------------------------------------------------------------
 
+// Confirmed live against /v2/varieties: each row is a cultivar/variety name
+// plus the parent species it belongs to — not a flat {label, categories}
+// shape like /v2/diseases. All 137 rows carry a fully populated `species`.
 export type PlantNetVariety = {
-  label: string;
   name: string;
-  categories: string[];
+  species: {
+    scientificName: string;
+    scientificNameWithoutAuthor: string;
+    scientificNameAuthorship: string;
+    genus: string;
+    family: string;
+    commonNames?: string[];
+    gbif?: { id: string };
+  };
 };
 
 export const getVarieties = createServerFn({ method: "GET" }).handler(() =>
