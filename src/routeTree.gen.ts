@@ -11,10 +11,19 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiExplorerRouteImport } from './routes/api-explorer'
+import { Route as AskExpertRouteImport } from './routes/ask-expert'
 import { Route as DoctorRouteImport } from './routes/doctor'
 import { Route as ExploreRouteImport } from './routes/explore'
+import { Route as FeedRouteImport } from './routes/feed'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as StreakRouteImport } from './routes/streak'
+import { Route as ApiStripeWebhookRouteImport } from './routes/api.stripe-webhook'
 import { Route as PlantIdRouteImport } from './routes/plant.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -27,6 +36,11 @@ const ApiExplorerRoute = ApiExplorerRouteImport.update({
   path: '/api-explorer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AskExpertRoute = AskExpertRouteImport.update({
+  id: '/ask-expert',
+  path: '/ask-expert',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DoctorRoute = DoctorRouteImport.update({
   id: '/doctor',
   path: '/doctor',
@@ -35,6 +49,31 @@ const DoctorRoute = DoctorRouteImport.update({
 const ExploreRoute = ExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedRoute = FeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumRoute = PremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScanRoute = ScanRouteImport.update({
@@ -47,6 +86,21 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StreakRoute = StreakRouteImport.update({
+  id: '/streak',
+  path: '/streak',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
+  id: '/api/stripe-webhook',
+  path: '/api/stripe-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlantIdRoute = PlantIdRouteImport.update({
   id: '/plant/$id',
   path: '/plant/$id',
@@ -56,29 +110,56 @@ const PlantIdRoute = PlantIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api-explorer': typeof ApiExplorerRoute
+  '/ask-expert': typeof AskExpertRoute
   '/doctor': typeof DoctorRoute
   '/explore': typeof ExploreRoute
+  '/feed': typeof FeedRoute
+  '/login': typeof LoginRoute
+  '/premium': typeof PremiumRoute
+  '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/streak': typeof StreakRoute
+  '/api/stripe-webhook': typeof ApiStripeWebhookRoute
   '/plant/$id': typeof PlantIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api-explorer': typeof ApiExplorerRoute
+  '/ask-expert': typeof AskExpertRoute
   '/doctor': typeof DoctorRoute
   '/explore': typeof ExploreRoute
+  '/feed': typeof FeedRoute
+  '/login': typeof LoginRoute
+  '/premium': typeof PremiumRoute
+  '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/streak': typeof StreakRoute
+  '/api/stripe-webhook': typeof ApiStripeWebhookRoute
   '/plant/$id': typeof PlantIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api-explorer': typeof ApiExplorerRoute
+  '/ask-expert': typeof AskExpertRoute
   '/doctor': typeof DoctorRoute
   '/explore': typeof ExploreRoute
+  '/feed': typeof FeedRoute
+  '/login': typeof LoginRoute
+  '/premium': typeof PremiumRoute
+  '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/scan': typeof ScanRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/streak': typeof StreakRoute
+  '/api/stripe-webhook': typeof ApiStripeWebhookRoute
   '/plant/$id': typeof PlantIdRoute
 }
 export interface FileRouteTypes {
@@ -86,38 +167,74 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/api-explorer'
+    | '/ask-expert'
     | '/doctor'
     | '/explore'
+    | '/feed'
+    | '/login'
+    | '/premium'
+    | '/profile'
+    | '/reset-password'
     | '/scan'
     | '/settings'
+    | '/signup'
+    | '/streak'
+    | '/api/stripe-webhook'
     | '/plant/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/api-explorer'
+    | '/ask-expert'
     | '/doctor'
     | '/explore'
+    | '/feed'
+    | '/login'
+    | '/premium'
+    | '/profile'
+    | '/reset-password'
     | '/scan'
     | '/settings'
+    | '/signup'
+    | '/streak'
+    | '/api/stripe-webhook'
     | '/plant/$id'
   id:
     | '__root__'
     | '/'
     | '/api-explorer'
+    | '/ask-expert'
     | '/doctor'
     | '/explore'
+    | '/feed'
+    | '/login'
+    | '/premium'
+    | '/profile'
+    | '/reset-password'
     | '/scan'
     | '/settings'
+    | '/signup'
+    | '/streak'
+    | '/api/stripe-webhook'
     | '/plant/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiExplorerRoute: typeof ApiExplorerRoute
+  AskExpertRoute: typeof AskExpertRoute
   DoctorRoute: typeof DoctorRoute
   ExploreRoute: typeof ExploreRoute
+  FeedRoute: typeof FeedRoute
+  LoginRoute: typeof LoginRoute
+  PremiumRoute: typeof PremiumRoute
+  ProfileRoute: typeof ProfileRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ScanRoute: typeof ScanRoute
   SettingsRoute: typeof SettingsRoute
+  SignupRoute: typeof SignupRoute
+  StreakRoute: typeof StreakRoute
+  ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
   PlantIdRoute: typeof PlantIdRoute
 }
 
@@ -137,6 +254,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiExplorerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ask-expert': {
+      id: '/ask-expert'
+      path: '/ask-expert'
+      fullPath: '/ask-expert'
+      preLoaderRoute: typeof AskExpertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/doctor': {
       id: '/doctor'
       path: '/doctor'
@@ -149,6 +273,41 @@ declare module '@tanstack/react-router' {
       path: '/explore'
       fullPath: '/explore'
       preLoaderRoute: typeof ExploreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feed': {
+      id: '/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof FeedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium': {
+      id: '/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/scan': {
@@ -165,6 +324,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/streak': {
+      id: '/streak'
+      path: '/streak'
+      fullPath: '/streak'
+      preLoaderRoute: typeof StreakRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stripe-webhook': {
+      id: '/api/stripe-webhook'
+      path: '/api/stripe-webhook'
+      fullPath: '/api/stripe-webhook'
+      preLoaderRoute: typeof ApiStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/plant/$id': {
       id: '/plant/$id'
       path: '/plant/$id'
@@ -178,10 +358,19 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiExplorerRoute: ApiExplorerRoute,
+  AskExpertRoute: AskExpertRoute,
   DoctorRoute: DoctorRoute,
   ExploreRoute: ExploreRoute,
+  FeedRoute: FeedRoute,
+  LoginRoute: LoginRoute,
+  PremiumRoute: PremiumRoute,
+  ProfileRoute: ProfileRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ScanRoute: ScanRoute,
   SettingsRoute: SettingsRoute,
+  SignupRoute: SignupRoute,
+  StreakRoute: StreakRoute,
+  ApiStripeWebhookRoute: ApiStripeWebhookRoute,
   PlantIdRoute: PlantIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { plants, type Plant, type PlantStatus } from "@/lib/plants";
 import type { PlantNetResult } from "@/lib/plantnet.server";
+import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
+import { getSubscriptionAsync, TIER_FEATURES } from "@/lib/premium";
 
 const STORAGE_KEY = "verdant.my-garden.v1";
 const DEMO_HIDDEN_KEY = "verdant.demo-catalog-hidden.v1";
@@ -24,7 +26,9 @@ export function showDemoCatalog(): void {
   window.localStorage.removeItem(DEMO_HIDDEN_KEY);
 }
 
-export function loadMyGarden(): Plant[] {
+// ---- localStorage backend (signed-out / Supabase not configured) ----
+
+function loadLocalGarden(): Plant[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -37,7 +41,7 @@ export function loadMyGarden(): Plant[] {
   return [];
 }
 
-function saveMyGarden(saved: Plant[]): void {
+function saveLocalGarden(saved: Plant[]): void {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
@@ -46,51 +50,160 @@ function saveMyGarden(saved: Plant[]): void {
   }
 }
 
-// Returns the id actually stored under — either the existing entry's id if
-// this plant (by id or scientific name) was already saved, or the new
-// plant's own id once freshly added. Callers should navigate using this
-// return value rather than assuming `plant.id` was the one saved.
-export function addToMyGarden(plant: Plant): string {
-  const saved = loadMyGarden();
-  // De-dupe by id (catalog plants keep a stable id) or scientific name
-  // (scanned plants get a fresh id per scan, e.g. Date.now()-based).
-  const existing = saved.find((p) => p.id === plant.id || p.scientific === plant.scientific);
-  if (existing) return existing.id;
-  saveMyGarden([...saved, plant]);
-  return plant.id;
+// ---- Supabase backend (signed-in) ----
+
+async function loadRemoteGarden(userId: string): Promise<Plant[]> {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("garden_plants")
+    .select("data")
+    .eq("user_id", userId);
+  if (error || !data) return [];
+  return data.map((row) => row.data as Plant);
 }
 
-export function getFromMyGarden(id: string): Plant | undefined {
-  return loadMyGarden().find((p) => p.id === id);
+async function upsertRemotePlant(userId: string, plant: Plant): Promise<void> {
+  if (!supabase) return;
+  await supabase.from("garden_plants").upsert({
+    id: plant.id,
+    user_id: userId,
+    data: plant,
+    updated_at: new Date().toISOString(),
+  });
+}
+
+// Reads the current session synchronously from supabase-js's in-memory
+// cache (populated on client init / after auth state changes) — avoids an
+// async round trip just to decide which storage backend to use.
+function getCurrentUserId(): string | null {
+  if (!supabase) return null;
+  // supabase-js persists the session in localStorage and hydrates this
+  // synchronously on client creation, so this read is safe post-mount.
+  const key = Object.keys(localStorage).find((k) => k.startsWith("sb-") && k.endsWith("-auth-token"));
+  if (!key) return null;
+  try {
+    const session = JSON.parse(localStorage.getItem(key) || "null");
+    return session?.user?.id ?? null;
+  } catch {
+    return null;
+  }
 }
 
 // Merges the static catalog-owned garden with anything the user has scanned
-// and added, hydrating from localStorage after mount to avoid SSR mismatch.
-// The catalog is demo content shown by default on first run; once dismissed
-// via hideDemoCatalog(), only user-added plants remain, which can be zero —
-// see the dashboard's empty state for that case.
+// and added, hydrating after mount to avoid SSR mismatch. When signed in
+// with Supabase configured, garden data is fetched from (and written to)
+// the `garden_plants` table; otherwise it falls back to localStorage so the
+// app keeps working fully offline / signed-out.
 export function useGardenPlants(): Plant[] {
   const [garden, setGarden] = useState<Plant[]>(plants);
 
   useEffect(() => {
     const base = isDemoCatalogHidden() ? [] : plants;
-    setGarden([...base, ...loadMyGarden()]);
+    const userId = isSupabaseConfigured ? getCurrentUserId() : null;
+
+    if (userId) {
+      loadRemoteGarden(userId).then((remote) => setGarden([...base, ...remote]));
+    } else {
+      setGarden([...base, ...loadLocalGarden()]);
+    }
   }, []);
 
   return garden;
 }
 
+// Checks the user's own added-plant count (the demo catalog doesn't count —
+// it's dismissible sample content, not something a free user "owns") against
+// their tier's maxPlants limit. Returns true if signed out / Supabase not
+// configured (no way to enforce a cross-device limit without an account —
+// falls back to the localStorage-only free experience).
+export async function canAddPlant(userId: string | undefined): Promise<boolean> {
+  if (!userId) return true;
+
+  const sub = await getSubscriptionAsync(userId);
+  const limit = TIER_FEATURES[sub.tier].maxPlants;
+
+  const remoteUserId = isSupabaseConfigured ? getCurrentUserId() : null;
+  const owned = remoteUserId ? (await loadRemoteGarden(remoteUserId)).length : loadLocalGarden().length;
+
+  return owned < limit;
+}
+
+// Returns the id actually stored under — either the existing entry's id if
+// this plant (by id or scientific name) was already saved, or the new
+// plant's own id once freshly added. Callers should navigate using this
+// return value rather than assuming `plant.id` was the one saved.
+//
+// Writes are synchronous-looking (id is generated client-side and returned
+// immediately) but persist in the background: to Supabase when signed in,
+// to localStorage otherwise. A signed-in write also mirrors to
+// localStorage so useGardenPlant()'s synchronous-feeling read has a cache.
+export function addToMyGarden(plant: Plant): string {
+  const saved = loadLocalGarden();
+  const existing = saved.find((p) => p.id === plant.id || p.scientific === plant.scientific);
+  if (existing) return existing.id;
+
+  saveLocalGarden([...saved, plant]);
+
+  const userId = isSupabaseConfigured ? getCurrentUserId() : null;
+  if (userId) {
+    upsertRemotePlant(userId, plant).catch((err) => {
+      console.error("Failed to sync plant to Supabase:", err);
+    });
+  }
+
+  return plant.id;
+}
+
+export function getFromMyGarden(id: string): Plant | undefined {
+  return loadLocalGarden().find((p) => p.id === id);
+}
+
+// Persists a full updated Plant (e.g. after appending/editing a timeline
+// entry — see plant.$id.tsx's handleUpload). Upserts: if this plant wasn't
+// already saved (e.g. it's one of the static demo-catalog plants the user
+// hasn't explicitly added), it's saved now as an owned copy so the edit
+// isn't silently lost. Same fire-and-forget persistence pattern as
+// addToMyGarden — updates the local cache immediately, syncs to Supabase in
+// the background when signed in.
+export function updatePlantInGarden(plant: Plant): void {
+  const saved = loadLocalGarden();
+  const index = saved.findIndex((p) => p.id === plant.id);
+  const next = index >= 0 ? saved.map((p, i) => (i === index ? plant : p)) : [...saved, plant];
+  saveLocalGarden(next);
+
+  const userId = isSupabaseConfigured ? getCurrentUserId() : null;
+  if (userId) {
+    upsertRemotePlant(userId, plant).catch((err) => {
+      console.error("Failed to sync plant update to Supabase:", err);
+    });
+  }
+}
+
 // Client-only lookup for a single saved plant, used as a fallback when the
 // SSR-safe getPlant() (static catalog only) doesn't find a match. `hydrated`
 // distinguishes "still resolving" from "genuinely not found" so callers
-// don't flash a 404 before the localStorage check has run.
+// don't flash a 404 before the lookup has run.
 export function useGardenPlant(id: string): { plant: Plant | undefined; hydrated: boolean } {
   const [plant, setPlant] = useState<Plant | undefined>(undefined);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setPlant(getFromMyGarden(id));
-    setHydrated(true);
+    const local = getFromMyGarden(id);
+    if (local) {
+      setPlant(local);
+      setHydrated(true);
+      return;
+    }
+
+    const userId = isSupabaseConfigured ? getCurrentUserId() : null;
+    if (userId) {
+      loadRemoteGarden(userId).then((remote) => {
+        setPlant(remote.find((p) => p.id === id));
+        setHydrated(true);
+      });
+    } else {
+      setHydrated(true);
+    }
   }, [id]);
 
   return { plant, hydrated };

@@ -1,118 +1,87 @@
 import { createServerFn } from "@tanstack/react-start";
+import { createClient } from "@supabase/supabase-js";
 import type { ApiResult } from "./plantnet.server";
 
 export type NotificationPreferences = {
-  enablePushNotifications: boolean;
-  enableEmailDigest: boolean;
-  dailyDigestTime: string;
   wateringReminders: boolean;
-  diseaseAlerts: boolean;
-  weatherUpdates: boolean;
-  quietHours?: { start: string; end: string };
+  dailyDigestTime: string;
 };
 
-export type WateringReminder = {
-  plantId: string;
-  plantName: string;
-  daysUntilWatering: number;
-  lastWatered: string;
+function getSupabaseServerClient() {
+  const url = process.env.VITE_SUPABASE_URL;
+  const anonKey = process.env.VITE_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) return null;
+  return createClient(url, anonKey);
+}
+
+const DEFAULT_PREFERENCES: NotificationPreferences = {
+  wateringReminders: true,
+  dailyDigestTime: "08:00",
 };
 
 export const getNotificationPreferences = createServerFn({ method: "GET" })
-  .handler((): NotificationPreferences => {
-    if (typeof localStorage === "undefined") {
-      return {
-        enablePushNotifications: false,
-        enableEmailDigest: false,
-        dailyDigestTime: "08:00",
-        wateringReminders: true,
-        diseaseAlerts: true,
-        weatherUpdates: true,
-      };
-    }
+  .validator((data: { userId?: string }) => data)
+  .handler(async ({ data }): Promise<ApiResult<NotificationPreferences>> => {
+    if (!data.userId) return { status: "ok", data: DEFAULT_PREFERENCES };
 
-    try {
-      const prefs = localStorage.getItem("notification_prefs");
-      if (prefs) {
-        return JSON.parse(prefs);
-      }
-    } catch {
-      /* fallback to defaults */
-    }
+    const client = getSupabaseServerClient();
+    if (!client) return { status: "ok", data: DEFAULT_PREFERENCES };
+
+    const { data: row } = await client
+      .from("notification_preferences")
+      .select("watering_reminders, daily_digest_time")
+      .eq("user_id", data.userId)
+      .maybeSingle();
+
+    if (!row) return { status: "ok", data: DEFAULT_PREFERENCES };
 
     return {
-      enablePushNotifications: false,
-      enableEmailDigest: false,
-      dailyDigestTime: "08:00",
-      wateringReminders: true,
-      diseaseAlerts: true,
-      weatherUpdates: true,
+      status: "ok",
+      data: {
+        wateringReminders: row.watering_reminders,
+        dailyDigestTime: row.daily_digest_time,
+      },
     };
   });
 
 export const updateNotificationPreferences = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
     if (typeof data !== "object" || data === null) throw new Error("Invalid data");
-    return data as Partial<NotificationPreferences>;
+    const d = data as Record<string, unknown>;
+    if (typeof d.userId !== "string" || !d.userId) throw new Error("Missing userId");
+    return {
+      userId: d.userId,
+      wateringReminders: typeof d.wateringReminders === "boolean" ? d.wateringReminders : undefined,
+      dailyDigestTime: typeof d.dailyDigestTime === "string" ? d.dailyDigestTime : undefined,
+    };
   })
   .handler(async ({ data }): Promise<ApiResult<NotificationPreferences>> => {
-    try {
-      if (typeof localStorage === "undefined") {
-        return { status: "error", message: "Storage not available." };
-      }
+    const client = getSupabaseServerClient();
+    if (!client) return { status: "error", message: "Notification preferences are not configured." };
 
-      const current = JSON.parse(
-        localStorage.getItem("notification_prefs") || "{}"
-      ) as Partial<NotificationPreferences>;
-      const updated = { ...current, ...data };
+    const { error } = await client.from("notification_preferences").upsert({
+      user_id: data.userId,
+      ...(data.wateringReminders !== undefined && { watering_reminders: data.wateringReminders }),
+      ...(data.dailyDigestTime !== undefined && { daily_digest_time: data.dailyDigestTime }),
+      updated_at: new Date().toISOString(),
+    });
 
-      localStorage.setItem("notification_prefs", JSON.stringify(updated));
-
-      return { status: "ok", data: updated as NotificationPreferences };
-    } catch (error) {
+    if (error) {
       console.error("Preferences update error:", error);
       return { status: "error", message: "Could not update preferences." };
     }
-  });
 
-export const scheduleWateringReminders = createServerFn({ method: "POST" })
-  .validator((data: unknown) => {
-    if (!Array.isArray(data)) throw new Error("Expected array of reminders");
-    return data as WateringReminder[];
-  })
-  .handler(async ({ data }): Promise<ApiResult<{ scheduled: number }>> => {
-    try {
-      if (typeof localStorage === "undefined") {
-        return { status: "error", message: "Storage not available." };
-      }
+    const { data: row } = await client
+      .from("notification_preferences")
+      .select("watering_reminders, daily_digest_time")
+      .eq("user_id", data.userId)
+      .maybeSingle();
 
-      localStorage.setItem("watering_reminders", JSON.stringify(data));
-
-      return { status: "ok", data: { scheduled: data.length } };
-    } catch (error) {
-      console.error("Schedule error:", error);
-      return { status: "error", message: "Could not schedule reminders." };
-    }
-  });
-
-export const getUpcomingReminders = createServerFn({ method: "GET" })
-  .handler(async (): Promise<ApiResult<WateringReminder[]>> => {
-    try {
-      if (typeof localStorage === "undefined") {
-        return { status: "ok", data: [] };
-      }
-
-      const reminders = localStorage.getItem("watering_reminders");
-      if (!reminders) {
-        return { status: "ok", data: [] };
-      }
-
-      const parsed = JSON.parse(reminders) as WateringReminder[];
-      const upcoming = parsed.filter((r) => r.daysUntilWatering <= 3).sort((a, b) => a.daysUntilWatering - b.daysUntilWatering);
-
-      return { status: "ok", data: upcoming };
-    } catch (error) {
-      console.error("Reminders fetch error:", error);
-      return { status: "error", message: "Could not fetch reminders." };
-    }
+    return {
+      status: "ok",
+      data: {
+        wateringReminders: row?.watering_reminders ?? DEFAULT_PREFERENCES.wateringReminders,
+        dailyDigestTime: row?.daily_digest_time ?? DEFAULT_PREFERENCES.dailyDigestTime,
+      },
+    };
   });

@@ -39,6 +39,13 @@ export const hu: Dictionary = {
   "home.startFresh": "Kezdés elölről",
   "home.startFreshAria": "Kezdés elölről (demó kert eltávolítása)",
   "home.streakTitle": "{count} napos gondozási sorozat",
+  "streak.back": "Vissza a kerthez",
+  "streak.title": "Gondozási sorozat",
+  "streak.current": "Jelenlegi sorozat",
+  "streak.longest": "Leghosszabb sorozat",
+  "streak.history": "Előzmények",
+  "streak.legendMissed": "Kihagyva",
+  "streak.legendDone": "Teljesítve",
   "home.empty.title": "A kerted még üres",
   "home.empty.body":
     "Szkennelj be egy növényt az egészségének nyomon követéséhez, vagy nézz körül egy demó kertben.",
@@ -50,6 +57,10 @@ export const hu: Dictionary = {
   "home.waterAll.done": "Kész",
   "home.calendar.title": "Öntözési naptár",
   "home.myGarden": "A kertem",
+  "home.search.placeholder": "Kert keresése…",
+  "home.search.clear": "Keresés törlése",
+  "home.search.filterAll": "Összes",
+  "home.search.noResults": "Nincs a keresésnek megfelelő növény.",
   "home.needsAttention": "{count} növénynek van figyelemre szüksége",
   "home.allThriving": "minden virágzik",
   "home.tasksToday": "Mai teendők",
@@ -174,6 +185,7 @@ export const hu: Dictionary = {
   "plant.askDoctorDecline": "Miért romlott a(z) {name} állapota az idő során?",
   "plant.askDoctorChange": "Mi változott a(z) {name} növényemnél az idő során?",
   "plant.addPhoto": "Havi fotó hozzáadása",
+  "plant.addAnglePhoto": "Újabb szög hozzáadása",
   "plant.analyzingPhoto": "Fotó elemzése…",
   "plant.comparingLast": "Összehasonlítás az előző fotóval…",
   "plant.visualMatch": "Vizuális egyezés az előző fotóval: {pct}% — {label}",
@@ -192,16 +204,20 @@ export const hu: Dictionary = {
   "plant.syncCalendar": "Szinkronizálás a naptáramba",
   "plant.calendarDownloaded": "Naptárfájl letöltve",
   "plant.syncHint": "Kapcsolj be legalább egy emlékeztetőt fent a szinkronizáláshoz.",
+  "plant.printHistory": "Előzmények nyomtatása / exportálása",
   "plant.backToDoctor": "Vissza a növénydoktorhoz",
   "plant.newGrowth": "Új növekedés észlelve",
   "plant.minorStress": "Kisebb stresszjelek",
   "plant.holdingSteady": "Stabil állapot",
+  "plant.visibleChange": "Látható változás észlelve",
   "plant.detail.improved":
     "Az AI összevetette a levélfelületet az előző hónappal — egy friss levél kibomlott, a szín telítettebb.",
   "plant.detail.declined":
     "Enyhe levélszél-barnulás az előző fotóhoz képest. Az AI a páratartalom növelését és a vízelvezetés ellenőrzését javasolja.",
   "plant.detail.stable":
     "Nincs jelentős vizuális változás az előző hónaphoz képest. A jelenlegi gondozási ritmus beválik.",
+  "plant.detail.changed":
+    "Ez a fotó láthatóan eltér az előzőtől — lehet új növekedés vagy új stresszjel is. Futtass betegségellenőrzést a részletekért.",
   "plant.addedBaseline": "Hozzáadva a kertedhez",
   "plant.tapToJump": "Koppints egy hónapra az adott szkenneléshez ugráshoz",
 

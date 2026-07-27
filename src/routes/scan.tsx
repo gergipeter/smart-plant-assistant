@@ -25,10 +25,11 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import { plants as ownedPlants, type Plant } from "@/lib/plants";
 import { classifyImage, matchPlant, matchPlantByScientificName } from "@/lib/classify";
 import { identifyPlant, getDailyQuota, type PlantNetResult } from "@/lib/plantnet.server";
-import { addToMyGarden, buildScannedPlant } from "@/lib/myGarden";
+import { addToMyGarden, buildScannedPlant, canAddPlant } from "@/lib/myGarden";
 import { HealthChecks } from "@/components/HealthChecks";
 import { RadialHealthMeter } from "@/components/RadialHealthMeter";
 import { useT, statusLabelKeys, type TranslationKey } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/scan")({
   head: () => ({
@@ -337,7 +338,9 @@ function Scan() {
   const [result, setResult] = useState<Result | null>(null);
   const [capturedPhoto, setCapturedPhoto] = useState<Blob | null>(null);
   const [organ, setOrgan] = useState<Organ>("auto");
+  const [limitReached, setLimitReached] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -506,16 +509,54 @@ function Scan() {
   const isHighConfidence =
     result?.source === "plantnet" && (result.top?.score ?? 0) >= HIGH_CONFIDENCE_SCORE;
 
-  const addCatalogPlantToGarden = (plant: Plant) => {
+  const addCatalogPlantToGarden = async (plant: Plant) => {
+    if (!(await canAddPlant(user?.uid))) {
+      setLimitReached(true);
+      return;
+    }
     const savedId = addToMyGarden(plant);
     navigate({ to: "/plant/$id", params: { id: savedId } });
   };
 
-  const addScannedPlantToGarden = (top: PlantNetResult) => {
+  const addScannedPlantToGarden = async (top: PlantNetResult) => {
+    if (!(await canAddPlant(user?.uid))) {
+      setLimitReached(true);
+      return;
+    }
     const plant = buildScannedPlant(top);
     const savedId = addToMyGarden(plant);
     navigate({ to: "/plant/$id", params: { id: savedId } });
   };
+
+  if (limitReached) {
+    return (
+      <AppShell>
+        <div className="min-h-[70vh] flex flex-col items-center justify-center text-center px-4">
+          <div className="h-14 w-14 rounded-full bg-primary/10 text-primary grid place-items-center mb-4">
+            <Sprout className="h-7 w-7" strokeWidth={1.75} />
+          </div>
+          <h1 className="font-display text-2xl mb-2">Garden's full for your plan</h1>
+          <p className="text-sm text-muted-foreground mb-6 max-w-xs">
+            You've reached your plan's plant limit. Upgrade to add more, or remove a plant to make room.
+          </p>
+          <div className="flex gap-2 w-full max-w-xs">
+            <button
+              onClick={() => setLimitReached(false)}
+              className="ios-tap flex-1 h-11 rounded-full border border-border text-sm font-medium"
+            >
+              Back
+            </button>
+            <Link
+              to="/premium"
+              className="ios-tap flex-1 h-11 rounded-full bg-primary text-primary-foreground text-sm font-semibold grid place-items-center"
+            >
+              Upgrade
+            </Link>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell>

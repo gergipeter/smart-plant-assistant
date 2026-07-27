@@ -24,9 +24,24 @@ export type Plant = {
   lastWatered: string;
   nextTask: string;
   timeline: TimelineEntry[];
+  // Physical growing-condition inputs for advancedWatering.ts's prediction
+  // (Plus/Pro tier only — see WaterCalendar). Optional: unset on most
+  // catalog entries and user-added plants, defaulted at read time via
+  // getWateringProfileDefaults() rather than required on every plant.
+  soilType?: "clay" | "loam" | "sand";
+  drainageQuality?: "poor" | "normal" | "excellent";
+  sunExposure?: "full-sun" | "partial" | "shade";
+  containerSizeLiters?: number;
 };
 
-export type TimelineChange = "improved" | "declined" | "stable" | "new";
+// "changed" means the photo-comparison detected a visible difference from
+// the previous entry (low embedding similarity) with no known direction —
+// could be new growth or new damage. Only a positive disease-check result
+// (see healthScoring.ts) asserts "declined" with actual confidence; visual
+// similarity alone can only assert "stable" (little change) or "changed"
+// (uncertain change), never "improved" — see healthScoring.ts's header
+// comment for why.
+export type TimelineChange = "improved" | "declined" | "stable" | "changed" | "new";
 
 export type TimelineEntry = {
   id: string;
@@ -45,6 +60,13 @@ export type TimelineEntry = {
   // Static seed-data image path (public/plants/*.jpg) — distinct from
   // `hasPhoto`, which points at a user-captured IndexedDB blob.
   photo?: string;
+  // Additional angle photos captured alongside the primary one (e.g. a
+  // close-up of a problem area next to the whole-plant shot). Each id is a
+  // synthetic key (`${entry.id}-extra-${n}`) stored in photoStore.ts exactly
+  // like the primary photo. Only the primary photo (hasPhoto/entry.id) feeds
+  // the embedding/disease-check pipeline in plant.$id.tsx — these are for
+  // human viewing only, not scored.
+  extraPhotoIds?: string[];
 };
 
 // All plants including the original demo + expanded catalog

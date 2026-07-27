@@ -1,9 +1,16 @@
-// IndexedDB-backed storage for full-resolution timeline photos, keyed by
-// timeline entry id. Blobs are too large for localStorage's ~5MB quota,
-// which is why this lives separately from myGarden's localStorage cache.
+// Photo storage for timeline/scan photos, keyed by timeline entry id.
+// Signed-in users' photos go to Supabase Storage (private bucket
+// "plant-photos", RLS-scoped per user) so they sync across devices —
+// same signed-in/signed-out split as myGarden.ts and premium.ts.
+// Signed-out (or Supabase not configured) falls back to IndexedDB, which
+// is local to one browser — localStorage's ~5MB quota is too small for
+// full-resolution photo blobs, hence a separate store from myGarden's cache.
+import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
+
 const DB_NAME = "verdant.photos";
 const DB_VERSION = 1;
 const STORE_NAME = "photos";
+const BUCKET = "plant-photos";
 
 function openDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -16,7 +23,7 @@ function openDb(): Promise<IDBDatabase> {
   });
 }
 
-export async function savePhoto(entryId: string, blob: Blob): Promise<void> {
+async function saveLocal(entryId: string, blob: Blob): Promise<void> {
   const db = await openDb();
   await new Promise<void>((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite");
@@ -27,7 +34,7 @@ export async function savePhoto(entryId: string, blob: Blob): Promise<void> {
   db.close();
 }
 
-export async function getPhoto(entryId: string): Promise<Blob | undefined> {
+async function getLocal(entryId: string): Promise<Blob | undefined> {
   const db = await openDb();
   const blob = await new Promise<Blob | undefined>((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readonly");
@@ -39,7 +46,7 @@ export async function getPhoto(entryId: string): Promise<Blob | undefined> {
   return blob;
 }
 
-export async function deletePhoto(entryId: string): Promise<void> {
+async function deleteLocal(entryId: string): Promise<void> {
   const db = await openDb();
   await new Promise<void>((resolve, reject) => {
     const tx = db.transaction(STORE_NAME, "readwrite");
@@ -48,4 +55,61 @@ export async function deletePhoto(entryId: string): Promise<void> {
     tx.onerror = () => reject(tx.error);
   });
   db.close();
+}
+
+function getCurrentUserId(): string | null {
+  if (!supabase) return null;
+  const key = Object.keys(localStorage).find((k) => k.startsWith("sb-") && k.endsWith("-auth-token"));
+  if (!key) return null;
+  try {
+    const session = JSON.parse(localStorage.getItem(key) || "null");
+    return session?.user?.id ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function storagePath(userId: string, entryId: string): string {
+  return `${userId}/${entryId}`;
+}
+
+export async function savePhoto(entryId: string, blob: Blob): Promise<void> {
+  const userId = isSupabaseConfigured ? getCurrentUserId() : null;
+
+  if (userId && supabase) {
+    const { error } = await supabase.storage
+      .from(BUCKET)
+      .upload(storagePath(userId, entryId), blob, { upsert: true, contentType: blob.type || "image/jpeg" });
+    if (error) {
+      console.error("Failed to upload photo to Supabase Storage:", error);
+      // Fall back to local so the photo isn't silently lost.
+      await saveLocal(entryId, blob);
+    }
+    return;
+  }
+
+  await saveLocal(entryId, blob);
+}
+
+export async function getPhoto(entryId: string): Promise<Blob | undefined> {
+  const userId = isSupabaseConfigured ? getCurrentUserId() : null;
+
+  if (userId && supabase) {
+    const { data, error } = await supabase.storage.from(BUCKET).download(storagePath(userId, entryId));
+    if (!error && data) return data;
+    // Fall through to local in case this entry was saved before sign-in.
+  }
+
+  return getLocal(entryId);
+}
+
+export async function deletePhoto(entryId: string): Promise<void> {
+  const userId = isSupabaseConfigured ? getCurrentUserId() : null;
+
+  if (userId && supabase) {
+    const { error } = await supabase.storage.from(BUCKET).remove([storagePath(userId, entryId)]);
+    if (error) console.error("Failed to delete photo from Supabase Storage:", error);
+  }
+
+  await deleteLocal(entryId);
 }

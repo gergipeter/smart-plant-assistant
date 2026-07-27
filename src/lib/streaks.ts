@@ -57,3 +57,30 @@ export function getCurrentStreak(now: Date = new Date()): number {
   }
   return streak;
 }
+
+// All completed-day keys (YYYY-MM-DD, local), unsorted — for rendering a
+// history view (e.g. a calendar heatmap) without exposing the raw storage
+// shape to callers.
+export function getCompletedDates(): Set<string> {
+  return new Set(loadData().completedDates);
+}
+
+// Longest run of consecutive completed days ever recorded, independent of
+// whether the current streak is still active.
+export function getLongestStreak(): number {
+  const dates = [...loadData().completedDates].sort();
+  if (dates.length === 0) return 0;
+
+  let longest = 1;
+  let current = 1;
+  for (let i = 1; i < dates.length; i++) {
+    const prev = new Date(dates[i - 1]);
+    const next = new Date(dates[i]);
+    const dayDiff = Math.round((next.getTime() - prev.getTime()) / 86_400_000);
+    current = dayDiff === 1 ? current + 1 : 1;
+    longest = Math.max(longest, current);
+  }
+  return longest;
+}
+
+export { toDateKey };

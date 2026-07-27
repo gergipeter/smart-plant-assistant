@@ -13,7 +13,7 @@ export type HardinessResponse =
   | { status: "error"; message: string };
 
 // Simplified USDA Hardiness Zone mapping
-function getHardinessZone(lat: number, lon: number): HardinessInfo {
+function computeHardinessZone(lat: number, lon: number): HardinessInfo {
   const absLat = Math.abs(lat);
 
   if (absLat < 10) {
@@ -73,7 +73,7 @@ export const getHardinessZone = createServerFn({ method: "GET" })
     try {
       const lat = data.lat ?? 40.7128;
       const lon = data.lon ?? -74.006;
-      const info = getHardinessZone(lat, lon);
+      const info = computeHardinessZone(lat, lon);
       return { status: "ok", data: info };
     } catch (error) {
       return { status: "error", message: "Could not determine hardiness zone." };

@@ -255,6 +255,11 @@ export const identifyVarieties = createServerFn({ method: "POST" })
       return { status: "error", message: "Could not reach the Pl@ntNet API." };
     }
     if (response.status === 429) return { status: "quota-exceeded" };
+    // Pl@ntNet's varieties/identify only covers cultivated-variety species
+    // (crops/cultivars with named varieties) — it 404s "Species not found"
+    // for any species outside that list, which includes most houseplants.
+    // That's an expected empty result for this app, not a failure.
+    if (response.status === 404) return { status: "ok", data: [] };
     if (!response.ok) return { status: "error", message: `Request failed (${response.status}).` };
     try {
       const body = (await response.json()) as Json;

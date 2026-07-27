@@ -17,6 +17,8 @@ import { savePhoto } from "@/lib/photoStore";
 import { usePhotoUrl } from "@/lib/usePhotoUrl";
 import { identifyDisease, identifyVarieties } from "@/lib/plantnet.server";
 import { getAIDoctorAdvice } from "@/lib/ai-doctor.server";
+import { enrichPlantData } from "@/lib/trefle.server";
+import { findKnowledgeAnswer } from "@/lib/plantKnowledge";
 import { useT, type TranslationKey } from "@/lib/i18n";
 
 type DoctorSearch = { msg?: string; ask?: string; focus?: string };
@@ -225,7 +227,9 @@ function Doctor() {
       );
 
     if (mentioned && isIssueQuestion) {
-      // Use AI Doctor for detailed issue diagnosis
+      // Use AI Doctor for detailed issue diagnosis (requires ANTHROPIC_API_KEY
+      // + account credit; falls through to the free knowledge base below if
+      // unavailable, so symptom questions still get a useful answer).
       const adviceRes = await getAIDoctorAdvice({
         plantName: mentioned.name,
         issue: text,
@@ -243,6 +247,43 @@ function Doctor() {
           { id: nextId(), role: "assistant", content },
         ]);
         return;
+      }
+    }
+
+    // Free, no-API-key knowledge base: covers general plant-care questions
+    // (watering frequency, light, toxicity, pests, soil, propagation, etc.)
+    // whether or not a specific garden plant was mentioned.
+    const knowledgeAnswer = findKnowledgeAnswer(text);
+    if (knowledgeAnswer) {
+      const prefix = mentioned ? `For your ${mentioned.name}: ` : "";
+      setMessages((m) => [
+        ...m,
+        { id: nextId(), role: "assistant", content: prefix + knowledgeAnswer },
+      ]);
+      return;
+    }
+
+    // Question names a specific species but it's not in the user's garden —
+    // look up real botanical data instead of dead-ending on "which plant?".
+    if (!mentioned) {
+      const namedSpecies = text.match(/\b(?:my|the)\s+([a-z][a-z\s-]{2,30}?)\b(?:\s+is|\s+has|\?|$)/i)?.[1]?.trim();
+      if (namedSpecies) {
+        const enrichRes = await enrichPlantData({ data: { commonName: namedSpecies } });
+        if (enrichRes.status === "ok") {
+          const e = enrichRes.data;
+          const parts: string[] = [];
+          if (e.waterNeeds) parts.push(`Water needs: ${e.waterNeeds}`);
+          if (e.hardyTemperature) parts.push(`Hardy temperature: ${e.hardyTemperature}`);
+          if (e.matureHeight) parts.push(`Mature height: ${e.matureHeight}`);
+          if (e.careLevel) parts.push(`Care level: ${e.careLevel}`);
+          if (parts.length) {
+            setMessages((m) => [
+              ...m,
+              { id: nextId(), role: "assistant", content: `Here's what I found for ${namedSpecies}:\n${parts.join("\n")}` },
+            ]);
+            return;
+          }
+        }
       }
     }
 

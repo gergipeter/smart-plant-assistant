@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PlantThumb } from "@/components/AppShell";
-import { todaysTasks, getPlant, type Plant } from "@/lib/plants";
+import { todaysTasks, getPlant, type Plant, type PlantStatus } from "@/lib/plants";
 import { useGardenPlants, hideDemoCatalog, showDemoCatalog } from "@/lib/myGarden";
 import {
   CloudSun,
@@ -16,6 +16,8 @@ import {
   Wand2,
   Camera,
   Sprout,
+  Search,
+  X,
 } from "lucide-react";
 import {
   useEffect,
@@ -26,6 +28,7 @@ import {
 } from "react";
 import { getCurrentStreak, recordDayCompleted } from "@/lib/streaks";
 import { WaterCalendar } from "@/components/WaterCalendar";
+import { AdvancedWateringInsights } from "@/components/AdvancedWateringInsights";
 import { seedDemoData } from "@/lib/seedDemoData";
 import { useT, statusLabelKeys, type TranslationKey } from "@/lib/i18n";
 
@@ -355,6 +358,20 @@ function Dashboard() {
     () => [...gardenPlants].sort((a, b) => PRIORITY_ORDER[a.status] - PRIORITY_ORDER[b.status]),
     [gardenPlants],
   );
+
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<PlantStatus | "all">("all");
+  // Search/filter only earns its keep once the grid is long enough to
+  // need it — below that, scanning the whole grid by eye is faster.
+  const showSearch = gardenPlants.length > 4;
+  const filteredGarden = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return sortedGarden.filter((p) => {
+      if (statusFilter !== "all" && p.status !== statusFilter) return false;
+      if (!q) return true;
+      return p.name.toLowerCase().includes(q) || p.scientific.toLowerCase().includes(q);
+    });
+  }, [sortedGarden, query, statusFilter]);
   const attentionPlants = useMemo(
     () => gardenPlants.filter((p) => p.status !== "healthy"),
     [gardenPlants],
@@ -391,7 +408,8 @@ function Dashboard() {
           </div>
           <div className="flex items-center gap-2">
             {streak > 0 && (
-              <div
+              <Link
+                to="/streak"
                 className="ios-tap mt-1.5 h-8 px-2.5 rounded-full bg-secondary flex items-center gap-1 shrink-0"
                 title={t("home.streakTitle", { count: streak })}
               >
@@ -402,7 +420,7 @@ function Dashboard() {
                   fillOpacity={0.2}
                 />
                 <span className="text-xs font-medium tabular-nums">{streak}</span>
-              </div>
+              </Link>
             )}
             {!isEmpty && (
               <button
@@ -484,6 +502,8 @@ function Dashboard() {
               {showCalendar && <WaterCalendar plants={gardenPlants} />}
             </section>
 
+            <AdvancedWateringInsights plants={gardenPlants} />
+
             {/* My Garden */}
             <section className="mb-8">
               <div className="flex items-baseline justify-between mb-3">
@@ -505,11 +525,60 @@ function Dashboard() {
                   )}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                {sortedGarden.map((p, i) => (
-                  <GardenBentoCard key={p.id} plant={p} featured={i === 0} />
-                ))}
-              </div>
+              {showSearch && (
+                <div className="mb-4">
+                  <div className="relative">
+                    <Search
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                      strokeWidth={1.75}
+                    />
+                    <input
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder={t("home.search.placeholder")}
+                      className="w-full h-10 rounded-full bg-secondary pl-10 pr-9 text-sm placeholder:text-muted-foreground focus:outline-none"
+                    />
+                    {query && (
+                      <button
+                        onClick={() => setQuery("")}
+                        aria-label={t("home.search.clear")}
+                        className="ios-tap absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-muted-foreground/20 grid place-items-center"
+                      >
+                        <X className="h-3 w-3" strokeWidth={2} />
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-2.5 overflow-x-auto">
+                    {(["all", "needs-water", "needs-mist", "quarantined", "healthy"] as const).map(
+                      (s) => (
+                        <button
+                          key={s}
+                          onClick={() => setStatusFilter(s)}
+                          className={`ios-tap shrink-0 h-7 px-3 rounded-full text-xs font-medium transition-colors ${
+                            statusFilter === s
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-secondary text-secondary-foreground"
+                          }`}
+                        >
+                          {s === "all" ? t("home.search.filterAll") : t(statusLabelKeys[s])}
+                        </button>
+                      ),
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {filteredGarden.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-8">
+                  {t("home.search.noResults")}
+                </p>
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  {filteredGarden.map((p, i) => (
+                    <GardenBentoCard key={p.id} plant={p} featured={i === 0 && !query && statusFilter === "all"} />
+                  ))}
+                </div>
+              )}
             </section>
 
             {/* Tasks */}

@@ -1,13 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PlantThumb } from "@/components/AppShell";
-import { getPlant, type Plant, type TimelineEntry, type TimelineChange } from "@/lib/plants";
-import { useGardenPlant } from "@/lib/myGarden";
+import { getPlant, type Plant, type TimelineEntry } from "@/lib/plants";
+import { useGardenPlant, updatePlantInGarden } from "@/lib/myGarden";
 import { savePhoto } from "@/lib/photoStore";
 import { saveEmbedding, getEmbedding, cosineSimilarity } from "@/lib/embeddingStore";
+import { scoreFromSimilarity, adjustEntryForDisease } from "@/lib/healthScoring";
 import { usePhotoUrl } from "@/lib/usePhotoUrl";
 import { getReminderStatus, recordPhotoTaken } from "@/lib/reminders";
 import { getCareToggles, setCareToggle, type CareTask } from "@/lib/careSchedule";
 import { downloadPlantCareIcs } from "@/lib/calendarExport";
+import { printCareHistory } from "@/lib/careHistoryExport";
 import { getPhotoEmbedding } from "@/lib/plantnet.server";
 import { Slideshow } from "@/components/Slideshow";
 import { CompareSlider } from "@/components/CompareSlider";
@@ -33,6 +35,7 @@ import {
   SplitSquareHorizontal,
   Check,
   ScanEye,
+  Printer,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -93,7 +96,11 @@ function PlantDetail() {
   const { plant: staticPlant } = Route.useLoaderData();
   const { id } = Route.useParams();
   const { plant: gardenPlant, hydrated } = useGardenPlant(id);
-  const plant = staticPlant ?? gardenPlant;
+  // A saved garden copy (e.g. one the user has added a timeline photo to —
+  // see updatePlantInGarden in myGarden.ts) reflects real edits and must
+  // win over the pristine static catalog entry, not just plants that only
+  // exist in the garden (scanned/added, not in the static catalog at all).
+  const plant = gardenPlant ?? staticPlant;
 
   if (!plant) {
     // Still checking localStorage for a scanned-and-added plant — avoid
@@ -121,6 +128,92 @@ function TimelineThumb({ entry, className }: { entry: TimelineEntry; className: 
     return <img src={url} alt={entry.headline} className={`object-cover ${className}`} />;
   }
   return <PlantThumb emoji={entry.emoji} gradient={entry.gradient} className={className} />;
+}
+
+// A single extra-angle photo thumbnail within an expanded entry's gallery —
+// resolves its own blob: URL from photoStore.ts, same pattern as
+// TimelineThumb/usePhotoUrl but for a synthetic extra-photo id rather than
+// the entry's primary id.
+function ExtraPhotoThumb({ photoId, onClick }: { photoId: string; onClick: () => void }) {
+  const url = usePhotoUrl(photoId);
+  if (!url) {
+    return <div className="h-16 w-16 rounded-lg bg-muted shrink-0 animate-pulse" />;
+  }
+  return (
+    <button onClick={onClick} className="ios-tap shrink-0">
+      <img src={url} alt="" className="h-16 w-16 rounded-lg object-cover" />
+    </button>
+  );
+}
+
+// Extra angle photos (e.g. a close-up of a problem area) attached to a
+// timeline entry alongside its primary photo — viewing only, never scored by
+// the embedding/disease-check pipeline (see TimelineEntry.extraPhotoIds).
+function EntryGallery({
+  entry,
+  onAddPhoto,
+  adding,
+}: {
+  entry: TimelineEntry;
+  onAddPhoto: (file: File) => void;
+  adding: boolean;
+}) {
+  const t = useT();
+  const [viewerId, setViewerId] = useState<string | null>(null);
+  const viewerUrl = usePhotoUrl(viewerId ?? undefined);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const extraIds = entry.extraPhotoIds ?? [];
+
+  const handlePick = () => fileRef.current?.click();
+  const handleFile = () => {
+    const file = fileRef.current?.files?.[0];
+    if (file) onAddPhoto(file);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  return (
+    <div className="mt-3">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        {extraIds.map((id) => (
+          <ExtraPhotoThumb key={id} photoId={id} onClick={() => setViewerId(id)} />
+        ))}
+        {entry.hasPhoto && (
+          <>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={handleFile}
+            />
+            <button
+              onClick={handlePick}
+              disabled={adding}
+              className="ios-tap h-16 w-16 rounded-lg border border-dashed border-muted-foreground/40 grid place-items-center shrink-0 text-muted-foreground disabled:opacity-60"
+              aria-label={t("plant.addAnglePhoto")}
+              title={t("plant.addAnglePhoto")}
+            >
+              {adding ? (
+                <div className="h-3.5 w-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
+              ) : (
+                <Plus className="h-4 w-4" strokeWidth={1.75} />
+              )}
+            </button>
+          </>
+        )}
+      </div>
+
+      {viewerId && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-6"
+          onClick={() => setViewerId(null)}
+        >
+          {viewerUrl && <img src={viewerUrl} alt="" className="max-h-full max-w-full rounded-xl" />}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // Cosine similarity between this upload's Pl@ntNet embedding and the
@@ -163,6 +256,19 @@ function PlantDetailView({ plant }: { plant: Plant }) {
   const [careTab, setCareTab] = useState<(typeof careTabs)[number]["id"]>("water");
   const [reminders, setReminders] = useState(() => getCareToggles(plant.id));
   const [entries, setEntries] = useState<TimelineEntry[]>(plant.timeline);
+  // `plant` starts as the static catalog copy on first render and can later
+  // swap to the hydrated, possibly-newer garden copy (see PlantDetail above)
+  // without this component remounting — useState's initializer only runs
+  // once, so without this sync `entries` would stay pinned to whichever
+  // `plant.timeline` existed at first render, silently hiding a real saved
+  // update (e.g. a photo added in a previous session) after a fresh load.
+  // Fires once, when useGardenPlant's hydration swaps the prop reference —
+  // handleUpload's own setEntries calls happen after that and aren't
+  // clobbered by this, since `plant.timeline` doesn't change again on its
+  // own afterward.
+  useEffect(() => {
+    setEntries(plant.timeline);
+  }, [plant.timeline]);
   const [uploading, setUploading] = useState(false);
   const [showSlideshow, setShowSlideshow] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
@@ -180,6 +286,7 @@ function PlantDetailView({ plant }: { plant: Plant }) {
   // ?highlight= deep link that points at a specific month.
   const [expanded, setExpanded] = useState<string | null>(highlight ?? null);
   const [flashId, setFlashId] = useState<string | null>(null);
+  const [addingPhotoTo, setAddingPhotoTo] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const pendingBlobRef = useRef<Blob | null>(null);
   const entryRefs = useRef<Record<string, HTMLLIElement | null>>({});
@@ -237,50 +344,15 @@ function PlantDetailView({ plant }: { plant: Plant }) {
     pendingBlobRef.current = null;
     setTimeout(async () => {
       const last = entries[entries.length - 1];
-      const nextHealth = Math.max(30, Math.min(100, last.health + (Math.random() > 0.4 ? 4 : -3)));
-      const delta = nextHealth - last.health;
-      const change: TimelineChange = delta > 1 ? "improved" : delta < -1 ? "declined" : "stable";
       const now = new Date();
-      const monthShort = now.toLocaleString("en-US", { month: "short", year: "numeric" });
-      const dateLong = now.toLocaleString("en-US", { month: "long", day: "numeric" });
-      const newEntry: TimelineEntry = {
-        id: `u-${now.getTime()}`,
-        month: monthShort,
-        date: dateLong,
-        emoji: plant.emoji,
-        gradient: plant.gradient,
-        health: nextHealth,
-        change,
-        headline:
-          change === "improved"
-            ? t("plant.newGrowth")
-            : change === "declined"
-              ? t("plant.minorStress")
-              : t("plant.holdingSteady"),
-        detail:
-          change === "improved"
-            ? t("plant.detail.improved")
-            : change === "declined"
-              ? t("plant.detail.declined")
-              : t("plant.detail.stable"),
-        hasPhoto: !!blob,
-      };
-      if (blob) {
-        await savePhoto(newEntry.id, blob);
-      }
-      const next = [...entries, newEntry];
-      setEntries(next);
-      setExpanded(newEntry.id);
-      setUploading(false);
-      setLastUploadedPhoto(blob);
-      setReminderStatus(getReminderStatus(plant.id));
-      recordPhotoTaken(plant.id, now);
 
-      // Real visual-consistency check: embed this photo via Pl@ntNet and
-      // compare against the previous entry's stored embedding. Independent
-      // of the simulated health score above — this is an actual signal
-      // (cosine similarity of two real feature vectors), just not one that
-      // maps to "health" on its own, so it's surfaced separately.
+      // Compute the real signal FIRST: embed this photo via Pl@ntNet and
+      // compare against the previous photo's stored embedding. The health
+      // score below is derived from this, not a random number — see
+      // healthScoring.ts for why similarity can only ever support
+      // "stable"/"changed", never "improved" on its own.
+      let similarity: number | null = null;
+      let embeddingVector: number[] | undefined;
       if (blob) {
         const prevWithPhoto = [...entries].reverse().find((e) => e.hasPhoto);
         const [prevVector, embedRes] = await Promise.all([
@@ -294,15 +366,93 @@ function PlantDetailView({ plant }: { plant: Plant }) {
           }),
         ]);
         if (embedRes.status === "ok") {
-          await saveEmbedding(newEntry.id, embedRes.data);
-          setVisualSimilarity(prevVector ? cosineSimilarity(prevVector, embedRes.data) : null);
-        } else {
-          setVisualSimilarity(null);
+          embeddingVector = embedRes.data;
+          similarity = prevVector ? cosineSimilarity(prevVector, embedRes.data) : null;
         }
-      } else {
-        setVisualSimilarity(null);
       }
+      setVisualSimilarity(similarity);
+
+      const { health: nextHealth, change } = scoreFromSimilarity(last.health, similarity);
+      const monthShort = now.toLocaleString("en-US", { month: "short", year: "numeric" });
+      const dateLong = now.toLocaleString("en-US", { month: "long", day: "numeric" });
+      const newEntry: TimelineEntry = {
+        id: `u-${now.getTime()}`,
+        month: monthShort,
+        date: dateLong,
+        emoji: plant.emoji,
+        gradient: plant.gradient,
+        health: nextHealth,
+        change,
+        headline:
+          change === "changed"
+            ? t("plant.visibleChange")
+            : t("plant.holdingSteady"),
+        detail:
+          change === "changed"
+            ? t("plant.detail.changed")
+            : t("plant.detail.stable"),
+        hasPhoto: !!blob,
+      };
+      if (blob) {
+        await savePhoto(newEntry.id, blob);
+        if (embeddingVector) await saveEmbedding(newEntry.id, embeddingVector);
+      }
+      const next = [...entries, newEntry];
+      setEntries(next);
+      updatePlantInGarden({ ...plant, timeline: next });
+      setExpanded(newEntry.id);
+      setUploading(false);
+      setLastUploadedPhoto(blob);
+      setReminderStatus(getReminderStatus(plant.id));
+      recordPhotoTaken(plant.id, now);
     }, 1600);
+  };
+
+  // Adds an extra angle photo (e.g. a close-up of a problem area) to an
+  // existing entry, alongside its primary photo. Stored under a synthetic id
+  // in the same photoStore.ts used for primary photos, but never fed into
+  // the embedding/disease-check pipeline — viewing only.
+  const handleAddExtraPhoto = async (entryId: string, file: File) => {
+    setAddingPhotoTo(entryId);
+    try {
+      const target = entries.find((e) => e.id === entryId);
+      const nextIndex = (target?.extraPhotoIds?.length ?? 0) + 1;
+      const photoId = `${entryId}-extra-${nextIndex}`;
+      await savePhoto(photoId, file);
+      const next = entries.map((e) =>
+        e.id === entryId ? { ...e, extraPhotoIds: [...(e.extraPhotoIds ?? []), photoId] } : e,
+      );
+      setEntries(next);
+      updatePlantInGarden({ ...plant, timeline: next });
+    } finally {
+      setAddingPhotoTo(null);
+    }
+  };
+
+  // Called by HealthChecks after a manual disease check finds a confident
+  // match on the most recent entry's photo — the one signal with real
+  // directional meaning, so it's allowed to revise that entry's score/label
+  // (see healthScoring.ts). No-ops if there's no entry to adjust.
+  const handleDiseaseDetected = (topDiseaseScore: number) => {
+    setEntries((prev) => {
+      if (prev.length === 0) return prev;
+      const last = prev[prev.length - 1];
+      const adjusted = adjustEntryForDisease(
+        { health: last.health, change: last.change },
+        topDiseaseScore,
+      );
+      if (adjusted.change === last.change && adjusted.health === last.health) return prev;
+      const updatedEntry: TimelineEntry = {
+        ...last,
+        health: adjusted.health,
+        change: adjusted.change,
+        headline: t("plant.minorStress"),
+        detail: t("plant.detail.declined"),
+      };
+      const next = [...prev.slice(0, -1), updatedEntry];
+      updatePlantInGarden({ ...plant, timeline: next });
+      return next;
+    });
   };
 
   return (
@@ -534,7 +684,11 @@ function PlantDetailView({ plant }: { plant: Plant }) {
         {lastUploadedPhoto && !uploading && (
           <div className="leaf-card p-4 mb-5 -mt-1">
             <VisualSimilarityNote similarity={visualSimilarity} />
-            <HealthChecks photo={lastUploadedPhoto} variant="standalone" />
+            <HealthChecks
+              photo={lastUploadedPhoto}
+              variant="standalone"
+              onDiseaseDetected={handleDiseaseDetected}
+            />
           </div>
         )}
 
@@ -604,6 +758,11 @@ function PlantDetailView({ plant }: { plant: Plant }) {
                   <div className="mt-1 mx-1 p-3 rounded-xl bg-secondary/60">
                     <p className="text-xs text-muted-foreground mb-1">{e.date}</p>
                     <p className="text-sm leading-relaxed">{e.detail}</p>
+                    <EntryGallery
+                      entry={e}
+                      adding={addingPhotoTo === e.id}
+                      onAddPhoto={(file) => handleAddExtraPhoto(e.id, file)}
+                    />
                   </div>
                 )}
               </li>
@@ -656,7 +815,11 @@ function PlantDetailView({ plant }: { plant: Plant }) {
           {lastUploadedPhoto && !uploading && (
             <div className="leaf-card p-4 mb-4">
               <VisualSimilarityNote similarity={visualSimilarity} />
-              <HealthChecks photo={lastUploadedPhoto} variant="standalone" />
+              <HealthChecks
+              photo={lastUploadedPhoto}
+              variant="standalone"
+              onDiseaseDetected={handleDiseaseDetected}
+            />
             </div>
           )}
 
@@ -742,6 +905,13 @@ function PlantDetailView({ plant }: { plant: Plant }) {
           {!Object.values(reminders).some(Boolean) && (
             <p className="mt-2 text-xs text-muted-foreground text-center">{t("plant.syncHint")}</p>
           )}
+
+          <button
+            onClick={() => printCareHistory(plant)}
+            className="ios-tap mt-3 w-full h-12 rounded-full bg-secondary text-secondary-foreground font-semibold flex items-center justify-center gap-2"
+          >
+            <Printer className="h-4 w-4" strokeWidth={1.75} /> {t("plant.printHistory")}
+          </button>
         </section>
       )}
 

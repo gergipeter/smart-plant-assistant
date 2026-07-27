@@ -27,12 +27,18 @@ function fileFromBlob(blob: Blob): FormData {
 export function HealthChecks({
   photo,
   variant = "inset",
+  onDiseaseDetected,
 }: {
   photo: Blob | null;
   // "inset" sits inside a sheet/card that already has its own container
   // (Scan result) and adds a top divider; "standalone" is its own card
   // (Plant Detail timeline) and skips the divider.
   variant?: "inset" | "standalone";
+  // Called with the top match's confidence score when a disease check finds
+  // one — used by Plant Detail to revise that entry's health score (see
+  // healthScoring.ts). Omitted where there's no timeline entry to adjust
+  // (e.g. the Scan result sheet, before anything's been saved).
+  onDiseaseDetected?: (topScore: number) => void;
 }) {
   const t = useT();
   const [disease, setDisease] = useState<CheckState<DiseaseMatch>>({ phase: "idle" });
@@ -42,8 +48,10 @@ export function HealthChecks({
     if (!photo) return;
     setDisease({ phase: "loading" });
     const res = await identifyDisease({ data: fileFromBlob(photo) });
-    if (res.status === "ok") setDisease({ phase: "done", matches: res.data });
-    else if (res.status === "quota-exceeded")
+    if (res.status === "ok") {
+      setDisease({ phase: "done", matches: res.data });
+      if (res.data.length > 0) onDiseaseDetected?.(res.data[0].score);
+    } else if (res.status === "quota-exceeded")
       setDisease({ phase: "error", message: t("healthChecks.quotaReached") });
     else setDisease({ phase: "error", message: res.message });
   };
