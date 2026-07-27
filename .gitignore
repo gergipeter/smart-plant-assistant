@@ -35,3 +35,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code local tooling/state
+.claude/
+
+# Scratch/planning markdown docs — README.md stays tracked
+*.md
+!README.md
+!src/routes/README.md
