@@ -19,16 +19,6 @@ export const Route = createFileRoute("/ask-expert")({
   component: AskExpertPage,
 });
 
-// Branding only — names/avatars for personality. No ratings, review counts,
-// or "responds in X" claims: answers come from the automated knowledge base
-// below, not from these characters, so nothing here implies a real person
-// reviewed your question.
-const PERSONAS = [
-  { name: "Dr. Plant Science", avatar: "🌳", expertise: ["Tropical", "Propagation", "Diseases"] },
-  { name: "Succulent Sam", avatar: "🌵", expertise: ["Succulents", "Cacti"] },
-  { name: "Urban Green", avatar: "🏢", expertise: ["Indoor Plants", "Small Spaces"] },
-];
-
 async function answerQuestion(question: string, plantName?: string): Promise<string> {
   const knowledgeAnswer = findKnowledgeAnswer(question);
   if (knowledgeAnswer) {
@@ -217,35 +207,6 @@ function AskExpertPage() {
       {/* TAB: Your Questions */}
       {tab === "browse" && (
         <section className="space-y-4 mb-8">
-          <div>
-            <h2 className="text-lg font-display mb-3 px-1">Meet the Personas</h2>
-            <p className="text-xs text-muted-foreground px-1 mb-3">
-              Answers come from an automated plant-care knowledge base, styled with these personas — not real people.
-            </p>
-            <div className="space-y-3">
-              {PERSONAS.map((p) => (
-                <div key={p.name} className="leaf-card p-4 flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-full bg-secondary grid place-items-center text-2xl shrink-0">
-                    {p.avatar}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm">{p.name}</p>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {p.expertise.map((skill) => (
-                        <span
-                          key={skill}
-                          className="text-xs bg-secondary/50 px-2 py-1 rounded-full text-muted-foreground"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           <div>
             <h2 className="text-lg font-display mb-3 px-1">Your Questions</h2>
             {questions.length === 0 ? (
