@@ -1,0 +1,15 @@
+{
+  // Deploys the output of `npm run build` (Nitro's cloudflare-module preset,
+  // configured in vite.config.ts). Run `npm run build` before `wrangler
+  // deploy` — this file is committed for a stable, reviewable config, but
+  // the actual worker code/assets it points at are gitignored build output.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "smart-plant-assistant",
+  "main": ".output/server/index.mjs",
+  "compatibility_date": "2026-07-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".output/public"
+  }
+}

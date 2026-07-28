@@ -137,9 +137,11 @@ export async function canAddPlant(userId: string | undefined): Promise<boolean> 
 // immediately) but persist in the background: to Supabase when signed in,
 // to localStorage otherwise. A signed-in write also mirrors to
 // localStorage so useGardenPlant()'s synchronous-feeling read has a cache.
-export function addToMyGarden(plant: Plant): string {
+export function addToMyGarden(plant: Plant, options?: { allowDuplicateSpecies?: boolean }): string {
   const saved = loadLocalGarden();
-  const existing = saved.find((p) => p.id === plant.id || p.scientific === plant.scientific);
+  const existing = saved.find(
+    (p) => p.id === plant.id || (!options?.allowDuplicateSpecies && p.scientific === plant.scientific),
+  );
   if (existing) return existing.id;
 
   saveLocalGarden([...saved, plant]);
@@ -215,7 +217,13 @@ export function propagatePlant(parent: Plant, cuttingName?: string): string {
     ],
   };
 
-  addToMyGarden(cutting);
+  // Cuttings intentionally share their parent's `scientific` name — bypass
+  // addToMyGarden's normal "already have this species" dedup (meant for
+  // Explore/Scan re-adds), or every cutting past the first from the same
+  // species would silently collapse onto an existing plant's id instead of
+  // being saved, leaving childPlantIds pointing at a plant that was never
+  // actually persisted.
+  addToMyGarden(cutting, { allowDuplicateSpecies: true });
   updatePlantInGarden({ ...parent, childPlantIds: [...(parent.childPlantIds ?? []), id] });
 
   return id;
@@ -263,7 +271,7 @@ function slugify(text: string): string {
 const PLACEHOLDER_GRADIENT = "bg-[oklch(0.84_0.04_150)]";
 const PLACEHOLDER_TONE = "text-[oklch(0.31_0.04_150)]";
 
-export function buildScannedPlant(top: PlantNetResult): Plant {
+export function buildScannedPlant(top: PlantNetResult, photoUrl?: string): Plant {
   const id = `scan-${slugify(top.scientificName)}-${Date.now().toString(36)}`;
   const name = top.commonNames[0] ?? top.scientificName;
   const status: PlantStatus = "healthy";
@@ -273,6 +281,7 @@ export function buildScannedPlant(top: PlantNetResult): Plant {
     name,
     scientific: top.scientificName,
     emoji: "🌱",
+    photo: photoUrl,
     gradient: PLACEHOLDER_GRADIENT,
     tone: PLACEHOLDER_TONE,
     status,
@@ -307,7 +316,7 @@ export function buildScannedPlant(top: PlantNetResult): Plant {
 // Explore reference library (plantnet.server.ts's getSpecies/getVarieties)
 // rather than an identify scan — no confidence score exists here, so the
 // fact/detail text says "from Pl@ntNet's species database" instead.
-export function buildPlantFromSpecies(entry: ProjectSpeciesEntry): Plant {
+export function buildPlantFromSpecies(entry: ProjectSpeciesEntry, photoUrl?: string): Plant {
   const id = `species-${slugify(entry.scientificNameWithoutAuthor)}-${Date.now().toString(36)}`;
   const name = entry.commonNames[0] ?? entry.scientificNameWithoutAuthor;
   const status: PlantStatus = "healthy";
@@ -317,6 +326,7 @@ export function buildPlantFromSpecies(entry: ProjectSpeciesEntry): Plant {
     name,
     scientific: entry.scientificNameWithoutAuthor,
     emoji: "🌱",
+    photo: photoUrl,
     gradient: PLACEHOLDER_GRADIENT,
     tone: PLACEHOLDER_TONE,
     status,

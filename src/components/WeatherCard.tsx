@@ -16,7 +16,7 @@ export function WeatherCard({
   useEffect(() => {
     const loadWeather = async () => {
       try {
-        const result = await getWeather({ lat, lon });
+        const result = await getWeather({ data: { lat, lon } });
         if (result.status === "ok") {
           setWeather(result.data);
         } else {

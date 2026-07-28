@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Leaf, Sprout, Thermometer, Zap } from "lucide-react";
 import { enrichPlantData, type TrefleEnrichment } from "@/lib/trefle.server";
 import { analyzePlantImage, type ImageAnalysisResult } from "@/lib/image-recognition.server";
@@ -13,14 +14,13 @@ export function PlantEnrichment({ plant }: { plant: Plant }) {
     const loadEnrichment = async () => {
       try {
         const result = await enrichPlantData({
-          scientificName: plant.scientific,
-          commonName: plant.name,
+          data: { scientificName: plant.scientific, commonName: plant.name },
         });
 
         if (result.status === "ok") {
           setEnrichment(result.data);
         } else {
-          setError(result.message);
+          setError(result.status === "error" ? result.message : "Daily limit reached.");
         }
       } catch (err) {
         setError("Failed to load plant details");
@@ -45,17 +45,31 @@ export function PlantEnrichment({ plant }: { plant: Plant }) {
   return (
     <div className="space-y-3">
       {enrichment.matureHeight && (
-        <div className="leaf-card flex items-center gap-3 p-3">
+        <Link
+          to="/doctor"
+          search={{
+            focus: plant.id,
+            ask: `How do I support ${plant.name} as it grows toward its mature height of ${enrichment.matureHeight}?`,
+          }}
+          className="ios-tap leaf-card flex items-center gap-3 p-3"
+        >
           <Leaf className="h-4 w-4 text-primary shrink-0" strokeWidth={1.75} />
           <div className="text-sm">
             <p className="font-medium">Mature Height</p>
             <p className="text-xs text-muted-foreground">{enrichment.matureHeight}</p>
           </div>
-        </div>
+        </Link>
       )}
 
       {enrichment.bloomMonths && enrichment.bloomMonths.length > 0 && (
-        <div className="leaf-card flex items-center gap-3 p-3">
+        <Link
+          to="/doctor"
+          search={{
+            focus: plant.id,
+            ask: `What should I do to help ${plant.name} bloom during ${enrichment.bloomMonths.join(", ")}?`,
+          }}
+          className="ios-tap leaf-card flex items-center gap-3 p-3"
+        >
           <Sprout className="h-4 w-4 text-primary shrink-0" strokeWidth={1.75} />
           <div className="text-sm">
             <p className="font-medium">Blooming Months</p>
@@ -63,27 +77,41 @@ export function PlantEnrichment({ plant }: { plant: Plant }) {
               {enrichment.bloomMonths.join(", ")}
             </p>
           </div>
-        </div>
+        </Link>
       )}
 
       {enrichment.hardyTemperature && (
-        <div className="leaf-card flex items-center gap-3 p-3">
+        <Link
+          to="/doctor"
+          search={{
+            focus: plant.id,
+            ask: `${plant.name}'s hardy range is ${enrichment.hardyTemperature} — how should I protect it outside that range?`,
+          }}
+          className="ios-tap leaf-card flex items-center gap-3 p-3"
+        >
           <Thermometer className="h-4 w-4 text-primary shrink-0" strokeWidth={1.75} />
           <div className="text-sm">
             <p className="font-medium">Hardy Temperature</p>
             <p className="text-xs text-muted-foreground">{enrichment.hardyTemperature}</p>
           </div>
-        </div>
+        </Link>
       )}
 
       {enrichment.careLevel && (
-        <div className="leaf-card flex items-center gap-3 p-3">
+        <Link
+          to="/doctor"
+          search={{
+            focus: plant.id,
+            ask: `${plant.name} is rated "${enrichment.careLevel}" care level — what does that mean day to day?`,
+          }}
+          className="ios-tap leaf-card flex items-center gap-3 p-3"
+        >
           <Zap className="h-4 w-4 text-primary shrink-0" strokeWidth={1.75} />
           <div className="text-sm">
             <p className="font-medium">Care Level</p>
             <p className="text-xs text-muted-foreground">{enrichment.careLevel}</p>
           </div>
-        </div>
+        </Link>
       )}
     </div>
   );
@@ -108,7 +136,7 @@ export function ImageHealthAnalysis({ photo }: { photo: Blob | null }) {
         if (result.status === "ok") {
           setAnalysis(result.data);
         } else {
-          setError(result.message);
+          setError(result.status === "error" ? result.message : "Daily limit reached.");
         }
       } catch (err) {
         setError("Failed to analyze image");

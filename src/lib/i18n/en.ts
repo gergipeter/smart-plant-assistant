@@ -9,7 +9,6 @@ export const en = {
   "nav.doctor": "Doctor",
   "nav.settings": "Settings",
   "nav.scan": "Scan plant",
-  "nav.scanCurrentPage": "Scan plant (current page)",
 
   // Root: meta, 404, error boundary
   "root.title": "Verdant — AI plant care",
@@ -48,8 +47,6 @@ export const en = {
   "home.empty.body": "Scan a plant to start tracking its health, or explore with a demo garden.",
   "home.empty.scanCta": "Scan your first plant",
   "home.empty.demoCta": "Try a demo garden",
-  "home.weather.title": "Humid week ahead — 78% average",
-  "home.weather.body": "Two watering reminders delayed by 2 days.",
   "home.waterAll.title": "Water all {count} thirsty plant{plural}",
   "home.fertilizeAll.title": "{count} plant(s) due for fertilizer",
   "home.repotAll.title": "{count} plant(s) due for repotting",
@@ -66,10 +63,10 @@ export const en = {
   "digest.lockedSub": "A rollup of growth, wins, and what needs attention — Pro",
   "digest.title": "{period} digest",
   "digest.summary": "{plants} plants tracked, {entries} check-in(s) logged this month",
-  "digest.newPlants": "New this month: {names}",
+  "digest.newPlantsLabel": "New this month:",
   "digest.mostImproved": "{name} improved the most (+{delta})",
   "digest.mostDeclined": "{name} needs a closer look (-{delta})",
-  "digest.needsAttention": "Still needs attention: {names}",
+  "digest.needsAttentionLabel": "Still needs attention:",
   "home.tasksToday": "Tasks for today",
   "home.tasksDone": "{done}/{total} done",
   "home.allDoneToday": "All done for today 🌿",
@@ -78,6 +75,7 @@ export const en = {
   // Home: watering calendar
   "calendar.prevMonth": "Previous month",
   "calendar.nextMonth": "Next month",
+  "calendar.closeDay": "Close",
   "calendar.weekday.sun": "S",
   "calendar.weekday.mon": "M",
   "calendar.weekday.tue": "T",
@@ -149,6 +147,8 @@ export const en = {
   "healthChecks.noDisease": "No disease or pest detected with confidence.",
   "healthChecks.shareToFeed": "Ask the community",
   "healthChecks.noVariety": "No specific cultivar/variety matched.",
+  "healthChecks.askAboutDisease": "What is {name} and how do I treat it?",
+  "healthChecks.askAboutVariety": "Tell me about the {name} variety.",
   "healthChecks.quotaReached": "Daily identification limit reached.",
 
   // Plant status labels (Plant["status"] → short badge text)
@@ -329,6 +329,8 @@ export const en = {
   "explore.adding": "Adding…",
   "explore.viewCareGuide": "View care guide",
   "explore.limitReached": "You've reached your plan's plant limit. Upgrade to add more, or remove a plant to make room.",
+  "explore.askDoctorAboutDisease": "What is {name} and how do I treat it?",
+  "explore.askDoctorAboutDiseaseCta": "Ask the doctor about this",
 
   // Settings
   "settings.metaTitle": "Settings — Verdant",

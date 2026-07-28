@@ -84,7 +84,12 @@ export function AdvancedWateringInsights({ plants }: { plants: Plant[] }) {
             const prediction = predictions[plant.id];
             if (!prediction) return null;
             return (
-              <div key={plant.id} className="leaf-card p-3 flex items-center gap-3">
+              <Link
+                key={plant.id}
+                to="/plant/$id"
+                params={{ id: plant.id }}
+                className="ios-tap leaf-card p-3 flex items-center gap-3"
+              >
                 <div className="h-9 w-9 rounded-full bg-secondary grid place-items-center shrink-0 text-lg">
                   {plant.emoji}
                 </div>
@@ -98,7 +103,7 @@ export function AdvancedWateringInsights({ plants }: { plants: Plant[] }) {
                   </p>
                   <p className="text-[10px] text-muted-foreground">{prediction.confidence}% confident</p>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

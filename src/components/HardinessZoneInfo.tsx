@@ -18,7 +18,7 @@ export function HardinessZoneInfo({
   useEffect(() => {
     const loadZone = async () => {
       try {
-        const result = await getHardinessZoneApi({ lat, lon });
+        const result = await getHardinessZoneApi({ data: { lat, lon } });
         if (result.status === "ok") {
           setInfo(result.data);
         }

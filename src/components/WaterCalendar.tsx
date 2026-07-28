@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Droplets } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ChevronLeft, ChevronRight, Droplets, X } from "lucide-react";
 import type { Plant } from "@/lib/plants";
-import { buildWaterCalendar } from "@/lib/waterCalendar";
+import { buildWaterCalendar, type WaterEvent } from "@/lib/waterCalendar";
 import { useT, useI18n, type TranslationKey } from "@/lib/i18n";
 
 const WEEKDAY_KEYS: TranslationKey[] = [
@@ -25,6 +26,9 @@ export function WaterCalendar({ plants }: { plants: Plant[] }) {
   const { locale } = useI18n();
   const today = useMemo(() => new Date(), []);
   const [viewMonth, setViewMonth] = useState(() => startOfMonth(today));
+  const [selectedDay, setSelectedDay] = useState<{ label: string; events: WaterEvent[] } | null>(
+    null,
+  );
 
   const calendar = useMemo(() => buildWaterCalendar(plants, DAYS_AHEAD, today), [plants, today]);
 
@@ -52,7 +56,10 @@ export function WaterCalendar({ plants }: { plants: Plant[] }) {
     <div className="leaf-card p-4">
       <div className="flex items-center justify-between mb-3">
         <button
-          onClick={() => setViewMonth((m) => new Date(m.getFullYear(), m.getMonth() - 1, 1))}
+          onClick={() => {
+            setViewMonth((m) => new Date(m.getFullYear(), m.getMonth() - 1, 1));
+            setSelectedDay(null);
+          }}
           className="ios-tap h-8 w-8 rounded-full bg-secondary grid place-items-center"
           aria-label={t("calendar.prevMonth")}
         >
@@ -60,7 +67,10 @@ export function WaterCalendar({ plants }: { plants: Plant[] }) {
         </button>
         <p className="text-sm font-medium">{monthLabel}</p>
         <button
-          onClick={() => setViewMonth((m) => new Date(m.getFullYear(), m.getMonth() + 1, 1))}
+          onClick={() => {
+            setViewMonth((m) => new Date(m.getFullYear(), m.getMonth() + 1, 1));
+            setSelectedDay(null);
+          }}
           className="ios-tap h-8 w-8 rounded-full bg-secondary grid place-items-center"
           aria-label={t("calendar.nextMonth")}
         >
@@ -78,10 +88,19 @@ export function WaterCalendar({ plants }: { plants: Plant[] }) {
           if (!cell) return <div key={`empty-${i}`} />;
           const events = calendar.get(cell.key) ?? [];
           const isToday = cell.key === todayKey;
+          const dayLabel = cell.date.toLocaleDateString(locale === "hu" ? "hu-HU" : "en-US", {
+            month: "short",
+            day: "numeric",
+          });
           return (
-            <div
+            <button
               key={cell.key}
-              className={`aspect-square rounded-xl flex flex-col items-center justify-center gap-0.5 ${
+              type="button"
+              onClick={() =>
+                events.length > 0 ? setSelectedDay({ label: dayLabel, events }) : undefined
+              }
+              disabled={events.length === 0}
+              className={`ios-tap aspect-square rounded-xl flex flex-col items-center justify-center gap-0.5 ${
                 isToday ? "bg-primary/15" : ""
               }`}
               title={events.map((e) => e.plantName).join(", ")}
@@ -103,10 +122,38 @@ export function WaterCalendar({ plants }: { plants: Plant[] }) {
                   ))}
                 </div>
               )}
-            </div>
+            </button>
           );
         })}
       </div>
+
+      {selectedDay && (
+        <div className="mt-3 pt-3 border-t border-border">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-medium text-muted-foreground">{selectedDay.label}</p>
+            <button
+              onClick={() => setSelectedDay(null)}
+              className="ios-tap h-6 w-6 rounded-full bg-secondary grid place-items-center"
+              aria-label={t("calendar.closeDay")}
+            >
+              <X className="h-3 w-3" strokeWidth={1.75} />
+            </button>
+          </div>
+          <div className="space-y-1">
+            {selectedDay.events.map((e) => (
+              <Link
+                key={e.plantId}
+                to="/plant/$id"
+                params={{ id: e.plantId }}
+                className="ios-tap flex items-center gap-2 text-sm p-2 rounded-lg hover:bg-secondary"
+              >
+                <Droplets className="h-3.5 w-3.5 text-primary shrink-0" strokeWidth={1.75} />
+                {e.plantName}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

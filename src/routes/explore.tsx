@@ -258,6 +258,7 @@ function SpeciesTab({ onSelect }: { onSelect: (entry: ProjectSpeciesEntry) => vo
 function DiseasesTab() {
   const t = useT();
   const [query, setQuery] = useState("");
+  const [selectedDisease, setSelectedDisease] = useState<PlantNetDisease | null>(null);
   const listQuery = useDiseasesQuery();
   const icon = <Bug className="h-5 w-5 text-muted-foreground" strokeWidth={1.75} />;
 
@@ -304,7 +305,11 @@ function DiseasesTab() {
           )}
           <div className="space-y-2">
             {results.map((entry, i) => (
-              <div key={`${entry.label}-${i}`} className="leaf-card p-3 flex items-center gap-3">
+              <button
+                key={`${entry.label}-${i}`}
+                onClick={() => setSelectedDisease(entry)}
+                className="ios-tap leaf-card p-3 flex items-center gap-3 w-full text-left"
+              >
                 <div className="h-11 w-11 rounded-xl bg-secondary grid place-items-center shrink-0">
                   {icon}
                 </div>
@@ -316,7 +321,7 @@ function DiseasesTab() {
                     </p>
                   )}
                 </div>
-              </div>
+              </button>
             ))}
           </div>
           {listQuery.data &&
@@ -328,7 +333,67 @@ function DiseasesTab() {
             )}
         </>
       )}
+
+      {selectedDisease && (
+        <DiseaseDetailSheet entry={selectedDisease} onClose={() => setSelectedDisease(null)} />
+      )}
     </>
+  );
+}
+
+// Detail sheet for a disease/pest row — same fixed-bottom-sheet pattern as
+// SpeciesDetailSheet. The disease catalog itself has no treatment info (just
+// {label, name, categories}), so the primary action deep-links to Doctor
+// with a pre-composed question instead of showing static/fabricated advice.
+function DiseaseDetailSheet({
+  entry,
+  onClose,
+}: {
+  entry: PlantNetDisease;
+  onClose: () => void;
+}) {
+  const t = useT();
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-end" onClick={onClose}>
+      <div
+        className="w-full max-w-md mx-auto bg-card rounded-t-3xl overflow-hidden pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-5">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className="h-11 w-11 rounded-xl bg-secondary grid place-items-center shrink-0">
+                <Bug className="h-5 w-5 text-muted-foreground" strokeWidth={1.75} />
+              </div>
+              <div>
+                <h3 className="font-display text-lg">{entry.label}</h3>
+                {entry.categories.length > 0 && (
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    {entry.categories.join(", ")}
+                  </p>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="ios-tap h-8 w-8 rounded-full bg-secondary grid place-items-center shrink-0"
+              aria-label={t("explore.closeDetail")}
+            >
+              <X className="h-4 w-4" strokeWidth={1.75} />
+            </button>
+          </div>
+
+          <Link
+            to="/doctor"
+            search={{ ask: t("explore.askDoctorAboutDisease", { name: entry.label }) }}
+            className="ios-tap w-full h-12 rounded-full bg-primary text-primary-foreground font-semibold flex items-center justify-center gap-2"
+          >
+            {t("explore.askDoctorAboutDiseaseCta")}
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -484,6 +549,9 @@ function SpeciesDetailSheet({
   const catalogId = catalogBySciName.get(normalize(entry.scientificNameWithoutAuthor));
   const catalogPlant = catalogId ? getPlant(catalogId) : undefined;
 
+  const photoQuery = useSpeciesPhoto(entry.scientificNameWithoutAuthor, true);
+  const photo = photoQuery.data;
+
   const handleAdd = async () => {
     setAdding(true);
     setLimitReached(false);
@@ -492,16 +560,13 @@ function SpeciesDetailSheet({
         setLimitReached(true);
         return;
       }
-      const plant = buildPlantFromSpecies(entry);
+      const plant = buildPlantFromSpecies(entry, photo?.url);
       const savedId = addToMyGarden(plant);
       navigate({ to: "/plant/$id", params: { id: savedId } });
     } finally {
       setAdding(false);
     }
   };
-
-  const photoQuery = useSpeciesPhoto(entry.scientificNameWithoutAuthor, true);
-  const photo = photoQuery.data;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-end" onClick={onClose}>

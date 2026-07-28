@@ -17,6 +17,7 @@ import { getPhotoEmbedding } from "@/lib/plantnet.server";
 import { Slideshow } from "@/components/Slideshow";
 import { CompareSlider } from "@/components/CompareSlider";
 import { HealthChecks } from "@/components/HealthChecks";
+import { PlantEnrichment, ImageHealthAnalysis } from "@/components/PlantEnrichment";
 import { useT, type TranslationKey } from "@/lib/i18n";
 import {
   ArrowLeft,
@@ -607,6 +608,13 @@ function PlantDetailView({ plant }: { plant: Plant }) {
             <p className="text-[15px] leading-relaxed">{careTabContent}</p>
           </div>
 
+          {/* Supplemental data from Trefle, keyed off scientific name — fills
+              in bloom months/hardy range/care level/mature size even when
+              our own curated water/sunlight/soil text is thin or missing. */}
+          <div className="mb-4">
+            <PlantEnrichment plant={plant} />
+          </div>
+
           {/* Fun facts in care tab */}
           <button
             onClick={() => setShowFact((s) => !s)}
@@ -912,6 +920,12 @@ function PlantDetailView({ plant }: { plant: Plant }) {
               <MessageCircle className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.75} />
             </Link>
           </div>
+
+          {lastUploadedPhoto && !uploading && (
+            <div className="mb-4">
+              <ImageHealthAnalysis photo={lastUploadedPhoto} />
+            </div>
+          )}
 
           {lastUploadedPhoto && !uploading && (
             <div className="leaf-card p-4 mb-4">

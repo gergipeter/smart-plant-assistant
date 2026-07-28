@@ -4,7 +4,6 @@ import { todaysTasks, getPlant, type Plant, type PlantStatus } from "@/lib/plant
 import { useGardenPlants, hideDemoCatalog, showDemoCatalog, updatePlantInGarden } from "@/lib/myGarden";
 import { isDueForFertilizing, isDueForRepotting, markFertilized, markRepotted } from "@/lib/careDueStatus";
 import {
-  CloudSun,
   Check,
   RefreshCw,
   Trash2,
@@ -33,7 +32,10 @@ import { getCurrentStreak, recordDayCompleted } from "@/lib/streaks";
 import { WaterCalendar } from "@/components/WaterCalendar";
 import { AdvancedWateringInsights } from "@/components/AdvancedWateringInsights";
 import { GardenDigest } from "@/components/GardenDigest";
+import { WeatherCard } from "@/components/WeatherCard";
+import { HardinessZoneInfo } from "@/components/HardinessZoneInfo";
 import { seedDemoData } from "@/lib/seedDemoData";
+import { getUserLocation } from "@/lib/geolocation.server";
 import { useT, statusLabelKeys, type TranslationKey } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
@@ -306,10 +308,17 @@ function Dashboard() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [coords, setCoords] = useState<{ lat?: number; lon?: number }>({});
 
   useEffect(() => {
     setStreak(getCurrentStreak());
     setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    getUserLocation().then((res) => {
+      if (res.status === "ok") setCoords({ lat: res.data.lat, lon: res.data.lon });
+    });
   }, []);
 
   const handleSeedDemoData = async () => {
@@ -488,16 +497,9 @@ function Dashboard() {
           <EmptyGarden onTryDemo={handleSeedDemoDataAndShow} seeding={seeding} />
         ) : (
           <>
-            {/* Weather / dynamic care note */}
-            <div className="leaf-card flex items-start gap-3 p-4 mb-7">
-              <div className="h-9 w-9 shrink-0 rounded-full bg-secondary grid place-items-center">
-                <CloudSun className="h-[1.125rem] w-[1.125rem] text-primary" strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="text-sm font-medium">{t("home.weather.title")}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{t("home.weather.body")}</p>
-              </div>
-            </div>
+            {/* Live weather + hardiness zone for the user's approximate location */}
+            <WeatherCard lat={coords.lat} lon={coords.lon} />
+            <HardinessZoneInfo lat={coords.lat} lon={coords.lon} />
 
             {/* Quick action: everything needing water right now, one tap */}
             {attentionCount > 0 && (

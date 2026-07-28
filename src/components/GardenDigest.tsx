@@ -63,43 +63,69 @@ export function GardenDigest({ plants }: { plants: Plant[] }) {
         </div>
 
         {digest.newPlantsThisMonth.length > 0 && (
-          <p className="text-xs text-muted-foreground">
-            {t("digest.newPlants", {
-              names: digest.newPlantsThisMonth.map((p) => p.name).join(", "),
-            })}
-          </p>
+          <div className="text-xs text-muted-foreground">
+            <p className="mb-1">{t("digest.newPlantsLabel")}</p>
+            <div className="flex flex-wrap gap-x-1.5 gap-y-1">
+              {digest.newPlantsThisMonth.map((p, i) => (
+                <span key={p.id}>
+                  <Link to="/plant/$id" params={{ id: p.id }} className="ios-tap underline underline-offset-2">
+                    {p.name}
+                  </Link>
+                  {i < digest.newPlantsThisMonth.length - 1 ? "," : ""}
+                </span>
+              ))}
+            </div>
+          </div>
         )}
 
         {digest.mostImproved && (
-          <div className="flex items-center gap-2 text-xs">
+          <Link
+            to="/plant/$id"
+            params={{ id: digest.mostImproved.id }}
+            className="ios-tap flex items-center gap-2 text-xs"
+          >
             <TrendingUp className="h-3.5 w-3.5 text-primary shrink-0" strokeWidth={1.75} />
-            <span>
+            <span className="underline underline-offset-2">
               {t("digest.mostImproved", {
                 name: digest.mostImproved.name,
                 delta: digest.mostImproved.delta,
               })}
             </span>
-          </div>
+          </Link>
         )}
 
         {digest.mostDeclined && (
-          <div className="flex items-center gap-2 text-xs">
+          <Link
+            to="/plant/$id"
+            params={{ id: digest.mostDeclined.id }}
+            className="ios-tap flex items-center gap-2 text-xs"
+          >
             <TrendingDown className="h-3.5 w-3.5 text-[oklch(0.5_0.13_35)] shrink-0" strokeWidth={1.75} />
-            <span>
+            <span className="underline underline-offset-2">
               {t("digest.mostDeclined", {
                 name: digest.mostDeclined.name,
                 delta: Math.abs(digest.mostDeclined.delta),
               })}
             </span>
-          </div>
+          </Link>
         )}
 
         {digest.plantsNeedingAttention.length > 0 && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1 border-t border-border">
-            <Droplets className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
-            {t("digest.needsAttention", {
-              names: digest.plantsNeedingAttention.map((p) => p.name).join(", "),
-            })}
+          <div className="text-xs text-muted-foreground pt-1 border-t border-border">
+            <div className="flex items-center gap-2 mb-1">
+              <Droplets className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
+              {t("digest.needsAttentionLabel")}
+            </div>
+            <div className="flex flex-wrap gap-x-1.5 gap-y-1 pl-5">
+              {digest.plantsNeedingAttention.map((p, i) => (
+                <span key={p.id}>
+                  <Link to="/plant/$id" params={{ id: p.id }} className="ios-tap underline underline-offset-2">
+                    {p.name}
+                  </Link>
+                  {i < digest.plantsNeedingAttention.length - 1 ? "," : ""}
+                </span>
+              ))}
+            </div>
           </div>
         )}
       </div>

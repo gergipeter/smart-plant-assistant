@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Bug, Tag, Loader2, Share2 } from "lucide-react";
 import {
   identifyDisease,
@@ -113,6 +114,7 @@ export function HealthChecks({
           label={t("healthChecks.diseaseLabel")}
           matches={disease.matches}
           emptyText={t("healthChecks.noDisease")}
+          askLabel={(name) => t("healthChecks.askAboutDisease", { name })}
         />
       )}
       {disease.phase === "done" && disease.matches.length > 0 && onShareDisease && (
@@ -132,6 +134,7 @@ export function HealthChecks({
           label={t("healthChecks.varietyLabel")}
           matches={variety.matches}
           emptyText={t("healthChecks.noVariety")}
+          askLabel={(name) => t("healthChecks.askAboutVariety", { name })}
         />
       )}
       {variety.phase === "error" && <ErrorNote message={variety.message} />}
@@ -144,11 +147,17 @@ function MatchList({
   label,
   matches,
   emptyText,
+  askLabel,
 }: {
   icon: React.ReactNode;
   label: string;
   matches: { name: string; score: number }[];
   emptyText: string;
+  // Pre-composed Doctor question for a given match name — tapping a row
+  // deep-links to /doctor the same way Plant Detail's "Ask the doctor"
+  // button does, since these matches (disease/variety names) have no
+  // detail view of their own to open instead.
+  askLabel: (name: string) => string;
 }) {
   return (
     <div className="mt-3 rounded-xl bg-secondary/60 p-3">
@@ -161,11 +170,19 @@ function MatchList({
       ) : (
         <ul className="mt-1.5 space-y-1">
           {matches.slice(0, 3).map((m, i) => (
-            <li key={`${m.name}-${i}`} className="flex items-center justify-between text-xs">
-              <span className="text-foreground/90 truncate">{m.name}</span>
-              <span className="text-muted-foreground tabular-nums shrink-0 ml-2">
-                {Math.round(m.score * 100)}%
-              </span>
+            <li key={`${m.name}-${i}`}>
+              <Link
+                to="/doctor"
+                search={{ ask: askLabel(m.name) }}
+                className="ios-tap flex items-center justify-between text-xs w-full py-0.5"
+              >
+                <span className="text-foreground/90 truncate underline underline-offset-2">
+                  {m.name}
+                </span>
+                <span className="text-muted-foreground tabular-nums shrink-0 ml-2">
+                  {Math.round(m.score * 100)}%
+                </span>
+              </Link>
             </li>
           ))}
         </ul>

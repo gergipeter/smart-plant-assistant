@@ -25,6 +25,7 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import { plants as ownedPlants, type Plant } from "@/lib/plants";
 import { classifyImage, matchPlant, matchPlantByScientificName } from "@/lib/classify";
 import { identifyPlant, getDailyQuota, type PlantNetResult } from "@/lib/plantnet.server";
+import { getSpeciesPhoto } from "@/lib/speciesPhoto.server";
 import { addToMyGarden, buildScannedPlant, canAddPlant } from "@/lib/myGarden";
 import { HealthChecks } from "@/components/HealthChecks";
 import { RadialHealthMeter } from "@/components/RadialHealthMeter";
@@ -523,7 +524,14 @@ function Scan() {
       setLimitReached(true);
       return;
     }
-    const plant = buildScannedPlant(top);
+    // No user-uploaded photo is persisted anywhere at this point (the
+    // captured frame is a transient Blob used only for the on-device
+    // health check, see capturedPhoto) — fall back to a real reference
+    // photo the same way Explore's "add to garden" does, instead of
+    // leaving the plant on the generic emoji placeholder.
+    const photoResult = await getSpeciesPhoto({ data: { scientificName: top.scientificName } });
+    const photoUrl = photoResult.status === "ok" ? photoResult.url : undefined;
+    const plant = buildScannedPlant(top, photoUrl);
     const savedId = addToMyGarden(plant);
     navigate({ to: "/plant/$id", params: { id: savedId } });
   };

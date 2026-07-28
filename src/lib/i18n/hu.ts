@@ -7,7 +7,6 @@ export const hu: Dictionary = {
   "nav.doctor": "Doktor",
   "nav.settings": "Beállítások",
   "nav.scan": "Növény szkennelése",
-  "nav.scanCurrentPage": "Növény szkennelése (jelenlegi oldal)",
 
   // Root: meta, 404, error boundary
   "root.title": "Verdant — AI növénygondozás",
@@ -49,8 +48,6 @@ export const hu: Dictionary = {
     "Szkennelj be egy növényt az egészségének nyomon követéséhez, vagy nézz körül egy demó kertben.",
   "home.empty.scanCta": "Első növény szkennelése",
   "home.empty.demoCta": "Demó kert kipróbálása",
-  "home.weather.title": "Párás hét jön — átlag 78%",
-  "home.weather.body": "Két öntözési emlékeztető 2 nappal később esedékes.",
   "home.waterAll.title": "Mind a {count} szomjas növény megöntözése",
   "home.fertilizeAll.title": "{count} növénynek van szüksége trágyázásra",
   "home.repotAll.title": "{count} növénynek van szüksége átültetésre",
@@ -67,10 +64,10 @@ export const hu: Dictionary = {
   "digest.lockedSub": "Növekedés, sikerek és teendők egy helyen — Pro",
   "digest.title": "{period} összefoglaló",
   "digest.summary": "{plants} követett növény, {entries} bejegyzés ebben a hónapban",
-  "digest.newPlants": "Új ebben a hónapban: {names}",
+  "digest.newPlantsLabel": "Új ebben a hónapban:",
   "digest.mostImproved": "{name} fejlődött a legtöbbet (+{delta})",
   "digest.mostDeclined": "{name} növénynek több figyelem kell (-{delta})",
-  "digest.needsAttention": "Még figyelmet igényel: {names}",
+  "digest.needsAttentionLabel": "Még figyelmet igényel:",
   "home.tasksToday": "Mai teendők",
   "home.tasksDone": "{done}/{total} kész",
   "home.allDoneToday": "Ma minden kész 🌿",
@@ -79,6 +76,7 @@ export const hu: Dictionary = {
   // Home: watering calendar
   "calendar.prevMonth": "Előző hónap",
   "calendar.nextMonth": "Következő hónap",
+  "calendar.closeDay": "Bezárás",
   "calendar.weekday.sun": "V",
   "calendar.weekday.mon": "H",
   "calendar.weekday.tue": "K",
@@ -150,6 +148,8 @@ export const hu: Dictionary = {
   "healthChecks.noDisease": "Nem található biztosan azonosítható betegség vagy kártevő.",
   "healthChecks.shareToFeed": "Közösség megkérdezése",
   "healthChecks.noVariety": "Nem található konkrét fajta egyezés.",
+  "healthChecks.askAboutDisease": "Mi az a {name}, és hogyan kezeljem?",
+  "healthChecks.askAboutVariety": "Mesélj a(z) {name} fajtáról.",
   "healthChecks.quotaReached": "Elérted a napi azonosítási limitet.",
 
   // Plant status labels (Plant["status"] → short badge text)
@@ -329,6 +329,8 @@ export const hu: Dictionary = {
   "explore.adding": "Hozzáadás…",
   "explore.viewCareGuide": "Gondozási útmutató megtekintése",
   "explore.limitReached": "Elérted a csomagod növénylimitjét. Frissíts a további növényekhez, vagy távolíts el egyet, hogy legyen hely.",
+  "explore.askDoctorAboutDisease": "Mi az a {name}, és hogyan kezeljem?",
+  "explore.askDoctorAboutDiseaseCta": "Kérdezd meg a doktort erről",
 
   // Settings
   "settings.metaTitle": "Beállítások — Verdant",

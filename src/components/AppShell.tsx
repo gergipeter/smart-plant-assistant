@@ -86,19 +86,19 @@ export function AppShell({ children }: { children: ReactNode }) {
             })}
           </div>
 
-          {/* Center: Camera (focal action, raised above everything, centered over col 3) */}
-          <Link
-            to="/scan"
-            aria-current={onScan ? "page" : undefined}
-            className={`ios-tap absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 h-[4.5rem] w-[4.5rem] rounded-full grid place-items-center ring-[5px] ring-background transition-opacity z-10 ${
-              onScan
-                ? "bg-secondary text-muted-foreground opacity-70"
-                : "bg-primary text-primary-foreground shadow-[0_10px_28px_-6px_var(--primary)]"
-            }`}
-            aria-label={onScan ? t("nav.scanCurrentPage") : t("nav.scan")}
-          >
-            <Camera className="h-7 w-7" strokeWidth={1.75} />
-          </Link>
+          {/* Center: Camera (focal action, raised above everything, centered over col 3).
+              Hidden while already on /scan — that page has its own large shutter button
+              directly below this spot, and keeping both on screen reads as two stacked
+              capture buttons instead of one nav link + one shutter. */}
+          {!onScan && (
+            <Link
+              to="/scan"
+              className="ios-tap absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 h-[4.5rem] w-[4.5rem] rounded-full grid place-items-center ring-[5px] ring-background transition-opacity z-10 bg-primary text-primary-foreground shadow-[0_10px_28px_-6px_var(--primary)]"
+              aria-label={t("nav.scan")}
+            >
+              <Camera className="h-7 w-7" strokeWidth={1.75} />
+            </Link>
+          )}
         </div>
       </nav>
     </div>
