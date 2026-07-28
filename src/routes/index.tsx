@@ -308,7 +308,13 @@ function Dashboard() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [hydrated, setHydrated] = useState(false);
-  const [coords, setCoords] = useState<{ lat?: number; lon?: number }>({});
+  const [coords, setCoords] = useState<{
+    lat?: number;
+    lon?: number;
+    city?: string;
+    region?: string;
+    country?: string;
+  }>({});
 
   useEffect(() => {
     setStreak(getCurrentStreak());
@@ -317,7 +323,15 @@ function Dashboard() {
 
   useEffect(() => {
     getUserLocation().then((res) => {
-      if (res.status === "ok") setCoords({ lat: res.data.lat, lon: res.data.lon });
+      if (res.status === "ok") {
+        setCoords({
+          lat: res.data.lat,
+          lon: res.data.lon,
+          city: res.data.city,
+          region: res.data.region,
+          country: res.data.country,
+        });
+      }
     });
   }, []);
 
@@ -498,7 +512,13 @@ function Dashboard() {
         ) : (
           <>
             {/* Live weather + hardiness zone for the user's approximate location */}
-            <WeatherCard lat={coords.lat} lon={coords.lon} />
+            <WeatherCard
+              lat={coords.lat}
+              lon={coords.lon}
+              city={coords.city}
+              region={coords.region}
+              country={coords.country}
+            />
             <HardinessZoneInfo lat={coords.lat} lon={coords.lon} />
 
             {/* Quick action: everything needing water right now, one tap */}

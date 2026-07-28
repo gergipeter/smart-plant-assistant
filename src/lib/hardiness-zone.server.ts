@@ -12,7 +12,12 @@ export type HardinessResponse =
   | { status: "ok"; data: HardinessInfo }
   | { status: "error"; message: string };
 
-// Simplified USDA Hardiness Zone mapping
+// Rough latitude-band climate estimate — NOT a real USDA Plant Hardiness
+// Zone lookup (real USDA zones come from 30-year average annual minimum
+// winter temperature station data at ~26 half-zone tiers, 1a-13b). This is
+// a coarse 6-band approximation for when no real zone API is configured;
+// HardinessZoneInfo.tsx labels it "Estimated climate zone" accordingly, not
+// "USDA Hardiness Zone", so the UI doesn't overstate its accuracy.
 function computeHardinessZone(lat: number, lon: number): HardinessInfo {
   const absLat = Math.abs(lat);
 

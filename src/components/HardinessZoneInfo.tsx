@@ -42,13 +42,16 @@ export function HardinessZoneInfo({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium">
-            USDA Hardiness Zone {info.zone}
+            Estimated climate zone {info.zone}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">
             {info.region} · {info.minTemp}°F to {info.maxTemp}°F
           </p>
           <p className="text-xs text-muted-foreground mt-1.5">
             {info.seasonalTips}
+          </p>
+          <p className="text-[11px] text-muted-foreground/70 mt-1.5">
+            Rough estimate based on latitude — not an official USDA zone lookup.
           </p>
         </div>
       </div>
