@@ -16,7 +16,7 @@ import { getSpeciesPhoto } from "@/lib/speciesPhoto.server";
 import { getPlant, plants, speciesCatalog } from "@/lib/plants";
 import { addToMyGarden, buildPlantFromSpecies, canAddPlant } from "@/lib/myGarden";
 import { useAuth } from "@/lib/auth";
-import { useT } from "@/lib/i18n";
+import { useT, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/explore")({
   head: () => ({
@@ -541,7 +541,7 @@ function SpeciesDetailSheet({
   entry: ProjectSpeciesEntry;
   onClose: () => void;
 }) {
-  const t = useT();
+  const { t, locale } = useI18n();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [adding, setAdding] = useState(false);
@@ -560,7 +560,7 @@ function SpeciesDetailSheet({
         setLimitReached(true);
         return;
       }
-      const plant = buildPlantFromSpecies(entry, photo?.url);
+      const plant = buildPlantFromSpecies(entry, t, locale, photo?.url);
       const savedId = addToMyGarden(plant);
       navigate({ to: "/plant/$id", params: { id: savedId } });
     } finally {

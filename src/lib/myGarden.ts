@@ -3,6 +3,9 @@ import { plants, type Plant, type PlantStatus } from "@/lib/plants";
 import type { PlantNetResult, ProjectSpeciesEntry } from "@/lib/plantnet.server";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { getSubscriptionAsync, TIER_FEATURES } from "@/lib/premium";
+import { dateLocale, type Locale, type TranslationKey } from "@/lib/i18n";
+
+type Translate = (key: TranslationKey, vars?: Record<string, string | number>) => string;
 
 const STORAGE_KEY = "verdant.my-garden.v1";
 const DEMO_HIDDEN_KEY = "verdant.demo-catalog-hidden.v1";
@@ -186,20 +189,20 @@ export function updatePlantInGarden(plant: Plant): void {
 // updatePlantInGarden/addToMyGarden's normal upsert-and-sync path, so the
 // lineage survives across devices the same way any other garden edit does.
 // Returns the new cutting's id.
-export function propagatePlant(parent: Plant, cuttingName?: string): string {
+export function propagatePlant(parent: Plant, t: Translate, locale: Locale, cuttingName?: string): string {
   const now = new Date();
   const id = `${parent.id}-cutting-${now.getTime().toString(36)}`;
-  const monthShort = now.toLocaleString("en-US", { month: "short", year: "numeric" });
-  const dateLong = now.toLocaleString("en-US", { month: "long", day: "numeric" });
+  const monthShort = now.toLocaleString(dateLocale(locale), { month: "short", year: "numeric" });
+  const dateLong = now.toLocaleString(dateLocale(locale), { month: "long", day: "numeric" });
 
   const cutting: Plant = {
     ...parent,
     id,
-    name: cuttingName?.trim() || `${parent.name} (cutting)`,
+    name: cuttingName?.trim() || t("plantData.cuttingName", { name: parent.name }),
     health: parent.health,
     status: "healthy",
-    lastWatered: "Just added",
-    nextTask: "Let it root",
+    lastWatered: t("plantData.justAdded"),
+    nextTask: t("plantData.nextTaskRoot"),
     propagatedFromId: parent.id,
     childPlantIds: undefined,
     timeline: [
@@ -211,8 +214,8 @@ export function propagatePlant(parent: Plant, cuttingName?: string): string {
         gradient: parent.gradient,
         health: parent.health,
         change: "new",
-        headline: "Propagated as a cutting",
-        detail: `Taken from ${parent.name}. Track its own rooting and growth here.`,
+        headline: t("plantData.cuttingHeadline"),
+        detail: t("plantData.cuttingDetail", { name: parent.name }),
       },
     ],
   };
@@ -271,10 +274,11 @@ function slugify(text: string): string {
 const PLACEHOLDER_GRADIENT = "bg-[oklch(0.84_0.04_150)]";
 const PLACEHOLDER_TONE = "text-[oklch(0.31_0.04_150)]";
 
-export function buildScannedPlant(top: PlantNetResult, photoUrl?: string): Plant {
+export function buildScannedPlant(top: PlantNetResult, t: Translate, locale: Locale, photoUrl?: string): Plant {
   const id = `scan-${slugify(top.scientificName)}-${Date.now().toString(36)}`;
   const name = top.commonNames[0] ?? top.scientificName;
   const status: PlantStatus = "healthy";
+  const careInfo = t("plantData.noCareInfoScanned");
 
   return {
     id,
@@ -286,27 +290,70 @@ export function buildScannedPlant(top: PlantNetResult, photoUrl?: string): Plant
     tone: PLACEHOLDER_TONE,
     status,
     health: 75,
-    origin: "Unknown",
+    origin: t("plantData.originUnknown"),
     toxicity: "Mildly toxic",
-    water:
-      "We don't have verified care guidance for this species yet — check a trusted plant-care source.",
-    sunlight:
-      "We don't have verified care guidance for this species yet — check a trusted plant-care source.",
-    soil: "We don't have verified care guidance for this species yet — check a trusted plant-care source.",
-    fact: `Identified via Pl@ntNet scan (${Math.round(top.score * 100)}% confidence). Not yet in our curated catalog.`,
-    lastWatered: "Just added",
-    nextTask: "Research care needs",
+    water: careInfo,
+    sunlight: careInfo,
+    soil: careInfo,
+    fact: t("plantData.factScanned", { pct: Math.round(top.score * 100) }),
+    lastWatered: t("plantData.justAdded"),
+    nextTask: t("plantData.nextTaskResearch"),
     timeline: [
       {
         id: `${id}-1`,
-        month: new Date().toLocaleString("en-US", { month: "short", year: "numeric" }),
-        date: new Date().toLocaleString("en-US", { month: "long", day: "numeric" }),
+        month: new Date().toLocaleString(dateLocale(locale), { month: "short", year: "numeric" }),
+        date: new Date().toLocaleString(dateLocale(locale), { month: "long", day: "numeric" }),
         emoji: "🌱",
         gradient: PLACEHOLDER_GRADIENT,
         health: 75,
         change: "new",
-        headline: "Added to your garden",
-        detail: `Identified as ${top.scientificName} via Pl@ntNet scan.`,
+        headline: t("plantData.addedHeadline"),
+        detail: t("plantData.detailScanned", { scientific: top.scientificName }),
+      },
+    ],
+  };
+}
+
+// For scans neither Pl@ntNet nor the on-device fallback could put a name
+// to at all (no `top` result / low confidence) — there's no species to look
+// up a reference photo for, so this uses the user's own captured photo
+// (see scan.tsx's addUnidentifiedPlantToGarden, which saves it to
+// photoStore under the returned plant's id) instead of leaving a blank
+// placeholder.
+export function buildUnidentifiedPlant(t: Translate, locale: Locale, photoUrl?: string): Plant {
+  const id = `scan-unidentified-${Date.now().toString(36)}`;
+  const status: PlantStatus = "healthy";
+  const careInfo = t("plantData.noCareInfoUnidentified");
+
+  return {
+    id,
+    name: t("plantData.unidentifiedName"),
+    scientific: t("plantData.unidentifiedScientific"),
+    emoji: "🌱",
+    photo: photoUrl,
+    gradient: PLACEHOLDER_GRADIENT,
+    tone: PLACEHOLDER_TONE,
+    status,
+    health: 75,
+    origin: t("plantData.originUnknown"),
+    toxicity: "Mildly toxic",
+    water: careInfo,
+    sunlight: careInfo,
+    soil: careInfo,
+    fact: t("plantData.factUnidentified"),
+    lastWatered: t("plantData.justAdded"),
+    nextTask: t("plantData.nextTaskIdentify"),
+    timeline: [
+      {
+        id: `${id}-1`,
+        month: new Date().toLocaleString(dateLocale(locale), { month: "short", year: "numeric" }),
+        date: new Date().toLocaleString(dateLocale(locale), { month: "long", day: "numeric" }),
+        emoji: "🌱",
+        gradient: PLACEHOLDER_GRADIENT,
+        health: 75,
+        change: "new",
+        headline: t("plantData.addedHeadline"),
+        detail: t("plantData.detailUnidentified"),
       },
     ],
   };
@@ -316,10 +363,16 @@ export function buildScannedPlant(top: PlantNetResult, photoUrl?: string): Plant
 // Explore reference library (plantnet.server.ts's getSpecies/getVarieties)
 // rather than an identify scan — no confidence score exists here, so the
 // fact/detail text says "from Pl@ntNet's species database" instead.
-export function buildPlantFromSpecies(entry: ProjectSpeciesEntry, photoUrl?: string): Plant {
+export function buildPlantFromSpecies(
+  entry: ProjectSpeciesEntry,
+  t: Translate,
+  locale: Locale,
+  photoUrl?: string,
+): Plant {
   const id = `species-${slugify(entry.scientificNameWithoutAuthor)}-${Date.now().toString(36)}`;
   const name = entry.commonNames[0] ?? entry.scientificNameWithoutAuthor;
   const status: PlantStatus = "healthy";
+  const careInfo = t("plantData.noCareInfoScanned");
 
   return {
     id,
@@ -331,27 +384,25 @@ export function buildPlantFromSpecies(entry: ProjectSpeciesEntry, photoUrl?: str
     tone: PLACEHOLDER_TONE,
     status,
     health: 75,
-    origin: "Unknown",
+    origin: t("plantData.originUnknown"),
     toxicity: "Mildly toxic",
-    water:
-      "We don't have verified care guidance for this species yet — check a trusted plant-care source.",
-    sunlight:
-      "We don't have verified care guidance for this species yet — check a trusted plant-care source.",
-    soil: "We don't have verified care guidance for this species yet — check a trusted plant-care source.",
-    fact: `From Pl@ntNet's species database${entry.family ? ` (${entry.family})` : ""}. Not yet in our curated catalog.`,
-    lastWatered: "Just added",
-    nextTask: "Research care needs",
+    water: careInfo,
+    sunlight: careInfo,
+    soil: careInfo,
+    fact: t("plantData.factSpecies", { family: entry.family ? ` (${entry.family})` : "" }),
+    lastWatered: t("plantData.justAdded"),
+    nextTask: t("plantData.nextTaskResearch"),
     timeline: [
       {
         id: `${id}-1`,
-        month: new Date().toLocaleString("en-US", { month: "short", year: "numeric" }),
-        date: new Date().toLocaleString("en-US", { month: "long", day: "numeric" }),
+        month: new Date().toLocaleString(dateLocale(locale), { month: "short", year: "numeric" }),
+        date: new Date().toLocaleString(dateLocale(locale), { month: "long", day: "numeric" }),
         emoji: "🌱",
         gradient: PLACEHOLDER_GRADIENT,
         health: 75,
         change: "new",
-        headline: "Added to your garden",
-        detail: `Added from Explore as ${entry.scientificNameWithoutAuthor}.`,
+        headline: t("plantData.addedHeadline"),
+        detail: t("plantData.detailSpecies", { scientific: entry.scientificNameWithoutAuthor }),
       },
     ],
   };

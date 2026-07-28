@@ -1,4 +1,5 @@
 import type { Plant, TimelineEntry } from "@/lib/plants";
+import { dateLocale, type Locale } from "@/lib/i18n";
 
 export type GardenDigest = {
   periodLabel: string; // e.g. "March 2026"
@@ -20,9 +21,9 @@ function isInMonth(entry: TimelineEntry, monthShort: string): boolean {
 // existing entries. Gated behind the "customReports" (Pro) feature — see
 // premium.ts's TIER_FEATURES — since it's presented as "detailed plant care
 // reports" there.
-export function buildGardenDigest(plants: Plant[], now: Date = new Date()): GardenDigest {
-  const monthShort = now.toLocaleString("en-US", { month: "short", year: "numeric" });
-  const periodLabel = now.toLocaleString("en-US", { month: "long", year: "numeric" });
+export function buildGardenDigest(plants: Plant[], locale: Locale, now: Date = new Date()): GardenDigest {
+  const monthShort = now.toLocaleString(dateLocale(locale), { month: "short", year: "numeric" });
+  const periodLabel = now.toLocaleString(dateLocale(locale), { month: "long", year: "numeric" });
 
   const newPlantsThisMonth: { id: string; name: string }[] = [];
   let entriesThisMonth = 0;

@@ -179,6 +179,154 @@ export const analyzePlantImage = createServerFn({ method: "POST" })
     }
   });
 
+// ---------------------------------------------------------------------------
+// species guess (scan fallback) — reuses the same Vision API key as the
+// health-check above, but calls WEB_DETECTION/LABEL_DETECTION for species
+// naming instead of health keywords. Used by the Scan flow as a second
+// identification opinion when Pl@ntNet errors out or returns a low-confidence
+// top match — Vision's web detection is often able to name a plant from
+// visually similar images across the web even when Pl@ntNet's botanical
+// classifier can't place it.
+// ---------------------------------------------------------------------------
+
+export type VisionSpeciesGuess = {
+  name: string;
+  score: number;
+};
+
+// Generic web/vision vocabulary that Vision's web-entity and label detectors
+// surface constantly — never useful as a "species name" guess, so filtered
+// out before scoring candidates.
+const GENERIC_ENTITY_WORDS = new Set([
+  "plant",
+  "plants",
+  "flowerpot",
+  "flower pot",
+  "houseplant",
+  "houseplants",
+  "leaf",
+  "leaves",
+  "flora",
+  "botany",
+  "tree",
+  "shrub",
+  "herb",
+  "flower",
+  "flowering plant",
+  "vegetation",
+  "garden",
+  "gardening",
+  "annual plant",
+  "perennial plant",
+  "terrestrial plant",
+  "groundcover",
+]);
+
+function isGenericEntity(description: string): boolean {
+  return GENERIC_ENTITY_WORDS.has(description.toLowerCase().trim());
+}
+
+export const identifyPlantViaVision = createServerFn({ method: "POST" })
+  .validator((data: unknown) => {
+    if (!(data instanceof FormData)) throw new Error("Expected FormData");
+    return data;
+  })
+  .handler(async ({ data }): Promise<ApiResult<VisionSpeciesGuess[]>> => {
+    const apiKey = process.env.GOOGLE_VISION_API_KEY;
+    if (!apiKey) {
+      return { status: "error", message: "Image recognition service not configured." };
+    }
+
+    const image = data.get("image");
+    if (!(image instanceof Blob)) {
+      return { status: "error", message: "No image provided." };
+    }
+
+    try {
+      const base64 = await blobToBase64(image);
+
+      const response = await fetch(
+        `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            requests: [
+              {
+                image: { content: base64 },
+                features: [
+                  { type: "WEB_DETECTION", maxResults: 10 },
+                  { type: "LABEL_DETECTION", maxResults: 10 },
+                ],
+              },
+            ],
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        return { status: "error", message: "Image analysis failed." };
+      }
+
+      const body = (await response.json()) as {
+        responses?: Array<{
+          labelAnnotations?: Array<{ description?: string; score?: number }>;
+          webDetection?: {
+            webEntities?: Array<{ description?: string; score?: number }>;
+            bestGuessLabels?: Array<{ label?: string }>;
+          };
+        }>;
+      };
+
+      const annotations = body.responses?.[0];
+      if (!annotations) {
+        return { status: "error", message: "No analysis results returned." };
+      }
+
+      const candidates = new Map<string, number>();
+
+      // Web entities carry Vision's own relevance score and are the
+      // strongest signal here — they're drawn from visually similar images
+      // across the web, which often includes the species' actual name.
+      for (const entity of annotations.webDetection?.webEntities ?? []) {
+        if (!entity.description || isGenericEntity(entity.description)) continue;
+        const score = entity.score ?? 0.5;
+        const existing = candidates.get(entity.description) ?? 0;
+        if (score > existing) candidates.set(entity.description, score);
+      }
+
+      // Vision's single best-guess label has no score of its own — treat it
+      // as a moderately confident vote alongside the scored web entities.
+      for (const guess of annotations.webDetection?.bestGuessLabels ?? []) {
+        if (!guess.label || isGenericEntity(guess.label)) continue;
+        const existing = candidates.get(guess.label) ?? 0;
+        candidates.set(guess.label, Math.max(existing, 0.5));
+      }
+
+      // Labels are the weakest signal (broad ImageNet-style tags) — only
+      // worth keeping when nothing more specific came back from web
+      // detection, so they don't drown out real species names.
+      if (candidates.size === 0) {
+        for (const label of annotations.labelAnnotations ?? []) {
+          if (!label.description || isGenericEntity(label.description)) continue;
+          const score = label.score ?? 0.5;
+          const existing = candidates.get(label.description) ?? 0;
+          if (score > existing) candidates.set(label.description, score);
+        }
+      }
+
+      const guesses = Array.from(candidates.entries())
+        .map(([name, score]) => ({ name, score }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+
+      return { status: "ok", data: guesses };
+    } catch (error) {
+      console.error("Vision species guess error:", error);
+      return { status: "error", message: "Could not analyze plant image." };
+    }
+  });
+
 async function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();

@@ -5,14 +5,14 @@ import type { Plant } from "@/lib/plants";
 import { useAuth } from "@/lib/auth";
 import { getSubscriptionAsync } from "@/lib/premium";
 import { buildGardenDigest } from "@/lib/gardenDigest";
-import { useT } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n";
 
 // Pro-only panel: a monthly rollup of garden activity, built entirely from
 // data already stored on each Plant's timeline (see gardenDigest.ts) — no
 // new tracking, just a summary view. Presented as "customReports" in
 // premium.ts's TIER_FEATURES ("Detailed plant care reports").
 export function GardenDigest({ plants }: { plants: Plant[] }) {
-  const t = useT();
+  const { t, locale } = useI18n();
   const { user } = useAuth();
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
 
@@ -40,7 +40,7 @@ export function GardenDigest({ plants }: { plants: Plant[] }) {
     );
   }
 
-  const digest = buildGardenDigest(plants);
+  const digest = buildGardenDigest(plants, locale);
 
   return (
     <section className="mb-7">

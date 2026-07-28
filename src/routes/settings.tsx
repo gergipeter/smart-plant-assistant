@@ -286,7 +286,7 @@ function SettingsPage() {
 
       <section className="mb-6">
         <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-2 px-1">
-          Legal
+          {t("settings.section.legal")}
         </h2>
         <div className="ios-group">
           <SettingsRow

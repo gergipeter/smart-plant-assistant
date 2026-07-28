@@ -1,7 +1,11 @@
-import { plants, speciesCatalog, type Plant } from "@/lib/plants";
+import { plants, speciesCatalog, expandedSpeciesCatalog, type Plant } from "@/lib/plants";
 import type { PlantNetResult } from "@/lib/plantnet.server";
+import type { ProjectSpeciesEntry } from "@/lib/plantnet.server";
+import type { VisionSpeciesGuess } from "@/lib/image-recognition.server";
 
-const allPlants = [...plants, ...speciesCatalog];
+// expandedSpeciesCatalog is already deduped against plants/speciesCatalog by
+// scientific name in plants.ts, so no overlap to worry about here.
+const allPlants = [...plants, ...speciesCatalog, ...expandedSpeciesCatalog];
 
 export type Prediction = { className: string; probability: number };
 
@@ -209,4 +213,85 @@ export function matchPlantByScientificName(results: PlantNetResult[]): {
     top,
     identifiedButUncataloged: !plant && top.score >= MIN_IDENTIFIED_SCORE,
   };
+}
+
+// Vision's guesses are free-text (web-entity titles, ImageNet-style labels)
+// rather than structured botanical names — no genus/species split to compare
+// like Pl@ntNet, so match against catalog name/scientific name/keyword
+// phrases the same way the on-device MobileNet path does, just against
+// Vision's (generally more specific) candidate list instead.
+const MIN_VISION_MATCH_SCORE = 0.15;
+
+export function matchPlantByVisionGuess(guesses: VisionSpeciesGuess[]): {
+  plant: Plant | null;
+  top: VisionSpeciesGuess | null;
+} {
+  const top = guesses[0] ?? null;
+  if (!top) return { plant: null, top: null };
+
+  let best: Plant | null = null;
+  let bestScore = 0;
+
+  for (const plant of allPlants) {
+    const haystacks = [
+      normalize(plant.name).split(" "),
+      normalize(plant.scientific).split(" "),
+      ...(plantKeywords[plant.id] ?? []).map((k) => normalize(k).split(" ")),
+    ];
+
+    for (const guess of guesses) {
+      const guessWords = normalize(guess.name).split(" ");
+      for (const needleWords of haystacks) {
+        if (containsPhrase(guessWords, needleWords) || containsPhrase(needleWords, guessWords)) {
+          if (guess.score > bestScore) {
+            bestScore = guess.score;
+            best = plant;
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  return { plant: bestScore >= MIN_VISION_MATCH_SCORE ? best : null, top };
+}
+
+// When a Vision guess doesn't match anything in our ~300-plant local
+// catalog, it may still name a real species — Pl@ntNet's own flora dump
+// (getSpecies/getProjectSpecies, ~5500 real botanical entries with
+// family/genus/GBIF/POWO/IUCN data) is a much larger corpus to check the
+// guess against before giving up entirely. Matches on common-name overlap
+// since Vision guesses are rarely proper scientific-name text.
+const MIN_SPECIES_CORPUS_SCORE = 0.15;
+
+export function matchVisionGuessToSpecies(
+  guesses: VisionSpeciesGuess[],
+  speciesCorpus: ProjectSpeciesEntry[],
+): ProjectSpeciesEntry | null {
+  let best: ProjectSpeciesEntry | null = null;
+  let bestScore = 0;
+
+  for (const guess of guesses) {
+    if (guess.score < MIN_SPECIES_CORPUS_SCORE) continue;
+    const guessWords = normalize(guess.name).split(" ");
+
+    for (const entry of speciesCorpus) {
+      if (!entry?.scientificNameWithoutAuthor) continue;
+      const haystacks = [
+        normalize(entry.scientificNameWithoutAuthor).split(" "),
+        ...entry.commonNames.map((c) => normalize(c).split(" ")),
+      ];
+      for (const needleWords of haystacks) {
+        if (containsPhrase(guessWords, needleWords) || containsPhrase(needleWords, guessWords)) {
+          if (guess.score > bestScore) {
+            bestScore = guess.score;
+            best = entry;
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  return best;
 }

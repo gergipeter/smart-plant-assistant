@@ -91,6 +91,10 @@ export const en = {
   "scan.close": "Close",
   "scan.upload": "Upload",
   "scan.flash": "Flash",
+  "scan.takePhoto": "Take photo",
+  "scan.previewAlt": "Captured photo preview",
+  "scan.retake": "Retake",
+  "scan.usePhoto": "Use photo",
   "scan.quota": "{remaining}/{total} IDs left today",
   "scan.frameHint.default": "Center a single leaf in frame",
   "scan.frameHint.organ": "Center the {organ} in frame",
@@ -115,6 +119,7 @@ export const en = {
   "scan.tryCloserPhoto":
     "Try a closer, well-lit photo centered on a single leaf, or browse your garden instead.",
   "scan.tryAgain": "Try again",
+  "scan.addAnyway": "Add anyway",
   "scan.myGarden": "My garden",
   "scan.identifiedNotTracked": "Identified, but not in your garden",
   "scan.noCareInfo":
@@ -130,6 +135,7 @@ export const en = {
   "scan.plantnetSaw": 'Pl@ntNet saw: "{name}" ({score}%)',
   "scan.plantnetUnrecognized": "Pl@ntNet didn't recognize this photo",
   "scan.mobilenetSaw": 'AI saw: "{name}" ({score}%) — offline mode',
+  "scan.visionSaw": 'Vision AI saw: "{name}" ({score}%) — backup match',
   "scan.iucn.CR": "Critically endangered",
   "scan.iucn.EN": "Endangered",
   "scan.iucn.VU": "Vulnerable",
@@ -175,6 +181,8 @@ export const en = {
   "plant.tab.toxicity": "Pet safety",
   "plant.toxicitySuffix": "{toxicity}. Keep away from curious paws and small children.",
   "plant.didYouKnow": "Did you know",
+  "plant.communityPhotos": "Real photos of this plant",
+  "plant.communityPhotosCredit": "Photos from Wikimedia Commons contributors — tap a photo for credit.",
   "plant.nativeTo": "Native to {origin}",
   "plant.propagate": "Propagate a cutting",
   "plant.propagatedFrom": "Propagated from {name}",
@@ -347,4 +355,29 @@ export const en = {
   "settings.startFresh": "Start fresh",
   "settings.startFreshSub": "Remove the demo garden and start with an empty one",
   "settings.working": "Working…",
+  "settings.section.legal": "Legal",
+
+  // Placeholder plant data (buildScannedPlant / buildUnidentifiedPlant / buildPlantFromSpecies)
+  "plantData.unidentifiedName": "New plant",
+  "plantData.unidentifiedScientific": "Unidentified",
+  "plantData.originUnknown": "Unknown",
+  "plantData.noCareInfoScanned":
+    "We don't have verified care guidance for this species yet — check a trusted plant-care source.",
+  "plantData.noCareInfoUnidentified":
+    "We couldn't identify this species — check a trusted plant-care source, or try scanning again with a closer, well-lit photo.",
+  "plantData.factScanned": "Identified via Pl@ntNet scan ({pct}% confidence). Not yet in our curated catalog.",
+  "plantData.factUnidentified":
+    "Added from a scan that couldn't be confidently identified. Rename it and fill in care details once you know the species.",
+  "plantData.factSpecies": "From Pl@ntNet's species database{family}. Not yet in our curated catalog.",
+  "plantData.justAdded": "Just added",
+  "plantData.nextTaskResearch": "Research care needs",
+  "plantData.nextTaskIdentify": "Identify species",
+  "plantData.nextTaskRoot": "Let it root",
+  "plantData.addedHeadline": "Added to your garden",
+  "plantData.detailScanned": "Identified as {scientific} via Pl@ntNet scan.",
+  "plantData.detailUnidentified": "Added from an unidentified scan.",
+  "plantData.detailSpecies": "Added from Explore as {scientific}.",
+  "plantData.cuttingName": "{name} (cutting)",
+  "plantData.cuttingHeadline": "Propagated as a cutting",
+  "plantData.cuttingDetail": "Taken from {name}. Track its own rooting and growth here.",
 } as const;

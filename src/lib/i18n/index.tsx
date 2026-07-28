@@ -18,6 +18,14 @@ export const LOCALES: { id: Locale; label: string; nativeLabel: string }[] = [
   { id: "hu", label: "Hungarian", nativeLabel: "Magyar" },
 ];
 
+// BCP-47 tags for Date#toLocaleString, so month/day names (e.g. timeline
+// entries, digest periods) follow the active locale instead of always
+// rendering in English.
+const BCP47: Record<Locale, string> = { en: "en-US", hu: "hu-HU" };
+export function dateLocale(locale: Locale): string {
+  return BCP47[locale];
+}
+
 // Maps plants.ts's PlantStatus (data) to a translation key — kept here
 // rather than in plants.ts so that file stays free of an i18n dependency.
 export const statusLabelKeys: Record<PlantStatus, TranslationKey> = {

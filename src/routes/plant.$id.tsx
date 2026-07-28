@@ -18,7 +18,8 @@ import { Slideshow } from "@/components/Slideshow";
 import { CompareSlider } from "@/components/CompareSlider";
 import { HealthChecks } from "@/components/HealthChecks";
 import { PlantEnrichment, ImageHealthAnalysis } from "@/components/PlantEnrichment";
-import { useT, type TranslationKey } from "@/lib/i18n";
+import { CommunityPhotos } from "@/components/CommunityPhotos";
+import { useT, useI18n, dateLocale, type TranslationKey } from "@/lib/i18n";
 import {
   ArrowLeft,
   Droplets,
@@ -256,7 +257,7 @@ function VisualSimilarityNote({ similarity }: { similarity: number | null | unde
 }
 
 function PlantDetailView({ plant }: { plant: Plant }) {
-  const t = useT();
+  const { t, locale } = useI18n();
   const { highlight, fromMsg } = Route.useSearch();
   const [mainTab, setMainTab] = useState<(typeof mainTabs)[number]["id"]>("care");
   const [careTab, setCareTab] = useState<(typeof careTabs)[number]["id"]>("water");
@@ -295,6 +296,12 @@ function PlantDetailView({ plant }: { plant: Plant }) {
   const [addingPhotoTo, setAddingPhotoTo] = useState<string | null>(null);
   const [propagating, setPropagating] = useState(false);
   const [propagatedId, setPropagatedId] = useState<string | null>(null);
+  // Unidentified scans (see scan.tsx's addUnidentifiedPlantToGarden) have no
+  // reference photo URL to set on `plant.photo` — their captured photo is
+  // saved to photoStore under the plant's own id instead, same mechanism as
+  // timeline entries below.
+  const ownPhotoUrl = usePhotoUrl(plant.photo ? undefined : plant.id);
+  const heroPhoto = plant.photo ?? ownPhotoUrl;
   const [shareDiseaseMatch, setShareDiseaseMatch] = useState<DiseaseMatch | null>(null);
   const [sharingDisease, setSharingDisease] = useState(false);
   const [diseaseShared, setDiseaseShared] = useState(false);
@@ -385,8 +392,8 @@ function PlantDetailView({ plant }: { plant: Plant }) {
       setVisualSimilarity(similarity);
 
       const { health: nextHealth, change } = scoreFromSimilarity(last.health, similarity);
-      const monthShort = now.toLocaleString("en-US", { month: "short", year: "numeric" });
-      const dateLong = now.toLocaleString("en-US", { month: "long", day: "numeric" });
+      const monthShort = now.toLocaleString(dateLocale(locale), { month: "short", year: "numeric" });
+      const dateLong = now.toLocaleString(dateLocale(locale), { month: "long", day: "numeric" });
       const newEntry: TimelineEntry = {
         id: `u-${now.getTime()}`,
         month: monthShort,
@@ -427,7 +434,7 @@ function PlantDetailView({ plant }: { plant: Plant }) {
   const handlePropagate = () => {
     setPropagating(true);
     try {
-      const newId = propagatePlant(plant);
+      const newId = propagatePlant(plant, t, locale);
       setPropagatedId(newId);
     } finally {
       setPropagating(false);
@@ -519,11 +526,11 @@ function PlantDetailView({ plant }: { plant: Plant }) {
       {/* Header */}
       <div className="-mx-5 -mt-8 relative">
         <div
-          className={`h-64 ${plant.photo ? "" : plant.gradient} relative grid place-items-center rounded-b-[2.5rem] overflow-hidden`}
+          className={`h-64 ${heroPhoto ? "" : plant.gradient} relative grid place-items-center rounded-b-[2.5rem] overflow-hidden`}
         >
-          {plant.photo ? (
+          {heroPhoto ? (
             <img
-              src={plant.photo}
+              src={heroPhoto}
               alt={plant.name}
               className="absolute inset-0 h-full w-full object-cover"
             />
@@ -614,6 +621,12 @@ function PlantDetailView({ plant }: { plant: Plant }) {
           <div className="mb-4">
             <PlantEnrichment plant={plant} />
           </div>
+
+          {plant.scientific !== "Unidentified" && (
+            <div className="mb-4">
+              <CommunityPhotos scientificName={plant.scientific} />
+            </div>
+          )}
 
           {/* Fun facts in care tab */}
           <button

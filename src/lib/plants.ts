@@ -3526,7 +3526,9 @@ export const statusTone: Record<PlantStatus, string> = {
   "needs-mist": "border-border text-foreground",
 };
 
-// Import the new 1000-plant catalog
+// Bulk species catalog (see plants-catalog-1000.ts for provenance/cleanup
+// notes) — cast through unknown since its plain-JSON PlantStatus type isn't
+// nominally the same type as this file's, even though the values line up.
 import { expandedCatalogPlants, TOTAL_PLANTS as CATALOG_SIZE } from "./plants-catalog-1000";
 
 // Combine all demo plants (original 5) and catalog plants into one array
@@ -3535,8 +3537,19 @@ export const plants: Plant[] = [...allDemoPlants, ...catalogPlants];
 // Keep speciesCatalog for backward compatibility
 export const speciesCatalog: Plant[] = catalogPlants;
 
-// New expanded catalog with 1000 plants
-export const expandedSpeciesCatalog: Plant[] = expandedCatalogPlants;
+// Species already present in the hand-curated catalogs above (by genus +
+// species, ignoring cultivar suffixes) — filtered out of the bulk catalog
+// below so scan matching never has two catalog entries competing for the
+// same real plant (e.g. curated "monstera" vs bulk "monstera-deliciosa").
+const curatedScientificNames = new Set(
+  [...plants, ...speciesCatalog].map((p) =>
+    p.scientific.toLowerCase().split(" ").slice(0, 2).join(" "),
+  ),
+);
+
+export const expandedSpeciesCatalog: Plant[] = (expandedCatalogPlants as unknown as Plant[]).filter(
+  (p) => !curatedScientificNames.has(p.scientific.toLowerCase().split(" ").slice(0, 2).join(" ")),
+);
 
 export const TOTAL_PLANTS_IN_CATALOG = CATALOG_SIZE;
 

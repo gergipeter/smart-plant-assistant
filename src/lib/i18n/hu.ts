@@ -92,6 +92,10 @@ export const hu: Dictionary = {
   "scan.close": "Bezárás",
   "scan.upload": "Feltöltés",
   "scan.flash": "Vaku",
+  "scan.takePhoto": "Fénykép készítése",
+  "scan.previewAlt": "Elkészített fénykép előnézete",
+  "scan.retake": "Újra",
+  "scan.usePhoto": "Fotó használata",
   "scan.quota": "{remaining}/{total} azonosítás maradt ma",
   "scan.frameHint.default": "Helyezz egy levelet a keret közepébe",
   "scan.frameHint.organ": "Helyezd a {organ} a keret közepébe",
@@ -116,6 +120,7 @@ export const hu: Dictionary = {
   "scan.tryCloserPhoto":
     "Próbálj egy közelebbi, jól megvilágított fotót egyetlen levélre fókuszálva, vagy nézd meg a kertedet.",
   "scan.tryAgain": "Próbáld újra",
+  "scan.addAnyway": "Hozzáadás mégis",
   "scan.myGarden": "A kertem",
   "scan.identifiedNotTracked": "Azonosítva, de nincs a kertedben",
   "scan.noCareInfo":
@@ -131,6 +136,7 @@ export const hu: Dictionary = {
   "scan.plantnetSaw": 'A Pl@ntNet ezt látta: "{name}" ({score}%)',
   "scan.plantnetUnrecognized": "A Pl@ntNet nem ismerte fel ezt a fotót",
   "scan.mobilenetSaw": 'Az AI ezt látta: "{name}" ({score}%) — offline mód',
+  "scan.visionSaw": 'A Vision AI ezt látta: "{name}" ({score}%) — tartalék találat',
   "scan.iucn.CR": "Kritikusan veszélyeztetett",
   "scan.iucn.EN": "Veszélyeztetett",
   "scan.iucn.VU": "Sebezhető",
@@ -176,6 +182,8 @@ export const hu: Dictionary = {
   "plant.tab.toxicity": "Kisállat-biztonság",
   "plant.toxicitySuffix": "{toxicity}. Tartsd távol a kíváncsi mancsoktól és a kisgyerekektől.",
   "plant.didYouKnow": "Tudtad?",
+  "plant.communityPhotos": "Valódi fotók erről a növényről",
+  "plant.communityPhotosCredit": "Fotók a Wikimedia Commons közreműködőitől — koppints egy fotóra a forrásért.",
   "plant.nativeTo": "Őshazája: {origin}",
   "plant.propagate": "Dugvány szaporítása",
   "plant.propagatedFrom": "Erről szaporítva: {name}",
@@ -347,4 +355,29 @@ export const hu: Dictionary = {
   "settings.startFresh": "Kezdés elölről",
   "settings.startFreshSub": "A demó kert eltávolítása és kezdés egy üres kerttel",
   "settings.working": "Folyamatban…",
+  "settings.section.legal": "Jogi",
+
+  // Placeholder plant data (buildScannedPlant / buildUnidentifiedPlant / buildPlantFromSpecies)
+  "plantData.unidentifiedName": "Új növény",
+  "plantData.unidentifiedScientific": "Azonosítatlan",
+  "plantData.originUnknown": "Ismeretlen",
+  "plantData.noCareInfoScanned":
+    "Ehhez a fajhoz még nincs ellenőrzött gondozási útmutatónk — nézz meg egy megbízható növénygondozási forrást.",
+  "plantData.noCareInfoUnidentified":
+    "Nem sikerült azonosítani ezt a fajt — nézz meg egy megbízható növénygondozási forrást, vagy próbálj újra szkennelni egy közelebbi, jól megvilágított fotóval.",
+  "plantData.factScanned": "A Pl@ntNet szkennelésével azonosítva ({pct}% megbízhatóság). Még nincs a katalógusunkban.",
+  "plantData.factUnidentified":
+    "Egy nem biztosan azonosított szkennelésből hozzáadva. Nevezd át, és add meg a gondozási adatokat, ha megtudod a fajt.",
+  "plantData.factSpecies": "A Pl@ntNet fajadatbázisából{family}. Még nincs a katalógusunkban.",
+  "plantData.justAdded": "Most hozzáadva",
+  "plantData.nextTaskResearch": "Gondozási igények kutatása",
+  "plantData.nextTaskIdentify": "Faj azonosítása",
+  "plantData.nextTaskRoot": "Hagyd gyökeresedni",
+  "plantData.addedHeadline": "Hozzáadva a kertedhez",
+  "plantData.detailScanned": "A Pl@ntNet szkennelésével azonosítva: {scientific}.",
+  "plantData.detailUnidentified": "Egy nem azonosított szkennelésből hozzáadva.",
+  "plantData.detailSpecies": "A Felfedezésből hozzáadva: {scientific}.",
+  "plantData.cuttingName": "{name} (dugvány)",
+  "plantData.cuttingHeadline": "Dugványként szaporítva",
+  "plantData.cuttingDetail": "A(z) {name} növényről véve. Kövesd nyomon a gyökeresedését és növekedését itt.",
 };

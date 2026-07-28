@@ -23,13 +23,33 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { plants as ownedPlants, type Plant } from "@/lib/plants";
-import { classifyImage, matchPlant, matchPlantByScientificName } from "@/lib/classify";
-import { identifyPlant, getDailyQuota, type PlantNetResult } from "@/lib/plantnet.server";
+import {
+  classifyImage,
+  matchPlant,
+  matchPlantByScientificName,
+  matchPlantByVisionGuess,
+  matchVisionGuessToSpecies,
+} from "@/lib/classify";
+import {
+  identifyPlant,
+  getDailyQuota,
+  getSpecies,
+  type PlantNetResult,
+  type ProjectSpeciesEntry,
+} from "@/lib/plantnet.server";
+import { identifyPlantViaVision } from "@/lib/image-recognition.server";
 import { getSpeciesPhoto } from "@/lib/speciesPhoto.server";
-import { addToMyGarden, buildScannedPlant, canAddPlant } from "@/lib/myGarden";
+import { savePhoto } from "@/lib/photoStore";
+import {
+  addToMyGarden,
+  buildScannedPlant,
+  buildPlantFromSpecies,
+  buildUnidentifiedPlant,
+  canAddPlant,
+} from "@/lib/myGarden";
 import { HealthChecks } from "@/components/HealthChecks";
 import { RadialHealthMeter } from "@/components/RadialHealthMeter";
-import { useT, statusLabelKeys, type TranslationKey } from "@/lib/i18n";
+import { useT, useI18n, statusLabelKeys, type TranslationKey } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/scan")({
@@ -50,7 +70,7 @@ export const Route = createFileRoute("/scan")({
   component: Scan,
 });
 
-type State = "idle" | "analyzing" | "result" | "quota-exceeded";
+type State = "idle" | "preview" | "analyzing" | "result" | "quota-exceeded";
 
 type Result =
   | {
@@ -61,6 +81,18 @@ type Result =
       top: PlantNetResult | null;
       alternatives: PlantNetResult[];
     }
+  | {
+      source: "vision";
+      plant: Plant | null;
+      caption: string;
+      // Set when Vision's guess matched a real species in Pl@ntNet's flora
+      // corpus even though it isn't one of our local care-guide plants —
+      // mirrors "plantnet"'s identifiedName for the same uncataloged-but-
+      // real-species UX. Carries the full entry (not just the name) so
+      // "add to garden" can build a real Plant from it via buildPlantFromSpecies.
+      identifiedName?: string;
+      identifiedSpecies?: ProjectSpeciesEntry;
+    }
   | { source: "mobilenet"; plant: Plant | null; caption: string };
 
 const MIN_ANALYZE_MS = 900;
@@ -68,6 +100,10 @@ const DISMISS_THRESHOLD = 120;
 // Pl@ntNet scores are conservative — anything at/above this is a strong
 // enough match to skip the extra "are you sure" step and add in one tap.
 const HIGH_CONFIDENCE_SCORE = 0.4;
+// Below this, Pl@ntNet's own top score is too weak to trust as a final
+// answer — worth spending a Vision call to see if it can do better before
+// giving up and falling all the way back to on-device MobileNet.
+const PLANTNET_FALLBACK_THRESHOLD = 0.15;
 
 // Pl@ntNet's /v2/identify `organs` param — picking the right one measurably
 // improves match confidence over always sending "auto".
@@ -331,13 +367,31 @@ function QuotaBadge() {
   );
 }
 
+// Pl@ntNet's flora dump (~5500 real species) fetched once and cached for the
+// life of the tab — used only as a last-resort text corpus to confirm a
+// Vision guess names a real species, so it's not worth re-fetching per scan.
+let speciesCorpusPromise: Promise<ProjectSpeciesEntry[]> | null = null;
+function loadSpeciesCorpus(): Promise<ProjectSpeciesEntry[]> {
+  if (!speciesCorpusPromise) {
+    speciesCorpusPromise = getSpecies({ data: {} }).then((res) =>
+      res.status === "ok" ? res.data : [],
+    );
+  }
+  return speciesCorpusPromise;
+}
+
 function Scan() {
-  const t = useT();
+  const { t, locale } = useI18n();
   const [state, setState] = useState<State>("idle");
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
   const [capturedPhoto, setCapturedPhoto] = useState<Blob | null>(null);
+  // A frozen still shown between shutter-tap and "Use photo" — makes it
+  // unambiguous that this is a single photo capture, not a live video
+  // recording, since the viewfinder otherwise looks identical to one.
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const previewSourceRef = useRef<HTMLCanvasElement | HTMLImageElement | null>(null);
   const [organ, setOrgan] = useState<Organ>("auto");
   const [limitReached, setLimitReached] = useState(false);
   const navigate = useNavigate();
@@ -424,13 +478,52 @@ function Scan() {
     };
   };
 
+  // Second opinion when Pl@ntNet errors out or comes back too unsure to
+  // trust — Vision's web/label detection is a different signal (visually
+  // similar web images) rather than a dedicated botanical classifier, so it
+  // sometimes names a species Pl@ntNet couldn't place, before we give up and
+  // fall all the way back to the much weaker on-device MobileNet.
+  const runViaVision = async (blob: Blob): Promise<Result | null> => {
+    try {
+      const formData = new FormData();
+      formData.append("image", blob);
+      const response = await identifyPlantViaVision({ data: formData });
+      if (response.status !== "ok" || response.data.length === 0) return null;
+
+      const { plant, top } = matchPlantByVisionGuess(response.data);
+      if (!top) return null;
+
+      // No local catalog match — check Pl@ntNet's full flora corpus before
+      // giving up, so a real (if uncataloged) species can still be named
+      // instead of only ever showing Vision's raw, possibly-generic guess.
+      let identifiedSpecies: ProjectSpeciesEntry | undefined;
+      if (!plant) {
+        const corpus = await loadSpeciesCorpus();
+        identifiedSpecies = matchVisionGuessToSpecies(response.data, corpus) ?? undefined;
+      }
+
+      return {
+        source: "vision",
+        plant,
+        caption: t("scan.visionSaw", {
+          name: top.name,
+          score: Math.round(top.score * 100),
+        }),
+        identifiedName: identifiedSpecies?.scientificNameWithoutAuthor,
+        identifiedSpecies,
+      };
+    } catch {
+      return null;
+    }
+  };
+
   const runClassification = async (
     source: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement,
   ) => {
     setState("analyzing");
     const start = Date.now();
 
-    let result: Result;
+    let result: Result | null = null;
     let photoBlob: Blob | null = null;
     try {
       const blob = await toBlob(source);
@@ -445,27 +538,38 @@ function Scan() {
         return;
       }
       if (response.status === "error") {
-        // Hard failure (network/service down) — fall back to on-device MobileNet.
-        result = await runViaMobileNet(source);
+        // Hard failure (network/service down) — try Vision next.
+        result = await runViaVision(blob);
       } else {
         const { plant, top, identifiedButUncataloged } = matchPlantByScientificName(
           response.results,
         );
-        result = {
-          source: "plantnet",
-          plant,
-          caption: top
-            ? t("scan.plantnetSaw", {
-                name: top.scientificName,
-                score: Math.round(top.score * 100),
-              })
-            : t("scan.plantnetUnrecognized"),
-          identifiedName: identifiedButUncataloged ? top!.scientificName : undefined,
-          top,
-          alternatives: response.results.slice(1, 4),
-        };
+        // A present-but-weak top score means Pl@ntNet itself isn't
+        // confident — worth trying Vision before settling for this.
+        if (!top || top.score < PLANTNET_FALLBACK_THRESHOLD) {
+          result = await runViaVision(blob);
+        }
+        if (!result) {
+          result = {
+            source: "plantnet",
+            plant,
+            caption: top
+              ? t("scan.plantnetSaw", {
+                  name: top.scientificName,
+                  score: Math.round(top.score * 100),
+                })
+              : t("scan.plantnetUnrecognized"),
+            identifiedName: identifiedButUncataloged ? top!.scientificName : undefined,
+            top,
+            alternatives: response.results.slice(1, 4),
+          };
+        }
       }
     } catch {
+      result = photoBlob ? await runViaVision(photoBlob) : null;
+    }
+
+    if (!result) {
       result = await runViaMobileNet(source);
     }
 
@@ -487,18 +591,38 @@ function Scan() {
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
     ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
-    runClassification(canvas);
+    previewSourceRef.current = canvas;
+    setPreviewUrl(canvas.toDataURL("image/jpeg", 0.9));
+    setState("preview");
   };
 
   const handleFileChange = () => {
     const file = fileRef.current?.files?.[0];
     if (!file) return;
     const img = new Image();
-    img.onload = () => runClassification(img);
+    img.onload = () => {
+      previewSourceRef.current = img;
+      setPreviewUrl(img.src);
+      setState("preview");
+    };
     img.src = URL.createObjectURL(file);
   };
 
+  const confirmPreview = () => {
+    const source = previewSourceRef.current;
+    if (!source) return;
+    runClassification(source);
+  };
+
+  const retakePreview = () => {
+    previewSourceRef.current = null;
+    setPreviewUrl(null);
+    setState("idle");
+  };
+
   const reset = () => {
+    previewSourceRef.current = null;
+    setPreviewUrl(null);
     setResult(null);
     setCapturedPhoto(null);
     setState("idle");
@@ -531,8 +655,39 @@ function Scan() {
     // leaving the plant on the generic emoji placeholder.
     const photoResult = await getSpeciesPhoto({ data: { scientificName: top.scientificName } });
     const photoUrl = photoResult.status === "ok" ? photoResult.url : undefined;
-    const plant = buildScannedPlant(top, photoUrl);
+    const plant = buildScannedPlant(top, t, locale, photoUrl);
     const savedId = addToMyGarden(plant);
+    navigate({ to: "/plant/$id", params: { id: savedId } });
+  };
+
+  const addSpeciesMatchToGarden = async (entry: ProjectSpeciesEntry) => {
+    if (!(await canAddPlant(user?.uid))) {
+      setLimitReached(true);
+      return;
+    }
+    const photoResult = await getSpeciesPhoto({
+      data: { scientificName: entry.scientificNameWithoutAuthor },
+    });
+    const photoUrl = photoResult.status === "ok" ? photoResult.url : undefined;
+    const plant = buildPlantFromSpecies(entry, t, locale, photoUrl);
+    const savedId = addToMyGarden(plant);
+    navigate({ to: "/plant/$id", params: { id: savedId } });
+  };
+
+  // Neither Pl@ntNet nor the on-device fallback could name this one — still
+  // let the user save it (using their own captured photo) rather than
+  // forcing a re-scan, since they may just want to track it and identify it
+  // later.
+  const addUnidentifiedPlantToGarden = async () => {
+    if (!(await canAddPlant(user?.uid))) {
+      setLimitReached(true);
+      return;
+    }
+    const plant = buildUnidentifiedPlant(t, locale);
+    const savedId = addToMyGarden(plant);
+    if (capturedPhoto) {
+      await savePhoto(savedId, capturedPhoto);
+    }
     navigate({ to: "/plant/$id", params: { id: savedId } });
   };
 
@@ -584,48 +739,65 @@ function Scan() {
 
       {/* Organ picker — tells Pl@ntNet what part of the plant is in frame,
           which measurably improves identification confidence over "auto". */}
-      <div className="mb-4">
-        <OrganPicker value={organ} onChange={setOrgan} />
-      </div>
+      {state === "idle" && (
+        <div className="mb-4">
+          <OrganPicker value={organ} onChange={setOrgan} />
+        </div>
+      )}
 
-      {/* Viewfinder */}
+      {/* Viewfinder — a live preview while framing, or (once the shutter is
+          tapped) a frozen still with Retake/Use photo, so it's unambiguous
+          this is a single-photo capture rather than a video recording. */}
       <div className="relative aspect-[3/4] overflow-hidden rounded-[1.75rem] bg-[oklch(0.22_0.02_45)]">
-        {!cameraError && (
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
+        {(state === "preview" || state === "analyzing") && previewUrl ? (
+          <img
+            src={previewUrl}
+            alt={t("scan.previewAlt")}
             className="absolute inset-0 h-full w-full object-cover"
           />
-        )}
+        ) : (
+          <>
+            {!cameraError && (
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            )}
 
-        {cameraError && (
-          <div className="absolute inset-0 grid place-items-center text-center px-8">
-            <div>
-              <CameraOff className="h-8 w-8 mx-auto text-white/80" />
-              <p className="mt-3 text-sm text-white/90">{t("scan.cameraUnavailable")}</p>
-              <p className="text-xs text-white/60 mt-1">{t("scan.cameraUnavailableHint")}</p>
-            </div>
-          </div>
-        )}
+            {cameraError && (
+              <div className="absolute inset-0 grid place-items-center text-center px-8">
+                <div>
+                  <CameraOff className="h-8 w-8 mx-auto text-white/80" />
+                  <p className="mt-3 text-sm text-white/90">{t("scan.cameraUnavailable")}</p>
+                  <p className="text-xs text-white/60 mt-1">{t("scan.cameraUnavailableHint")}</p>
+                </div>
+              </div>
+            )}
 
-        {/* framing corners */}
-        {[
-          "top-6 left-6 border-t-2 border-l-2 rounded-tl-2xl",
-          "top-6 right-6 border-t-2 border-r-2 rounded-tr-2xl",
-          "bottom-6 left-6 border-b-2 border-l-2 rounded-bl-2xl",
-          "bottom-6 right-6 border-b-2 border-r-2 rounded-br-2xl",
-        ].map((c) => (
-          <div key={c} className={`absolute h-10 w-10 border-white/70 pointer-events-none ${c}`} />
-        ))}
-        <p className="absolute top-6 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 rounded-full px-3 py-1">
-          {organ === "auto"
-            ? t("scan.frameHint.default")
-            : t("scan.frameHint.organ", {
-                organ: t(`scan.organ.${organ}` as TranslationKey).toLowerCase(),
-              })}
-        </p>
+            {/* framing corners */}
+            {[
+              "top-6 left-6 border-t-2 border-l-2 rounded-tl-2xl",
+              "top-6 right-6 border-t-2 border-r-2 rounded-tr-2xl",
+              "bottom-6 left-6 border-b-2 border-l-2 rounded-bl-2xl",
+              "bottom-6 right-6 border-b-2 border-r-2 rounded-br-2xl",
+            ].map((c) => (
+              <div
+                key={c}
+                className={`absolute h-10 w-10 border-white/70 pointer-events-none ${c}`}
+              />
+            ))}
+            <p className="absolute top-6 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 rounded-full px-3 py-1">
+              {organ === "auto"
+                ? t("scan.frameHint.default")
+                : t("scan.frameHint.organ", {
+                    organ: t(`scan.organ.${organ}` as TranslationKey).toLowerCase(),
+                  })}
+            </p>
+          </>
+        )}
 
         {state === "analyzing" && (
           <div className="absolute inset-0 grid place-items-center bg-black/50">
@@ -648,33 +820,56 @@ function Scan() {
       />
 
       {/* Controls */}
-      <div className="flex items-center justify-around mt-8">
-        <button
-          onClick={() => fileRef.current?.click()}
-          disabled={state === "analyzing"}
-          className="ios-tap h-12 w-12 rounded-full bg-secondary grid place-items-center disabled:opacity-50"
-          aria-label={t("scan.upload")}
-        >
-          <ImagePlus className="h-5 w-5" strokeWidth={1.75} />
-        </button>
-        <button
-          onClick={captureFromCamera}
-          disabled={state !== "idle" || !cameraReady}
-          className="ios-tap h-[4.75rem] w-[4.75rem] rounded-full bg-primary text-primary-foreground grid place-items-center disabled:opacity-70"
-        >
-          <div className="h-16 w-16 rounded-full border-4 border-primary-foreground/60" />
-        </button>
-        <button
-          className="ios-tap h-12 w-12 rounded-full bg-secondary grid place-items-center"
-          aria-label={t("scan.flash")}
-          disabled
-        >
-          <Zap className="h-5 w-5" strokeWidth={1.75} />
-        </button>
-      </div>
+      {state === "preview" ? (
+        <div className="flex items-center justify-center gap-3 mt-8">
+          <button
+            onClick={retakePreview}
+            className="ios-tap h-12 flex-1 max-w-[10rem] rounded-full bg-secondary text-secondary-foreground font-semibold"
+          >
+            {t("scan.retake")}
+          </button>
+          <button
+            onClick={confirmPreview}
+            className="ios-tap h-12 flex-1 max-w-[10rem] rounded-full bg-primary text-primary-foreground font-semibold"
+          >
+            {t("scan.usePhoto")}
+          </button>
+        </div>
+      ) : (
+        <div className="flex items-center justify-around mt-8">
+          <button
+            onClick={() => fileRef.current?.click()}
+            disabled={state === "analyzing"}
+            className="ios-tap h-12 w-12 rounded-full bg-secondary grid place-items-center disabled:opacity-50"
+            aria-label={t("scan.upload")}
+          >
+            <ImagePlus className="h-5 w-5" strokeWidth={1.75} />
+          </button>
+          <button
+            onClick={captureFromCamera}
+            disabled={state !== "idle" || !cameraReady}
+            className="ios-tap h-[4.75rem] w-[4.75rem] rounded-full bg-primary text-primary-foreground grid place-items-center disabled:opacity-70"
+            aria-label={t("scan.takePhoto")}
+          >
+            <div className="h-16 w-16 rounded-full border-4 border-primary-foreground/60" />
+          </button>
+          <button
+            className="ios-tap h-12 w-12 rounded-full bg-secondary grid place-items-center"
+            aria-label={t("scan.flash")}
+            disabled
+          >
+            <Zap className="h-5 w-5" strokeWidth={1.75} />
+          </button>
+        </div>
+      )}
 
       {/* Result bottom sheet */}
-      {state === "result" && result && !(result.source === "plantnet" && result.identifiedName) && (
+      {state === "result" &&
+        result &&
+        !(
+          (result.source === "plantnet" || result.source === "vision") &&
+          result.identifiedName
+        ) && (
         <BottomSheet onDismiss={reset}>
           {result.plant ? (
             <>
@@ -801,13 +996,19 @@ function Scan() {
                 >
                   <Heart className="h-4 w-4" strokeWidth={1.75} /> {t("scan.tryAgain")}
                 </button>
-                <Link
-                  to="/"
+                <button
+                  onClick={addUnidentifiedPlantToGarden}
                   className="ios-tap h-12 rounded-full bg-primary text-primary-foreground font-semibold flex items-center justify-center gap-2"
                 >
-                  <BookOpen className="h-4 w-4" strokeWidth={1.75} /> {t("scan.myGarden")}
-                </Link>
+                  <Plus className="h-4 w-4" strokeWidth={1.75} /> {t("scan.addAnyway")}
+                </button>
               </div>
+              <Link
+                to="/"
+                className="ios-tap w-full mt-2 text-xs text-muted-foreground text-center block"
+              >
+                {t("scan.myGarden")}
+              </Link>
 
               <HealthChecks photo={capturedPhoto} />
             </>
@@ -815,50 +1016,59 @@ function Scan() {
         </BottomSheet>
       )}
 
-      {/* Recognized species, but not one of our tracked plants */}
-      {state === "result" && result && result.source === "plantnet" && result.identifiedName && (
-        <BottomSheet onDismiss={reset}>
-          <div className="flex items-start gap-4">
-            <div className="h-[4.5rem] w-[4.5rem] shrink-0 rounded-2xl bg-secondary grid place-items-center">
-              <Sprout className="h-6 w-6 text-muted-foreground" strokeWidth={1.75} />
+      {/* Recognized species, but not one of our tracked plants — either
+          Pl@ntNet named it directly, or Vision's guess was confirmed
+          against Pl@ntNet's flora corpus (see runViaVision). */}
+      {state === "result" &&
+        result &&
+        (result.source === "plantnet" || result.source === "vision") &&
+        result.identifiedName && (
+          <BottomSheet onDismiss={reset}>
+            <div className="flex items-start gap-4">
+              <div className="h-[4.5rem] w-[4.5rem] shrink-0 rounded-2xl bg-secondary grid place-items-center">
+                <Sprout className="h-6 w-6 text-muted-foreground" strokeWidth={1.75} />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground">{t("scan.identifiedNotTracked")}</p>
+                <h2 className="font-display text-2xl leading-tight italic">
+                  {result.identifiedName}
+                </h2>
+              </div>
             </div>
-            <div className="flex-1">
-              <p className="text-xs text-muted-foreground">{t("scan.identifiedNotTracked")}</p>
-              <h2 className="font-display text-2xl leading-tight italic">
-                {result.identifiedName}
-              </h2>
+
+            <p className="mt-3 text-[11px] uppercase tracking-wide text-muted-foreground">
+              {result.caption}
+            </p>
+            <p className="mt-4 text-sm text-muted-foreground">{t("scan.noCareInfo")}</p>
+
+            {result.source === "plantnet" && result.top && (
+              <IdentificationDetails top={result.top} alternatives={result.alternatives} />
+            )}
+
+            <div className="grid grid-cols-2 gap-2 mt-6">
+              <button
+                onClick={reset}
+                className="ios-tap h-12 rounded-full bg-secondary text-secondary-foreground font-semibold flex items-center justify-center gap-2"
+              >
+                <Heart className="h-4 w-4" strokeWidth={1.75} /> {t("scan.scanAgain")}
+              </button>
+              <button
+                onClick={() => {
+                  if (result.source === "plantnet" && result.top) {
+                    addScannedPlantToGarden(result.top);
+                  } else if (result.source === "vision" && result.identifiedSpecies) {
+                    addSpeciesMatchToGarden(result.identifiedSpecies);
+                  }
+                }}
+                className="ios-tap h-12 rounded-full bg-primary text-primary-foreground font-semibold flex items-center justify-center gap-2"
+              >
+                <Plus className="h-4 w-4" strokeWidth={1.75} /> {t("scan.addToGarden")}
+              </button>
             </div>
-          </div>
 
-          <p className="mt-3 text-[11px] uppercase tracking-wide text-muted-foreground">
-            {result.caption}
-          </p>
-          <p className="mt-4 text-sm text-muted-foreground">{t("scan.noCareInfo")}</p>
-
-          {result.top && (
-            <IdentificationDetails top={result.top} alternatives={result.alternatives} />
-          )}
-
-          <div className="grid grid-cols-2 gap-2 mt-6">
-            <button
-              onClick={reset}
-              className="ios-tap h-12 rounded-full bg-secondary text-secondary-foreground font-semibold flex items-center justify-center gap-2"
-            >
-              <Heart className="h-4 w-4" strokeWidth={1.75} /> {t("scan.scanAgain")}
-            </button>
-            <button
-              onClick={() =>
-                result.source === "plantnet" && result.top && addScannedPlantToGarden(result.top)
-              }
-              className="ios-tap h-12 rounded-full bg-primary text-primary-foreground font-semibold flex items-center justify-center gap-2"
-            >
-              <Plus className="h-4 w-4" strokeWidth={1.75} /> {t("scan.addToGarden")}
-            </button>
-          </div>
-
-          <HealthChecks photo={capturedPhoto} />
-        </BottomSheet>
-      )}
+            <HealthChecks photo={capturedPhoto} />
+          </BottomSheet>
+        )}
 
       {/* Daily identification limit reached */}
       {state === "quota-exceeded" && (
