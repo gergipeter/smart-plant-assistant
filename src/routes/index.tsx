@@ -2,7 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PlantThumb } from "@/components/AppShell";
 import { todaysTasks, getPlant, type Plant, type PlantStatus } from "@/lib/plants";
 import { useGardenPlants, hideDemoCatalog, showDemoCatalog, updatePlantInGarden } from "@/lib/myGarden";
-import { isDueForFertilizing, isDueForRepotting, markFertilized, markRepotted } from "@/lib/careDueStatus";
+import {
+  isDueForFertilizing,
+  isDueForRepotting,
+  markFertilized,
+  markRepotted,
+  markWatered,
+} from "@/lib/careDueStatus";
 import {
   Check,
   RefreshCw,
@@ -206,9 +212,18 @@ const PRIORITY_ORDER: Record<Plant["status"], number> = {
   healthy: 3,
 };
 
-function GardenBentoCard({ plant, featured }: { plant: Plant; featured: boolean }) {
+function GardenBentoCard({
+  plant,
+  featured,
+  onWater,
+}: {
+  plant: Plant;
+  featured: boolean;
+  onWater: (plant: Plant) => void;
+}) {
   const t = useT();
   const needsAttention = plant.status !== "healthy";
+  const needsWaterOrMist = plant.status === "needs-water" || plant.status === "needs-mist";
   return (
     <Link
       to="/plant/$id"
@@ -239,6 +254,21 @@ function GardenBentoCard({ plant, featured }: { plant: Plant; featured: boolean 
 
       {needsAttention && (
         <span className="absolute top-3 left-3 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-white/70" />
+      )}
+
+      {needsWaterOrMist && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onWater(plant);
+          }}
+          aria-label={t("home.waterThisPlant")}
+          className="ios-tap absolute top-2.5 right-2.5 h-8 w-8 rounded-full bg-white/90 text-primary grid place-items-center shadow-sm"
+        >
+          <Droplets className="h-4 w-4" strokeWidth={2} />
+        </button>
       )}
 
       <div className={`relative p-3.5 ${featured ? "pb-4" : ""}`}>
@@ -381,9 +411,25 @@ function Dashboard() {
     }
   }, [done, activeTasks]);
 
+  // useGardenPlants only loads once per mount — this reflects a just-watered
+  // plant's new status/lastWatered immediately without needing a full
+  // reload, the same way `done`/`careDone` mask in-session task completion
+  // above rather than re-fetching.
+  const [wateredOverrides, setWateredOverrides] = useState<Record<string, Plant>>({});
+  const liveGardenPlants = useMemo(
+    () => gardenPlants.map((p) => wateredOverrides[p.id] ?? p),
+    [gardenPlants, wateredOverrides],
+  );
+
+  const handleWaterPlant = (plant: Plant) => {
+    const watered = markWatered(plant);
+    updatePlantInGarden(watered);
+    setWateredOverrides((prev) => ({ ...prev, [plant.id]: watered }));
+  };
+
   const sortedGarden = useMemo(
-    () => [...gardenPlants].sort((a, b) => PRIORITY_ORDER[a.status] - PRIORITY_ORDER[b.status]),
-    [gardenPlants],
+    () => [...liveGardenPlants].sort((a, b) => PRIORITY_ORDER[a.status] - PRIORITY_ORDER[b.status]),
+    [liveGardenPlants],
   );
 
   const [query, setQuery] = useState("");
@@ -400,8 +446,8 @@ function Dashboard() {
     });
   }, [sortedGarden, query, statusFilter]);
   const attentionPlants = useMemo(
-    () => gardenPlants.filter((p) => p.status !== "healthy"),
-    [gardenPlants],
+    () => liveGardenPlants.filter((p) => p.status !== "healthy"),
+    [liveGardenPlants],
   );
   const attentionCount = attentionPlants.length;
 
@@ -684,7 +730,12 @@ function Dashboard() {
               ) : (
                 <div className="grid grid-cols-2 gap-3">
                   {filteredGarden.map((p, i) => (
-                    <GardenBentoCard key={p.id} plant={p} featured={i === 0 && !query && statusFilter === "all"} />
+                    <GardenBentoCard
+                      key={p.id}
+                      plant={p}
+                      featured={i === 0 && !query && statusFilter === "all"}
+                      onWater={handleWaterPlant}
+                    />
                   ))}
                 </div>
               )}

@@ -255,10 +255,16 @@ function IdentificationDetails({
   alternatives: PlantNetResult[];
 }) {
   const t = useT();
+  const [expanded, setExpanded] = useState(false);
   const iucn = top.iucnCategory ? IUCN_LABELS[top.iucnCategory] : undefined;
   const hasLinks = top.gbifId || top.powoId;
+  // Family/genus reads as plain plant info to anyone; IUCN conservation
+  // codes, GBIF/POWO taxonomy links, and the raw alternate-match list are
+  // the botany-nerd parts a casual owner doesn't need by default — those
+  // three sit behind an optional expander instead of always-on clutter.
+  const hasAdvanced = iucn || hasLinks || alternatives.length > 0;
 
-  if (!iucn && !hasLinks && alternatives.length === 0 && !top.family) return null;
+  if (!hasAdvanced && !top.family) return null;
 
   return (
     <div className="mt-4 pt-4 border-t border-border space-y-3">
@@ -278,63 +284,79 @@ function IdentificationDetails({
         </p>
       )}
 
-      {iucn && (
-        <div
-          className={`flex items-center gap-2 text-xs px-3 py-2 rounded-xl ${
-            iucn.urgent
-              ? "bg-[oklch(0.55_0.15_35)]/10 text-[oklch(0.4_0.13_35)]"
-              : "bg-secondary text-secondary-foreground"
-          }`}
+      {hasAdvanced && !expanded && (
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          className="ios-tap text-xs font-medium text-primary"
         >
-          <ShieldAlert className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
-          {t("scan.iucnStatus", { status: t(iucn.labelKey) })}
-        </div>
+          {t("scan.showMoreDetails")}
+        </button>
       )}
 
-      {hasLinks && (
-        <div className="flex gap-2">
-          {top.gbifId && (
-            <a
-              href={`https://www.gbif.org/species/${top.gbifId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ios-tap flex-1 h-9 rounded-full bg-secondary text-secondary-foreground text-xs font-medium flex items-center justify-center gap-1.5"
+      {hasAdvanced && expanded && (
+        <>
+          {iucn && (
+            <div
+              className={`flex items-center gap-2 text-xs px-3 py-2 rounded-xl ${
+                iucn.urgent
+                  ? "bg-[oklch(0.55_0.15_35)]/10 text-[oklch(0.4_0.13_35)]"
+                  : "bg-secondary text-secondary-foreground"
+              }`}
             >
-              GBIF <ExternalLink className="h-3 w-3" strokeWidth={1.75} />
-            </a>
+              <ShieldAlert className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
+              {t("scan.iucnStatus", { status: t(iucn.labelKey) })}
+            </div>
           )}
-          {top.powoId && (
-            <a
-              href={`https://powo.science.kew.org/taxon/${top.powoId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="ios-tap flex-1 h-9 rounded-full bg-secondary text-secondary-foreground text-xs font-medium flex items-center justify-center gap-1.5"
-            >
-              POWO <ExternalLink className="h-3 w-3" strokeWidth={1.75} />
-            </a>
-          )}
-        </div>
-      )}
 
-      {alternatives.length > 0 && (
-        <div>
-          <p className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1.5">
-            {t("scan.otherMatches")}
-          </p>
-          <ul className="space-y-1">
-            {alternatives.map((alt, i) => (
-              <li
-                key={`${alt.scientificName}-${i}`}
-                className="flex items-center justify-between text-xs"
-              >
-                <span className="italic text-foreground/90 truncate">{alt.scientificName}</span>
-                <span className="text-muted-foreground tabular-nums shrink-0 ml-2">
-                  {Math.round(alt.score * 100)}%
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+          {hasLinks && (
+            <div className="flex gap-2">
+              {top.gbifId && (
+                <a
+                  href={`https://www.gbif.org/species/${top.gbifId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ios-tap flex-1 h-9 rounded-full bg-secondary text-secondary-foreground text-xs font-medium flex items-center justify-center gap-1.5"
+                >
+                  GBIF <ExternalLink className="h-3 w-3" strokeWidth={1.75} />
+                </a>
+              )}
+              {top.powoId && (
+                <a
+                  href={`https://powo.science.kew.org/taxon/${top.powoId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ios-tap flex-1 h-9 rounded-full bg-secondary text-secondary-foreground text-xs font-medium flex items-center justify-center gap-1.5"
+                >
+                  POWO <ExternalLink className="h-3 w-3" strokeWidth={1.75} />
+                </a>
+              )}
+            </div>
+          )}
+
+          {alternatives.length > 0 && (
+            <div>
+              <p className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1.5">
+                {t("scan.otherMatches")}
+              </p>
+              <ul className="space-y-1">
+                {alternatives.map((alt, i) => (
+                  <li
+                    key={`${alt.scientificName}-${i}`}
+                    className="flex items-center justify-between text-xs"
+                  >
+                    <span className="italic text-foreground/90 truncate">
+                      {alt.scientificName}
+                    </span>
+                    <span className="text-muted-foreground tabular-nums shrink-0 ml-2">
+                      {Math.round(alt.score * 100)}%
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

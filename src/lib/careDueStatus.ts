@@ -36,3 +36,15 @@ export function markFertilized(plant: Plant): Plant {
 export function markRepotted(plant: Plant): Plant {
   return { ...plant, lastRepotted: "Just repotted" };
 }
+
+// Resets lastWatered and clears a "needs water"/"needs mist" status back to
+// healthy — callers persist it via updatePlantInGarden, same pattern as
+// markFertilized/markRepotted above. Unlike those two (opt-in, no status
+// effect), watering is the one care action every plant already tracks a
+// status badge for, so this also flips status off the moment it's done.
+export function markWatered(plant: Plant): Plant {
+  const status = plant.status === "needs-water" || plant.status === "needs-mist"
+    ? "healthy"
+    : plant.status;
+  return { ...plant, lastWatered: "Just watered", status };
+}
