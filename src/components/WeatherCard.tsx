@@ -76,12 +76,12 @@ export function WeatherCard({
         {getWeatherIcon(weather.condition)}
       </div>
       <div className="flex-1">
-        <p className="text-sm font-medium">
+        {locationLabel && (
+          <p className="text-sm font-semibold">{locationLabel}</p>
+        )}
+        <p className="text-xs text-muted-foreground mt-0.5">
           {Math.round(weather.temp)}°C · {weather.condition}
         </p>
-        {locationLabel && (
-          <p className="text-xs text-muted-foreground mt-0.5">{locationLabel}</p>
-        )}
         <div className="flex gap-4 text-xs text-muted-foreground mt-1">
           <span className="flex items-center gap-1">
             <Droplets className="h-3 w-3" />

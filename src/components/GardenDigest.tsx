@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { FileText, Lock, TrendingUp, TrendingDown, Sprout, Droplets } from "lucide-react";
+import { FileText, Lock, TrendingUp, TrendingDown, Sprout, Droplets, ChevronDown } from "lucide-react";
 import type { Plant } from "@/lib/plants";
 import { useAuth } from "@/lib/auth";
 import { getSubscriptionAsync } from "@/lib/premium";
@@ -15,6 +15,7 @@ export function GardenDigest({ plants }: { plants: Plant[] }) {
   const { t, locale } = useI18n();
   const { user } = useAuth();
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -44,11 +45,21 @@ export function GardenDigest({ plants }: { plants: Plant[] }) {
 
   return (
     <section className="mb-7">
-      <div className="flex items-center gap-1.5 text-lg font-display mb-3">
-        <FileText className="h-4 w-4 text-primary" strokeWidth={1.75} />
-        {t("digest.title", { period: digest.periodLabel })}
-      </div>
+      <button
+        onClick={() => setExpanded((e) => !e)}
+        className="ios-tap w-full flex items-center justify-between mb-3"
+      >
+        <span className="flex items-center gap-1.5 text-lg font-display">
+          <FileText className="h-4 w-4 text-primary" strokeWidth={1.75} />
+          {t("digest.title", { period: digest.periodLabel })}
+        </span>
+        <ChevronDown
+          className={`h-4 w-4 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`}
+          strokeWidth={1.75}
+        />
+      </button>
 
+      {expanded && (
       <div className="leaf-card p-4 space-y-3">
         <div className="flex items-center gap-3">
           <div className="h-9 w-9 shrink-0 rounded-full bg-secondary grid place-items-center">
@@ -129,6 +140,7 @@ export function GardenDigest({ plants }: { plants: Plant[] }) {
           </div>
         )}
       </div>
+      )}
     </section>
   );
 }

@@ -29,6 +29,7 @@ import {
   matchPlantByScientificName,
   matchPlantByVisionGuess,
   matchVisionGuessToSpecies,
+  matchPlantByClaudeGuess,
 } from "@/lib/classify";
 import {
   identifyPlant,
@@ -37,7 +38,7 @@ import {
   type PlantNetResult,
   type ProjectSpeciesEntry,
 } from "@/lib/plantnet.server";
-import { identifyPlantViaVision } from "@/lib/image-recognition.server";
+import { identifyPlantViaVision, identifyPlantViaClaude } from "@/lib/image-recognition.server";
 import { getSpeciesPhoto } from "@/lib/speciesPhoto.server";
 import { savePhoto } from "@/lib/photoStore";
 import {
@@ -92,6 +93,17 @@ type Result =
       // "add to garden" can build a real Plant from it via buildPlantFromSpecies.
       identifiedName?: string;
       identifiedSpecies?: ProjectSpeciesEntry;
+    }
+  | {
+      source: "claude";
+      plant: Plant | null;
+      caption: string;
+      // Set when Claude named a real species with at least medium confidence
+      // but it isn't one of our local care-guide plants — same "identified,
+      // just not tracked" UX as the plantnet/vision variants above. Claude's
+      // guess only ever names a species (no photo lookup path exists for
+      // it), so there's no identifiedSpecies/ProjectSpeciesEntry to carry.
+      identifiedName?: string;
     }
   | { source: "mobilenet"; plant: Plant | null; caption: string };
 
@@ -415,6 +427,7 @@ function Scan() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const previewSourceRef = useRef<HTMLCanvasElement | HTMLImageElement | null>(null);
   const [organ, setOrgan] = useState<Organ>("auto");
+  const [showOrganPicker, setShowOrganPicker] = useState(false);
   const [limitReached, setLimitReached] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -539,6 +552,32 @@ function Scan() {
     }
   };
 
+  // Last resort before falling all the way back to on-device MobileNet —
+  // Claude's multimodal reasoning about visual traits (leaf shape, growth
+  // habit, distinguishing features) is a different signal than Vision's
+  // web-image-similarity search, so it sometimes succeeds where that can't
+  // find a visually-similar match at all.
+  const runViaClaude = async (blob: Blob): Promise<Result | null> => {
+    try {
+      const formData = new FormData();
+      formData.append("image", blob);
+      const response = await identifyPlantViaClaude({ data: formData });
+      if (response.status !== "ok" || !response.data) return null;
+
+      const guess = response.data;
+      const { plant } = matchPlantByClaudeGuess(guess);
+
+      return {
+        source: "claude",
+        plant,
+        caption: t("scan.claudeSaw", { name: guess.scientificName }),
+        identifiedName: !plant && guess.confidence !== "low" ? guess.scientificName : undefined,
+      };
+    } catch {
+      return null;
+    }
+  };
+
   const runClassification = async (
     source: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement,
   ) => {
@@ -560,16 +599,16 @@ function Scan() {
         return;
       }
       if (response.status === "error") {
-        // Hard failure (network/service down) — try Vision next.
-        result = await runViaVision(blob);
+        // Hard failure (network/service down) — try Vision, then Claude.
+        result = (await runViaVision(blob)) ?? (await runViaClaude(blob));
       } else {
         const { plant, top, identifiedButUncataloged } = matchPlantByScientificName(
           response.results,
         );
         // A present-but-weak top score means Pl@ntNet itself isn't
-        // confident — worth trying Vision before settling for this.
+        // confident — worth trying Vision, then Claude, before settling for this.
         if (!top || top.score < PLANTNET_FALLBACK_THRESHOLD) {
-          result = await runViaVision(blob);
+          result = (await runViaVision(blob)) ?? (await runViaClaude(blob));
         }
         if (!result) {
           result = {
@@ -588,7 +627,9 @@ function Scan() {
         }
       }
     } catch {
-      result = photoBlob ? await runViaVision(photoBlob) : null;
+      result = photoBlob
+        ? (await runViaVision(photoBlob)) ?? (await runViaClaude(photoBlob))
+        : null;
     }
 
     if (!result) {
@@ -750,18 +791,36 @@ function Scan() {
           <h1 className="text-2xl font-display">{t("scan.title")}</h1>
           <QuotaBadge />
         </div>
-        <button
-          onClick={() => navigate({ to: "/" })}
-          className="ios-tap h-9 w-9 rounded-full bg-secondary grid place-items-center"
-          aria-label={t("scan.close")}
-        >
-          <X className="h-4 w-4" strokeWidth={1.75} />
-        </button>
+        <div className="flex items-center gap-2">
+          {state === "idle" && (
+            <button
+              onClick={() => setShowOrganPicker((s) => !s)}
+              className={`ios-tap h-9 w-9 rounded-full grid place-items-center ${
+                showOrganPicker || organ !== "auto"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary"
+              }`}
+              aria-label={t("scan.organPickerToggle")}
+              aria-pressed={showOrganPicker}
+            >
+              <Leaf className="h-4 w-4" strokeWidth={1.75} />
+            </button>
+          )}
+          <button
+            onClick={() => navigate({ to: "/" })}
+            className="ios-tap h-9 w-9 rounded-full bg-secondary grid place-items-center"
+            aria-label={t("scan.close")}
+          >
+            <X className="h-4 w-4" strokeWidth={1.75} />
+          </button>
+        </div>
       </header>
 
       {/* Organ picker — tells Pl@ntNet what part of the plant is in frame,
-          which measurably improves identification confidence over "auto". */}
-      {state === "idle" && (
+          which measurably improves identification confidence over "auto".
+          Optional and tucked behind a toggle since "auto" already works well
+          for most photos — the default view is just the camera + shutter. */}
+      {state === "idle" && showOrganPicker && (
         <div className="mb-4">
           <OrganPicker value={organ} onChange={setOrgan} />
         </div>
@@ -889,7 +948,7 @@ function Scan() {
       {state === "result" &&
         result &&
         !(
-          (result.source === "plantnet" || result.source === "vision") &&
+          (result.source === "plantnet" || result.source === "vision" || result.source === "claude") &&
           result.identifiedName
         ) && (
         <BottomSheet onDismiss={reset}>
@@ -1039,11 +1098,12 @@ function Scan() {
       )}
 
       {/* Recognized species, but not one of our tracked plants — either
-          Pl@ntNet named it directly, or Vision's guess was confirmed
-          against Pl@ntNet's flora corpus (see runViaVision). */}
+          Pl@ntNet named it directly, Vision's guess was confirmed against
+          Pl@ntNet's flora corpus (see runViaVision), or Claude named it
+          directly as a last-resort fallback (see runViaClaude). */}
       {state === "result" &&
         result &&
-        (result.source === "plantnet" || result.source === "vision") &&
+        (result.source === "plantnet" || result.source === "vision" || result.source === "claude") &&
         result.identifiedName && (
           <BottomSheet onDismiss={reset}>
             <div className="flex items-start gap-4">
@@ -1080,6 +1140,12 @@ function Scan() {
                     addScannedPlantToGarden(result.top);
                   } else if (result.source === "vision" && result.identifiedSpecies) {
                     addSpeciesMatchToGarden(result.identifiedSpecies);
+                  } else if (result.source === "claude" && result.identifiedName) {
+                    addScannedPlantToGarden({
+                      scientificName: result.identifiedName,
+                      commonNames: [],
+                      score: 0.5,
+                    });
                   }
                 }}
                 className="ios-tap h-12 rounded-full bg-primary text-primary-foreground font-semibold flex items-center justify-center gap-2"

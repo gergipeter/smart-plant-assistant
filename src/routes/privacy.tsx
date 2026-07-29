@@ -37,10 +37,9 @@ function PrivacyPage() {
             </li>
             <li>
               <strong>Photos you upload</strong> — plant photos you take or upload to identify a
-              plant, diagnose a problem, or post to the community feed. Photos used for scanning
-              are sent to our plant-identification providers (Pl@ntNet, Google Vision) to return a
-              result; feed photos are stored so they can be shown in your garden and to other
-              users.
+              plant or diagnose a problem. Photos used for scanning are sent to our
+              plant-identification providers (Pl@ntNet, Google Vision) to return a result, and
+              are otherwise stored so they can be shown in your garden.
             </li>
             <li>
               <strong>Garden and plant data</strong> — the plants you add to your garden,
@@ -66,10 +65,6 @@ function PrivacyPage() {
               store a device token (via Firebase Cloud Messaging or OneSignal) so we can send
               watering reminders.
             </li>
-            <li>
-              <strong>Social features</strong> — if you follow other users, like, or comment on
-              posts, that activity is visible to other users as part of the public feed.
-            </li>
           </ul>
         </Section>
 
@@ -77,7 +72,6 @@ function PrivacyPage() {
           <ul className="list-disc pl-5 space-y-1">
             <li>To identify plants and provide care recommendations.</li>
             <li>To send watering reminders and other notifications you opt into.</li>
-            <li>To operate the community feed, including showing your posts to other users.</li>
             <li>To process payments and manage your subscription tier.</li>
             <li>To respond to support requests and improve the app.</li>
           </ul>

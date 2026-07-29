@@ -302,7 +302,7 @@ function PremiumPage() {
           You're tracking {gardenPlants.length} plant{gardenPlants.length === 1 ? "" : "s"}.
         </p>
         <Link
-          to="/profile"
+          to="/settings"
           className="ios-tap flex items-center justify-between text-xs font-medium text-primary hover:underline"
         >
           View your account

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell, PlantThumb } from "@/components/AppShell";
-import { todaysTasks, getPlant, type Plant, type PlantStatus } from "@/lib/plants";
-import { useGardenPlants, hideDemoCatalog, showDemoCatalog, updatePlantInGarden } from "@/lib/myGarden";
+import { type Plant, type PlantStatus } from "@/lib/plants";
+import { useGardenPlants, showDemoCatalog, updatePlantInGarden } from "@/lib/myGarden";
 import {
   isDueForFertilizing,
   isDueForRepotting,
@@ -17,7 +17,6 @@ import {
   Sparkles,
   Settings2,
   Flame,
-  CalendarDays,
   ChevronDown,
   Wand2,
   Camera,
@@ -26,6 +25,7 @@ import {
   X,
   Leaf,
   CircleDot,
+  Info,
 } from "lucide-react";
 import {
   useEffect,
@@ -252,7 +252,7 @@ function GardenBentoCard({
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/0" />
 
-      {needsAttention && (
+      {needsAttention && !needsWaterOrMist && (
         <span className="absolute top-3 left-3 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-white/70" />
       )}
 
@@ -265,9 +265,9 @@ function GardenBentoCard({
             onWater(plant);
           }}
           aria-label={t("home.waterThisPlant")}
-          className="ios-tap absolute top-2.5 right-2.5 h-8 w-8 rounded-full bg-white/90 text-primary grid place-items-center shadow-sm"
+          className="ios-tap absolute top-2.5 right-2.5 h-11 w-11 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-[0_4px_14px_-2px_var(--primary)] ring-2 ring-white animate-pulse"
         >
-          <Droplets className="h-4 w-4" strokeWidth={2} />
+          <Droplets className="h-5 w-5" strokeWidth={2.25} />
         </button>
       )}
 
@@ -330,12 +330,47 @@ function EmptyGarden({ onTryDemo, seeding }: { onTryDemo: () => void; seeding: b
   );
 }
 
+type TaskKind = "Water" | "Mist" | "Fertilize" | "Repot";
+
+type GardenTask = {
+  id: string;
+  plant: Plant;
+  kind: TaskKind;
+  labelKey: TranslationKey;
+};
+
+// Real to-do list derived from each plant's actual due-status, so any plant
+// (scanned, catalog-added, or demo) shows up here the moment it's actually
+// due — unlike the old hardcoded demo-only task list this replaces.
+function buildGardenTasks(plants: Plant[]): GardenTask[] {
+  const tasks: GardenTask[] = [];
+  for (const plant of plants) {
+    if (plant.status === "needs-water") {
+      tasks.push({ id: `${plant.id}-water`, plant, kind: "Water", labelKey: "home.tasks.water" });
+    } else if (plant.status === "needs-mist") {
+      tasks.push({ id: `${plant.id}-mist`, plant, kind: "Mist", labelKey: "home.tasks.mist" });
+    }
+    if (isDueForFertilizing(plant)) {
+      tasks.push({
+        id: `${plant.id}-fertilize`,
+        plant,
+        kind: "Fertilize",
+        labelKey: "home.tasks.fertilize",
+      });
+    }
+    if (isDueForRepotting(plant)) {
+      tasks.push({ id: `${plant.id}-repot`, plant, kind: "Repot", labelKey: "home.tasks.repot" });
+    }
+  }
+  return tasks;
+}
+
 function Dashboard() {
   const t = useT();
   const [done, setDone] = useState<Record<string, boolean>>({});
   const gardenPlants = useGardenPlants();
   const [streak, setStreak] = useState(0);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showGardenInfo, setShowGardenInfo] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [coords, setCoords] = useState<{
@@ -352,17 +387,50 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    getUserLocation().then((res) => {
-      if (res.status === "ok") {
-        setCoords({
-          lat: res.data.lat,
-          lon: res.data.lon,
+    // IP-based location (Cloudflare edge geo, falling back to ipapi.co
+    // server-side) is only ever city-level accurate — used here as the
+    // source for the readable place name (city/region/country, which GPS
+    // alone can't give us) and as the coordinate fallback if the browser's
+    // real GPS below is denied, unavailable, or times out.
+    getUserLocation()
+      .then((res) => {
+        if (res.status !== "ok") return;
+        setCoords((prev) => ({
+          lat: prev.lat ?? res.data.lat,
+          lon: prev.lon ?? res.data.lon,
           city: res.data.city,
           region: res.data.region,
           country: res.data.country,
-        });
-      }
-    });
+        }));
+      })
+      .catch((err) => {
+        // Network hiccup or transport error talking to the server fn —
+        // without this, coords.city/region/country silently stay unset
+        // forever with no retry, and WeatherCard just never shows a
+        // location line (falls back to weather-only, no visible error).
+        console.error("Failed to load user location:", err);
+      });
+
+    // Real device GPS — far more accurate than IP geolocation, especially
+    // on mobile networks or behind a VPN. Overwrites the IP-based lat/lon
+    // once resolved; silently no-ops on denial/timeout/unsupported browsers
+    // since the IP-based fallback above already covers those cases.
+    if (typeof navigator !== "undefined" && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCoords((prev) => ({
+            ...prev,
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          }));
+        },
+        () => {
+          // Denied, unavailable, or timed out — IP-based coords (set above,
+          // whenever that request resolves) remain in effect.
+        },
+        { enableHighAccuracy: false, timeout: 10_000, maximumAge: 5 * 60_000 },
+      );
+    }
   }, []);
 
   const handleSeedDemoData = async () => {
@@ -388,21 +456,10 @@ function Dashboard() {
     }
   };
 
-  // Demo catalog is shown by default; a user can dismiss it once their own
-  // garden has real plants, or the dashboard falls back to the empty state
-  // if that leaves the garden with nothing in it.
-  const handleHideDemo = () => {
-    hideDemoCatalog();
-    window.location.reload();
-  };
-
   const isEmpty = hydrated && gardenPlants.length === 0;
-  // todaysTasks references the demo catalog's plant ids directly, so only
-  // show them while those plants are actually present in the garden.
-  const activeTasks = useMemo(
-    () => todaysTasks.filter((t) => gardenPlants.some((p) => p.id === t.plantId)),
-    [gardenPlants],
-  );
+  // Real to-do list: derived from each plant's actual due-status (water,
+  // mist, fertilize, repot), so any plant shows up the moment it's due.
+  const activeTasks = useMemo(() => buildGardenTasks(gardenPlants), [gardenPlants]);
 
   useEffect(() => {
     if (activeTasks.length > 0 && activeTasks.every((t) => done[t.id])) {
@@ -459,7 +516,7 @@ function Dashboard() {
     setDone((d) => {
       const next = { ...d };
       for (const t of activeTasks) {
-        if (attentionIds.has(t.plantId) && (t.kind === "Water" || t.kind === "Mist")) {
+        if (attentionIds.has(t.plant.id) && (t.kind === "Water" || t.kind === "Mist")) {
           next[t.id] = true;
         }
       }
@@ -532,16 +589,6 @@ function Dashboard() {
                 <span className="text-xs font-medium tabular-nums">{streak}</span>
               </Link>
             )}
-            {!isEmpty && (
-              <button
-                onClick={handleHideDemo}
-                className="ios-tap mt-1.5 h-8 w-8 rounded-full bg-secondary grid place-items-center shrink-0"
-                aria-label={t("home.startFreshAria")}
-                title={t("home.startFresh")}
-              >
-                <Sprout className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.75} />
-              </button>
-            )}
             <Link
               to="/settings"
               className="ios-tap mt-1.5 h-8 w-8 rounded-full bg-secondary grid place-items-center shrink-0"
@@ -557,107 +604,153 @@ function Dashboard() {
           <EmptyGarden onTryDemo={handleSeedDemoDataAndShow} seeding={seeding} />
         ) : (
           <>
-            {/* Live weather + hardiness zone for the user's approximate location */}
-            <WeatherCard
-              lat={coords.lat}
-              lon={coords.lon}
-              city={coords.city}
-              region={coords.region}
-              country={coords.country}
-            />
-            <HardinessZoneInfo lat={coords.lat} lon={coords.lon} />
+            {/* Quick actions: water/fertilize/repot due today, combined into one compact card */}
+            {(attentionCount > 0 || duePlants.fertilize.length > 0 || duePlants.repot.length > 0) && (
+              <div className="leaf-card divide-y divide-border mb-7 overflow-hidden">
+                {attentionCount > 0 && (
+                  <button
+                    onClick={handleWaterAll}
+                    className="ios-tap w-full flex items-center gap-3 p-3.5 text-left"
+                  >
+                    <div className="h-8 w-8 shrink-0 rounded-full bg-primary/15 grid place-items-center">
+                      <Droplets className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {t("home.waterAll.title", {
+                          count: attentionCount,
+                          plural: attentionCount === 1 ? "" : "s",
+                        })}
+                      </p>
+                    </div>
+                    <span className="ios-tap shrink-0 h-7 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold grid place-items-center">
+                      {t("home.waterAll.done")}
+                    </span>
+                  </button>
+                )}
 
-            {/* Quick action: everything needing water right now, one tap */}
-            {attentionCount > 0 && (
-              <button
-                onClick={handleWaterAll}
-                className="ios-tap w-full leaf-card flex items-center gap-3 p-4 mb-7 text-left border border-primary/30"
-              >
-                <div className="h-9 w-9 shrink-0 rounded-full bg-primary/15 grid place-items-center">
-                  <Droplets className="h-[1.125rem] w-[1.125rem] text-primary" strokeWidth={1.75} />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">
-                    {t("home.waterAll.title", {
-                      count: attentionCount,
-                      plural: attentionCount === 1 ? "" : "s",
+                {duePlants.fertilize.length > 0 && (
+                  <button
+                    onClick={handleFertilizeAll}
+                    className="ios-tap w-full flex items-center gap-3 p-3.5 text-left"
+                  >
+                    <div className="h-8 w-8 shrink-0 rounded-full bg-primary/15 grid place-items-center">
+                      <Leaf className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {t("home.fertilizeAll.title", { count: duePlants.fertilize.length })}
+                      </p>
+                    </div>
+                    <span className="ios-tap shrink-0 h-7 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold grid place-items-center">
+                      {t("home.waterAll.done")}
+                    </span>
+                  </button>
+                )}
+
+                {duePlants.repot.length > 0 && (
+                  <button
+                    onClick={handleRepotAll}
+                    className="ios-tap w-full flex items-center gap-3 p-3.5 text-left"
+                  >
+                    <div className="h-8 w-8 shrink-0 rounded-full bg-primary/15 grid place-items-center">
+                      <CircleDot className="h-4 w-4 text-primary" strokeWidth={1.75} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {t("home.repotAll.title", { count: duePlants.repot.length })}
+                      </p>
+                    </div>
+                    <span className="ios-tap shrink-0 h-7 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold grid place-items-center">
+                      {t("home.waterAll.done")}
+                    </span>
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* To-do — the real, always-visible list of what's due today, in
+                place of the plant grid's own status badges */}
+            <section className="mb-8">
+              <div className="flex items-baseline justify-between mb-3">
+                <h2 className="text-lg font-display">{t("home.tasksToday")}</h2>
+                {activeTasks.length > 0 && (
+                  <span className="text-xs text-muted-foreground">
+                    {t("home.tasksDone", {
+                      done: Object.values(done).filter(Boolean).length,
+                      total: activeTasks.length,
                     })}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {attentionPlants.map((p) => p.name).join(", ")}
-                  </p>
+                  </span>
+                )}
+              </div>
+              {activeTasks.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-6">
+                  {t("home.tasks.empty")}
+                </p>
+              ) : (
+                <div className="ios-group">
+                  {activeTasks.map((task) => {
+                    const isCompleted = done[task.id];
+                    return (
+                      <SwipeableTaskRow
+                        key={task.id}
+                        isCompleted={isCompleted}
+                        onComplete={() => setDone((d) => ({ ...d, [task.id]: true }))}
+                      >
+                        <button
+                          onClick={() => setDone((d) => ({ ...d, [task.id]: true }))}
+                          className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all ${isCompleted ? "opacity-60" : ""}`}
+                        >
+                          <div
+                            className={`h-6 w-6 shrink-0 rounded-full border-2 flex items-center justify-center transition-all ${
+                              isCompleted
+                                ? "bg-primary border-primary"
+                                : "border-muted-foreground/30"
+                            }`}
+                          >
+                            {isCompleted && (
+                              <Check
+                                className="h-3.5 w-3.5 text-primary-foreground"
+                                strokeWidth={3}
+                              />
+                            )}
+                          </div>
+                          <PlantThumb
+                            emoji={task.plant.emoji}
+                            photo={task.plant.photo}
+                            gradient={task.plant.gradient}
+                            className="h-10 w-10 rounded-full text-lg [&>span]:text-lg shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p
+                              className={`text-sm font-medium transition-all ${
+                                isCompleted ? "line-through text-muted-foreground" : ""
+                              }`}
+                            >
+                              {t(task.labelKey, { name: task.plant.name })}
+                            </p>
+                          </div>
+                        </button>
+                      </SwipeableTaskRow>
+                    );
+                  })}
+                  {activeTasks.every((task) => done[task.id]) && (
+                    <div className="px-4 py-6 text-center text-sm text-muted-foreground">
+                      {t("home.allDoneToday")}
+                    </div>
+                  )}
                 </div>
-                <span className="ios-tap shrink-0 h-8 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold grid place-items-center">
-                  {t("home.waterAll.done")}
-                </span>
-              </button>
-            )}
-
-            {duePlants.fertilize.length > 0 && (
-              <button
-                onClick={handleFertilizeAll}
-                className="ios-tap w-full leaf-card flex items-center gap-3 p-4 mb-7 text-left border border-primary/30"
-              >
-                <div className="h-9 w-9 shrink-0 rounded-full bg-primary/15 grid place-items-center">
-                  <Leaf className="h-[1.125rem] w-[1.125rem] text-primary" strokeWidth={1.75} />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">
-                    {t("home.fertilizeAll.title", { count: duePlants.fertilize.length })}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {duePlants.fertilize.map((p) => p.name).join(", ")}
-                  </p>
-                </div>
-                <span className="ios-tap shrink-0 h-8 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold grid place-items-center">
-                  {t("home.waterAll.done")}
-                </span>
-              </button>
-            )}
-
-            {duePlants.repot.length > 0 && (
-              <button
-                onClick={handleRepotAll}
-                className="ios-tap w-full leaf-card flex items-center gap-3 p-4 mb-7 text-left border border-primary/30"
-              >
-                <div className="h-9 w-9 shrink-0 rounded-full bg-primary/15 grid place-items-center">
-                  <CircleDot className="h-[1.125rem] w-[1.125rem] text-primary" strokeWidth={1.75} />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">
-                    {t("home.repotAll.title", { count: duePlants.repot.length })}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {duePlants.repot.map((p) => p.name).join(", ")}
-                  </p>
-                </div>
-                <span className="ios-tap shrink-0 h-8 px-3 rounded-full bg-primary text-primary-foreground text-xs font-semibold grid place-items-center">
-                  {t("home.waterAll.done")}
-                </span>
-              </button>
-            )}
-
-            {/* Watering calendar */}
-            <section className="mb-7">
-              <button
-                onClick={() => setShowCalendar((s) => !s)}
-                className="ios-tap w-full flex items-center justify-between mb-3"
-              >
-                <span className="flex items-center gap-1.5 text-lg font-display">
-                  <CalendarDays className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
-                  {t("home.calendar.title")}
-                </span>
-                <ChevronDown
-                  className={`h-4 w-4 text-muted-foreground transition-transform ${showCalendar ? "rotate-180" : ""}`}
-                  strokeWidth={1.75}
-                />
-              </button>
-              {showCalendar && <WaterCalendar plants={gardenPlants} />}
+              )}
+              {Object.values(done).some(Boolean) && (
+                <button
+                  onClick={() => setDone({})}
+                  className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground mx-auto"
+                >
+                  <Trash2 className="h-3.5 w-3.5" strokeWidth={1.5} />
+                  {t("home.resetTasks")}
+                </button>
+              )}
             </section>
-
-            <AdvancedWateringInsights plants={gardenPlants} />
-
-            <GardenDigest plants={gardenPlants} />
 
             {/* My Garden */}
             <section className="mb-8">
@@ -703,7 +796,7 @@ function Dashboard() {
                       </button>
                     )}
                   </div>
-                  <div className="flex items-center gap-1.5 mt-2.5 overflow-x-auto">
+                  <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
                     {(["all", "needs-water", "needs-mist", "quarantined", "healthy"] as const).map(
                       (s) => (
                         <button
@@ -741,91 +834,43 @@ function Dashboard() {
               )}
             </section>
 
-            {/* Tasks */}
-            {activeTasks.length > 0 && (
-              <section>
-                <div className="flex items-baseline justify-between mb-3">
-                  <h2 className="text-lg font-display">{t("home.tasksToday")}</h2>
-                  <span className="text-xs text-muted-foreground">
-                    {t("home.tasksDone", {
-                      done: Object.values(done).filter(Boolean).length,
-                      total: activeTasks.length,
-                    })}
-                  </span>
+            {/* Garden info — weather, hardiness zone, watering calendar, and
+                paywalled insights, tucked behind one collapsed section so
+                the to-do list and garden grid stay the focal point */}
+            <section>
+              <button
+                onClick={() => setShowGardenInfo((s) => !s)}
+                className="ios-tap w-full flex items-center gap-3 leaf-card p-3.5 text-left"
+              >
+                <div className="h-8 w-8 shrink-0 rounded-full bg-secondary grid place-items-center">
+                  <Info className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
                 </div>
-                <div className="ios-group">
-                  {activeTasks.map((t) => {
-                    const plant = getPlant(t.plantId)!;
-                    const isCompleted = done[t.id];
-                    return (
-                      <SwipeableTaskRow
-                        key={t.id}
-                        isCompleted={isCompleted}
-                        onComplete={() => setDone((d) => ({ ...d, [t.id]: true }))}
-                      >
-                        <button
-                          onClick={() => setDone((d) => ({ ...d, [t.id]: true }))}
-                          className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all ${isCompleted ? "opacity-60" : ""}`}
-                        >
-                          <div
-                            className={`h-6 w-6 shrink-0 rounded-full border-2 flex items-center justify-center transition-all ${
-                              isCompleted
-                                ? "bg-primary border-primary"
-                                : "border-muted-foreground/30"
-                            }`}
-                          >
-                            {isCompleted && (
-                              <Check
-                                className="h-3.5 w-3.5 text-primary-foreground"
-                                strokeWidth={3}
-                              />
-                            )}
-                          </div>
-                          <PlantThumb
-                            emoji={plant.emoji}
-                            photo={plant.photo}
-                            gradient={plant.gradient}
-                            className="h-10 w-10 rounded-full text-lg [&>span]:text-lg shrink-0"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <p
-                              className={`text-sm font-medium transition-all ${
-                                isCompleted ? "line-through text-muted-foreground" : ""
-                              }`}
-                            >
-                              {t.label}
-                            </p>
-                            <p
-                              className={`text-xs transition-all ${
-                                isCompleted
-                                  ? "line-through text-muted-foreground/60"
-                                  : "text-muted-foreground"
-                              }`}
-                            >
-                              {t.kind}
-                            </p>
-                          </div>
-                        </button>
-                      </SwipeableTaskRow>
-                    );
-                  })}
-                  {activeTasks.every((task) => done[task.id]) && (
-                    <div className="px-4 py-6 text-center text-sm text-muted-foreground">
-                      {t("home.allDoneToday")}
-                    </div>
-                  )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium">{t("home.gardenInfo.title")}</p>
+                  <p className="text-xs text-muted-foreground">{t("home.gardenInfo.sub")}</p>
                 </div>
-                {Object.values(done).some(Boolean) && (
-                  <button
-                    onClick={() => setDone({})}
-                    className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground mx-auto"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" strokeWidth={1.5} />
-                    {t("home.resetTasks")}
-                  </button>
-                )}
-              </section>
-            )}
+                <ChevronDown
+                  className={`h-4 w-4 text-muted-foreground transition-transform shrink-0 ${showGardenInfo ? "rotate-180" : ""}`}
+                  strokeWidth={1.75}
+                />
+              </button>
+
+              {showGardenInfo && (
+                <div className="mt-4 space-y-7">
+                  <WeatherCard
+                    lat={coords.lat}
+                    lon={coords.lon}
+                    city={coords.city}
+                    region={coords.region}
+                    country={coords.country}
+                  />
+                  <HardinessZoneInfo lat={coords.lat} lon={coords.lon} />
+                  <WaterCalendar plants={gardenPlants} />
+                  <AdvancedWateringInsights plants={gardenPlants} />
+                  <GardenDigest plants={gardenPlants} />
+                </div>
+              )}
+            </section>
           </>
         )}
       </PullToRefresh>

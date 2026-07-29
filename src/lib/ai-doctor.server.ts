@@ -1,12 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import type { ApiResult, Json } from "./plantnet.server";
-
-export type AIDoctorQuery = {
-  plantName: string;
-  issue: string;
-  recentHistory?: string;
-  photoContext?: string;
-};
+import type { ApiResult } from "./plantnet.server";
 
 export type AIDoctorAdvice = {
   diagnosis: string;

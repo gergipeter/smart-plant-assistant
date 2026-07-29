@@ -201,30 +201,6 @@ export function upgradeSubscription(userId: string, tier: PremiumTier): Subscrip
   return subscription;
 }
 
-// Cancel subscription
-export function cancelSubscription(userId: string): void {
-  setSubscription({
-    userId,
-    tier: "free",
-    startDate: new Date().toISOString(),
-    autoRenew: false,
-  });
-}
-
-// Get trial status
-export function getTrialDaysRemaining(userId: string): number {
-  const sub = getSubscription(userId);
-  if (sub.tier === "free") return 0;
-
-  if (!sub.endDate) return 0;
-
-  const endDate = new Date(sub.endDate);
-  const today = new Date();
-  const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-
-  return Math.max(0, daysRemaining);
-}
-
 // Format premium tier for display
 export function formatTierName(tier: PremiumTier): string {
   return {
@@ -232,21 +208,4 @@ export function formatTierName(tier: PremiumTier): string {
     plus: "Premium Plus",
     pro: "Premium Pro",
   }[tier];
-}
-
-// Get feature description
-export function getFeatureDescription(feature: keyof TierFeatureSet): string {
-  const descriptions: Record<keyof TierFeatureSet, string> = {
-    maxPlants: "Maximum number of plants you can track",
-    photoStorage: "Cloud photo storage in MB",
-    weatherAlerts: "Weather-based watering alerts",
-    expertSupport: "Access to Ask an Expert",
-    expertQuestionsPerMonth: "Questions you can ask per month",
-    advancedWateringAlgorithm: "AI-powered watering predictions",
-    gardenDesign: "Virtual garden design tool",
-    sensorIntegration: "Smart sensor integration (Xiaomi, Eve)",
-    customReports: "Detailed plant care reports",
-  };
-
-  return descriptions[feature] || "";
 }

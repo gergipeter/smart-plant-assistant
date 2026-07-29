@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { plants, type Plant, type PlantStatus } from "@/lib/plants";
+import { demoPlants, type Plant, type PlantStatus } from "@/lib/plants";
 import type { PlantNetResult, ProjectSpeciesEntry } from "@/lib/plantnet.server";
 import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { getSubscriptionAsync, TIER_FEATURES } from "@/lib/premium";
@@ -11,17 +11,11 @@ const STORAGE_KEY = "verdant.my-garden.v1";
 const DEMO_HIDDEN_KEY = "verdant.demo-catalog-hidden.v1";
 
 // The 5 built-in catalog plants act as demo content shown on first run.
-// Once a user explicitly dismisses them (see hideDemoCatalog), this flag
-// persists so a genuinely empty garden can render its empty state instead
-// of the demo plants reappearing on every visit.
+// This flag persists so a genuinely empty garden can render its empty state
+// instead of the demo plants reappearing on every visit.
 export function isDemoCatalogHidden(): boolean {
   if (typeof window === "undefined") return false;
   return window.localStorage.getItem(DEMO_HIDDEN_KEY) === "1";
-}
-
-export function hideDemoCatalog(): void {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(DEMO_HIDDEN_KEY, "1");
 }
 
 export function showDemoCatalog(): void {
@@ -98,10 +92,10 @@ function getCurrentUserId(): string | null {
 // the `garden_plants` table; otherwise it falls back to localStorage so the
 // app keeps working fully offline / signed-out.
 export function useGardenPlants(): Plant[] {
-  const [garden, setGarden] = useState<Plant[]>(plants);
+  const [garden, setGarden] = useState<Plant[]>(demoPlants);
 
   useEffect(() => {
-    const base = isDemoCatalogHidden() ? [] : plants;
+    const base = isDemoCatalogHidden() ? [] : demoPlants;
     const userId = isSupabaseConfigured ? getCurrentUserId() : null;
 
     if (userId) {
@@ -201,7 +195,7 @@ export function propagatePlant(parent: Plant, t: Translate, locale: Locale, cutt
     name: cuttingName?.trim() || t("plantData.cuttingName", { name: parent.name }),
     health: parent.health,
     status: "healthy",
-    lastWatered: t("plantData.justAdded"),
+    lastWatered: now.toISOString(),
     nextTask: t("plantData.nextTaskRoot"),
     propagatedFromId: parent.id,
     childPlantIds: undefined,
@@ -275,7 +269,8 @@ const PLACEHOLDER_GRADIENT = "bg-[oklch(0.84_0.04_150)]";
 const PLACEHOLDER_TONE = "text-[oklch(0.31_0.04_150)]";
 
 export function buildScannedPlant(top: PlantNetResult, t: Translate, locale: Locale, photoUrl?: string): Plant {
-  const id = `scan-${slugify(top.scientificName)}-${Date.now().toString(36)}`;
+  const now = new Date();
+  const id = `scan-${slugify(top.scientificName)}-${now.getTime().toString(36)}`;
   const name = top.commonNames[0] ?? top.scientificName;
   const status: PlantStatus = "healthy";
   const careInfo = t("plantData.noCareInfoScanned");
@@ -296,13 +291,13 @@ export function buildScannedPlant(top: PlantNetResult, t: Translate, locale: Loc
     sunlight: careInfo,
     soil: careInfo,
     fact: t("plantData.factScanned", { pct: Math.round(top.score * 100) }),
-    lastWatered: t("plantData.justAdded"),
+    lastWatered: now.toISOString(),
     nextTask: t("plantData.nextTaskResearch"),
     timeline: [
       {
         id: `${id}-1`,
-        month: new Date().toLocaleString(dateLocale(locale), { month: "short", year: "numeric" }),
-        date: new Date().toLocaleString(dateLocale(locale), { month: "long", day: "numeric" }),
+        month: now.toLocaleString(dateLocale(locale), { month: "short", year: "numeric" }),
+        date: now.toLocaleString(dateLocale(locale), { month: "long", day: "numeric" }),
         emoji: "🌱",
         gradient: PLACEHOLDER_GRADIENT,
         health: 75,
@@ -321,7 +316,8 @@ export function buildScannedPlant(top: PlantNetResult, t: Translate, locale: Loc
 // photoStore under the returned plant's id) instead of leaving a blank
 // placeholder.
 export function buildUnidentifiedPlant(t: Translate, locale: Locale, photoUrl?: string): Plant {
-  const id = `scan-unidentified-${Date.now().toString(36)}`;
+  const now = new Date();
+  const id = `scan-unidentified-${now.getTime().toString(36)}`;
   const status: PlantStatus = "healthy";
   const careInfo = t("plantData.noCareInfoUnidentified");
 
@@ -341,13 +337,13 @@ export function buildUnidentifiedPlant(t: Translate, locale: Locale, photoUrl?: 
     sunlight: careInfo,
     soil: careInfo,
     fact: t("plantData.factUnidentified"),
-    lastWatered: t("plantData.justAdded"),
+    lastWatered: now.toISOString(),
     nextTask: t("plantData.nextTaskIdentify"),
     timeline: [
       {
         id: `${id}-1`,
-        month: new Date().toLocaleString(dateLocale(locale), { month: "short", year: "numeric" }),
-        date: new Date().toLocaleString(dateLocale(locale), { month: "long", day: "numeric" }),
+        month: now.toLocaleString(dateLocale(locale), { month: "short", year: "numeric" }),
+        date: now.toLocaleString(dateLocale(locale), { month: "long", day: "numeric" }),
         emoji: "🌱",
         gradient: PLACEHOLDER_GRADIENT,
         health: 75,
@@ -369,7 +365,8 @@ export function buildPlantFromSpecies(
   locale: Locale,
   photoUrl?: string,
 ): Plant {
-  const id = `species-${slugify(entry.scientificNameWithoutAuthor)}-${Date.now().toString(36)}`;
+  const now = new Date();
+  const id = `species-${slugify(entry.scientificNameWithoutAuthor)}-${now.getTime().toString(36)}`;
   const name = entry.commonNames[0] ?? entry.scientificNameWithoutAuthor;
   const status: PlantStatus = "healthy";
   const careInfo = t("plantData.noCareInfoScanned");
@@ -390,13 +387,13 @@ export function buildPlantFromSpecies(
     sunlight: careInfo,
     soil: careInfo,
     fact: t("plantData.factSpecies", { family: entry.family ? ` (${entry.family})` : "" }),
-    lastWatered: t("plantData.justAdded"),
+    lastWatered: now.toISOString(),
     nextTask: t("plantData.nextTaskResearch"),
     timeline: [
       {
         id: `${id}-1`,
-        month: new Date().toLocaleString(dateLocale(locale), { month: "short", year: "numeric" }),
-        date: new Date().toLocaleString(dateLocale(locale), { month: "long", day: "numeric" }),
+        month: now.toLocaleString(dateLocale(locale), { month: "short", year: "numeric" }),
+        date: now.toLocaleString(dateLocale(locale), { month: "long", day: "numeric" }),
         emoji: "🌱",
         gradient: PLACEHOLDER_GRADIENT,
         health: 75,

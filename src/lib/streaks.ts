@@ -1,5 +1,5 @@
-// Tracks consecutive days on which every task in `todaysTasks` was marked
-// done, persisted as a set of completed-date strings (YYYY-MM-DD, local).
+// Tracks consecutive days on which every to-do item was marked done,
+// persisted as a set of completed-date strings (YYYY-MM-DD, local).
 const STORAGE_KEY = "verdant.streak.v1";
 
 type StreakData = { completedDates: string[] };

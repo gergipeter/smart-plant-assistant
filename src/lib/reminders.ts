@@ -41,17 +41,6 @@ export function getReminder(plantId: string): ReminderSettings {
   return loadAll()[plantId] ?? defaults();
 }
 
-export function setReminderSettings(
-  plantId: string,
-  patch: Partial<Pick<ReminderSettings, "enabled" | "intervalDays">>,
-): ReminderSettings {
-  const all = loadAll();
-  const next = { ...defaults(), ...all[plantId], ...patch };
-  all[plantId] = next;
-  saveAll(all);
-  return next;
-}
-
 export function recordPhotoTaken(plantId: string, when: Date = new Date()): ReminderSettings {
   const all = loadAll();
   const next = { ...defaults(), ...all[plantId], lastPhotoAt: when.toISOString() };

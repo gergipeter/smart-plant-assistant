@@ -2,8 +2,8 @@
 // worker, requests browser notification permission, and exchanges that for
 // an FCM device token saved via notifications.server.ts's
 // savePushSubscription. The actual *sending* of a push (once a reminder is
-// due) happens server-side in firebase.server.ts / the watering-reminder
-// Edge Function — this module only owns getting a token onto this device.
+// due) happens server-side in the watering-reminder Edge Function — this
+// module only owns getting a token onto this device.
 import { initializeApp, type FirebaseApp } from "firebase/app";
 import { getMessaging, getToken, deleteToken, isSupported, type Messaging } from "firebase/messaging";
 import { savePushSubscription, removePushSubscription } from "@/lib/notifications.server";

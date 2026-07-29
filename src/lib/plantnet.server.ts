@@ -74,27 +74,8 @@ async function callApi<T>(
 }
 
 // ---------------------------------------------------------------------------
-// my-api: health, languages, projects, quota, subscription
+// my-api: quota, subscription
 // ---------------------------------------------------------------------------
-
-export const getApiHealth = createServerFn({ method: "GET" }).handler(() =>
-  callApi<{ status: string }>("/_status"),
-);
-
-export const getLanguages = createServerFn({ method: "GET" }).handler(() =>
-  callApi<string[]>("/languages"),
-);
-
-export type PlantNetProject = {
-  id: string;
-  title: string;
-  description: string;
-  speciesCount: number;
-};
-
-export const getProjects = createServerFn({ method: "GET" }).handler(() =>
-  callApi<PlantNetProject[]>("/projects"),
-);
 
 export type DailyQuota = {
   day: string;
@@ -105,15 +86,6 @@ export const getDailyQuota = createServerFn({ method: "GET" }).handler(() =>
   callApi<DailyQuota>("/quota/daily"),
 );
 
-export const getQuota = createServerFn({ method: "GET" }).handler(() =>
-  callApi<{ quota: { identify: number } }>("/quota"),
-);
-
-// [pro]-only — most API keys will get a 403 here, surfaced via ApiResult.
-export const getQuotaHistory = createServerFn({ method: "GET" }).handler(() =>
-  callApi<Json>("/quota/history"),
-);
-
 // [pro]-only — surfaced as a 403 ApiResult error for non-pro keys.
 export const getSubscription = createServerFn({ method: "GET" }).handler(() =>
   callApi<Json>("/subscription"),
@@ -122,18 +94,6 @@ export const getSubscription = createServerFn({ method: "GET" }).handler(() =>
 // ---------------------------------------------------------------------------
 // taxonomy: species, project species
 // ---------------------------------------------------------------------------
-
-export type PlantNetSpecies = {
-  id: string;
-  commonNames: string[];
-  genus: string | null;
-  family?: string;
-  scientificNameWithoutAuthor: string;
-  scientificNameAuthorship: string;
-  gbifId?: number;
-  powoId?: string;
-  iucnCategory: string | null;
-};
 
 // The bare /v2/species endpoint (no project) only returns a small list of
 // hybrid-genus entries (~100), NOT the general flora — confirmed by probing

@@ -37,9 +37,8 @@
   --color-forest: var(--forest);
   --color-clay: var(--clay);
   --color-cream: var(--cream);
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
-  --font-sans:
-    -apple-system, "SF Pro Text", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Manrope", -apple-system, ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", -apple-system, ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {

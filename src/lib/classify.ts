@@ -1,7 +1,7 @@
 import { plants, speciesCatalog, expandedSpeciesCatalog, type Plant } from "@/lib/plants";
 import type { PlantNetResult } from "@/lib/plantnet.server";
 import type { ProjectSpeciesEntry } from "@/lib/plantnet.server";
-import type { VisionSpeciesGuess } from "@/lib/image-recognition.server";
+import type { VisionSpeciesGuess, ClaudeSpeciesGuess } from "@/lib/image-recognition.server";
 
 // expandedSpeciesCatalog is already deduped against plants/speciesCatalog by
 // scientific name in plants.ts, so no overlap to worry about here.
@@ -294,4 +294,21 @@ export function matchVisionGuessToSpecies(
   }
 
   return best;
+}
+
+// Claude's guess carries a proper "Genus species" scientific name (unlike
+// Vision's free-text guesses), so match it the same precise genus+species
+// way as Pl@ntNet results rather than the fuzzy phrase-overlap scoring the
+// other two fallbacks need. Low-confidence Claude guesses aren't matched
+// against the catalog at all — better to fall through to "add anyway" than
+// mislabel a plant on a guess Claude itself wasn't sure about.
+export function matchPlantByClaudeGuess(guess: ClaudeSpeciesGuess): { plant: Plant | null } {
+  if (guess.confidence === "low") return { plant: null };
+
+  for (const plant of allPlants) {
+    if (scientificNameMatches(plant.scientific, guess.scientificName)) {
+      return { plant };
+    }
+  }
+  return { plant: null };
 }

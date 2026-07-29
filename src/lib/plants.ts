@@ -21,6 +21,9 @@ export type Plant = {
   sunlight: string;
   soil: string;
   fact: string;
+  // ISO 8601 timestamp (Date.toISOString()) of the last watering — NOT a
+  // display string. Use careDates.ts's daysSinceCareDate() to compute
+  // elapsed time; don't format or compare this field directly.
   lastWatered: string;
   nextTask: string;
   timeline: TimelineEntry[];
@@ -32,14 +35,13 @@ export type Plant = {
   drainageQuality?: "poor" | "normal" | "excellent";
   sunExposure?: "full-sun" | "partial" | "shade";
   containerSizeLiters?: number;
-  // Fertilizing/repotting tracking, mirroring lastWatered/waterIntervalDays'
-  // string-based "N days ago" convention (see waterCalendar.ts's
-  // parseLastWatered) so the same due-date math applies. Optional and unset
-  // until the user first logs one of these — home.tsx's batch actions only
-  // consider a plant "due" once it has a last-done date to compare against;
-  // undefined never counts as due (avoids nagging about a task the user
-  // hasn't opted into tracking for that plant — matches careSchedule.ts's
-  // toggle intent).
+  // Fertilizing/repotting tracking — same ISO 8601 timestamp convention as
+  // lastWatered above (see careDates.ts's daysSinceCareDate). Optional and
+  // unset until the user first logs one of these — home.tsx's batch actions
+  // only consider a plant "due" once it has a last-done date to compare
+  // against; undefined never counts as due (avoids nagging about a task the
+  // user hasn't opted into tracking for that plant — matches
+  // careSchedule.ts's toggle intent).
   lastFertilized?: string;
   fertilizerIntervalDays?: number;
   lastRepotted?: string;
@@ -91,8 +93,10 @@ export type TimelineEntry = {
   extraPhotoIds?: string[];
 };
 
-// All plants including the original demo + expanded catalog
-const allDemoPlants: Plant[] = [
+// The 5 original demo plants shown as sample content in a fresh garden (see
+// myGarden.ts's useGardenPlants) — distinct from catalogPlants below, which
+// is a much larger species catalog meant only for scan/explore matching.
+export const demoPlants: Plant[] = [
   {
     id: "monstera",
     name: "Monstera",
@@ -111,7 +115,7 @@ const allDemoPlants: Plant[] = [
     sunlight: "Bright, indirect light. Avoid direct afternoon sun.",
     soil: "Well-draining aroid mix with bark and perlite.",
     fact: "Its iconic leaf holes (fenestrations) evolved to let sunlight pass to lower leaves in the rainforest canopy.",
-    lastWatered: "6 days ago",
+    lastWatered: "2026-07-23T12:00:00.000Z",
     nextTask: "Water today",
     timeline: [
       {
@@ -196,7 +200,7 @@ const allDemoPlants: Plant[] = [
     sunlight: "Very bright, indirect. Rotate weekly for even growth.",
     soil: "Rich, well-draining indoor potting mix.",
     fact: "Fiddle Leafs can grow 40 ft tall in the wild — indoors they cap out around 10 ft.",
-    lastWatered: "2 days ago",
+    lastWatered: "2026-07-27T12:00:00.000Z",
     nextTask: "Mist leaves",
     timeline: [
       {
@@ -267,7 +271,7 @@ const allDemoPlants: Plant[] = [
     sunlight: "Anything from low light to bright indirect.",
     soil: "Fast-draining cactus/succulent mix.",
     fact: "NASA's clean-air study found it filters formaldehyde and benzene from indoor air.",
-    lastWatered: "9 days ago",
+    lastWatered: "2026-07-20T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -326,7 +330,7 @@ const allDemoPlants: Plant[] = [
     sunlight: "Low to bright indirect. Variegation deepens with more light.",
     soil: "Standard indoor mix with good drainage.",
     fact: "In tropical climates it can grow leaves up to 3 feet across.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Mist today",
     timeline: [
       {
@@ -385,7 +389,7 @@ const allDemoPlants: Plant[] = [
     sunlight: "Medium, indirect. Direct sun scorches leaves.",
     soil: "Peat-based, moisture-retentive mix.",
     fact: "Its leaves fold up at night — a movement called nyctinasty.",
-    lastWatered: "1 day ago",
+    lastWatered: "2026-07-28T12:00:00.000Z",
     nextTask: "Check for pests",
     timeline: [
       {
@@ -459,7 +463,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Low to bright indirect light.",
     soil: "Well-draining potting mix.",
     fact: "Stores water in thick rhizomes, letting it survive months of neglect.",
-    lastWatered: "12 days ago",
+    lastWatered: "2026-07-17T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -504,7 +508,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Low to medium indirect light.",
     soil: "Rich, moisture-retentive potting mix.",
     fact: "Its white 'flower' is actually a modified leaf called a spathe.",
-    lastWatered: "3 days ago",
+    lastWatered: "2026-07-26T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -549,7 +553,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct to indirect light.",
     soil: "Fast-draining cactus/succulent mix.",
     fact: "The gel inside its leaves has been used topically for burns for centuries.",
-    lastWatered: "10 days ago",
+    lastWatered: "2026-07-19T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -594,7 +598,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Standard well-draining potting mix.",
     fact: "Produces plantlets on long stems that can be rooted into new plants.",
-    lastWatered: "5 days ago",
+    lastWatered: "2026-07-24T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -639,7 +643,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect. More light deepens variegation.",
     soil: "Well-draining aroid mix.",
     fact: "Its lime-and-green variegation follows a genetic stripe pattern unique to each leaf.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -684,7 +688,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Rich, well-draining potting mix.",
     fact: "Historically tapped for natural latex before Brazilian rubber trees took over production.",
-    lastWatered: "6 days ago",
+    lastWatered: "2026-07-23T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -729,7 +733,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct to indirect light.",
     soil: "Fast-draining succulent mix.",
     fact: "Considered a symbol of good luck and prosperity in many cultures.",
-    lastWatered: "11 days ago",
+    lastWatered: "2026-07-18T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -774,7 +778,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light. No direct sun.",
     soil: "Chunky bark-based orchid mix, not regular soil.",
     fact: "Roots photosynthesize and turn green when watered, silvery-grey when dry.",
-    lastWatered: "3 days ago",
+    lastWatered: "2026-07-26T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -819,7 +823,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium to bright indirect light.",
     soil: "Light, well-draining potting mix.",
     fact: "Thick, succulent-like leaves store water, making it forgiving of missed waterings.",
-    lastWatered: "7 days ago",
+    lastWatered: "2026-07-22T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -864,7 +868,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium, indirect light.",
     soil: "Peat-based, moisture-retentive mix.",
     fact: "One of the most effective houseplants for adding humidity to a room.",
-    lastWatered: "2 days ago",
+    lastWatered: "2026-07-27T12:00:00.000Z",
     nextTask: "Mist today",
     timeline: [
       {
@@ -909,7 +913,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium to bright indirect light.",
     soil: "Standard well-draining potting mix.",
     fact: "A vigorous climber that can attach to surfaces using tiny root-like structures.",
-    lastWatered: "5 days ago",
+    lastWatered: "2026-07-24T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -954,7 +958,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light. Rotate for even growth.",
     soil: "Well-draining potting mix.",
     fact: "Its round, coin-shaped leaves have made it a popular plant to share as cuttings.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Rotate for even growth",
     timeline: [
       {
@@ -999,7 +1003,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect to direct light.",
     soil: "Fast-draining succulent mix.",
     fact: "Each bead-like leaf is a water-storing sphere with a translucent stripe for light capture.",
-    lastWatered: "9 days ago",
+    lastWatered: "2026-07-20T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1044,7 +1048,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct to indirect light.",
     soil: "Rich, well-draining potting mix.",
     fact: "Named for its exotic flowers resembling a bird's crest, rare in indoor conditions.",
-    lastWatered: "5 days ago",
+    lastWatered: "2026-07-24T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1089,7 +1093,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Rich, well-draining potting mix.",
     fact: "One of the top air-purifying plants identified in NASA's clean air study.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1134,7 +1138,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct light for best color.",
     soil: "Rich, well-draining potting mix.",
     fact: "Leaf color intensity is directly tied to how much bright light it receives.",
-    lastWatered: "3 days ago",
+    lastWatered: "2026-07-26T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1179,7 +1183,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Chunky, well-draining aroid mix.",
     fact: "Its glossy heart-shaped 'flower' is a waxy spathe, with the true flowers on the central spike.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1224,7 +1228,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright to medium indirect light.",
     soil: "Well-draining potting mix.",
     fact: "Thin, red-edged leaves radiate from the top of narrow, sculptural stems.",
-    lastWatered: "8 days ago",
+    lastWatered: "2026-07-21T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1269,7 +1273,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Fast-draining cactus/succulent mix.",
     fact: "Small enough for windowsills, its white bumpy stripes mimic natural camouflage.",
-    lastWatered: "13 days ago",
+    lastWatered: "2026-07-16T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1314,7 +1318,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Well-draining potting mix with added organic matter.",
     fact: "Unlike desert cacti, it's a tropical rainforest epiphyte and prefers humidity.",
-    lastWatered: "5 days ago",
+    lastWatered: "2026-07-24T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1359,7 +1363,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "None — grows without soil, mounted or displayed freely.",
     fact: "Absorbs water and nutrients through specialized leaf scales called trichomes.",
-    lastWatered: "2 days ago",
+    lastWatered: "2026-07-27T12:00:00.000Z",
     nextTask: "Mist today",
     timeline: [
       {
@@ -1404,7 +1408,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Loose, well-draining epiphyte mix.",
     fact: "The colorful central bracts last for months, far longer than typical flowers.",
-    lastWatered: "3 days ago",
+    lastWatered: "2026-07-26T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1449,7 +1453,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium, indirect light.",
     soil: "Light, well-draining potting mix.",
     fact: "Grown mainly for its dramatic swirling leaf patterns rather than its flowers.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1494,7 +1498,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Light, well-draining African violet mix.",
     fact: "Fuzzy leaves are sensitive to cold water spots, which can cause permanent marks.",
-    lastWatered: "5 days ago",
+    lastWatered: "2026-07-24T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1539,7 +1543,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Well-draining potting mix.",
     fact: "Often sold with braided trunks, a technique that doesn't harm the plant.",
-    lastWatered: "6 days ago",
+    lastWatered: "2026-07-23T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1584,7 +1588,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium, indirect light.",
     soil: "Peat-based, moisture-retentive mix.",
     fact: "Leaves fold upright at night, like praying hands — hence the name.",
-    lastWatered: "1 day ago",
+    lastWatered: "2026-07-28T12:00:00.000Z",
     nextTask: "Check for pests",
     timeline: [
       {
@@ -1629,7 +1633,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Rich, well-draining potting mix.",
     fact: "Not a true fern — it's related to asparagus, with feathery needle-like foliage.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1674,7 +1678,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Low to medium indirect light.",
     soil: "Standard well-draining potting mix.",
     fact: "Named for its ability to survive poor light, drought, and neglect better than almost any houseplant.",
-    lastWatered: "10 days ago",
+    lastWatered: "2026-07-19T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1719,7 +1723,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Low to medium indirect light.",
     soil: "Well-draining potting mix.",
     fact: "One of the most tolerant houseplants of low light and fluctuating humidity.",
-    lastWatered: "5 days ago",
+    lastWatered: "2026-07-24T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1764,7 +1768,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct to indirect light.",
     soil: "Fast-draining succulent mix.",
     fact: "Clusters of tiny flowers can stay in bloom for several weeks at a time.",
-    lastWatered: "8 days ago",
+    lastWatered: "2026-07-21T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1809,7 +1813,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct to indirect light.",
     soil: "Fast-draining cactus/succulent mix.",
     fact: "Not a true palm — it's a succulent with a swollen water-storing trunk base.",
-    lastWatered: "14 days ago",
+    lastWatered: "2026-07-15T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1854,7 +1858,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct light.",
     soil: "Fast-draining succulent mix.",
     fact: "Rosette-forming succulents that come in vibrant colors and bloom with delicate flowers.",
-    lastWatered: "10 days ago",
+    lastWatered: "2026-07-19T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1899,7 +1903,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light for pink variegation.",
     soil: "Well-draining aroid mix.",
     fact: "Highly sought after for its pink variegated leaves that deepen with maturity.",
-    lastWatered: "3 days ago",
+    lastWatered: "2026-07-26T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1944,7 +1948,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Rich, well-draining potting mix.",
     fact: "Dramatic arrow-shaped leaves with white veining make it a striking houseplant.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -1989,7 +1993,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Well-draining aroid mix.",
     fact: "Similar to Pothos but develops larger, deeply fenestrated leaves as it matures.",
-    lastWatered: "5 days ago",
+    lastWatered: "2026-07-24T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2034,7 +2038,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium to bright indirect light.",
     soil: "Well-draining potting mix.",
     fact: "Arrow-shaped leaves that develop lobes as the plant matures.",
-    lastWatered: "3 days ago",
+    lastWatered: "2026-07-26T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2079,7 +2083,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium, indirect light.",
     soil: "Well-draining potting mix.",
     fact: "Satin Pothos features silver-spotted leaves on trailing vines.",
-    lastWatered: "6 days ago",
+    lastWatered: "2026-07-23T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2124,7 +2128,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Well-draining aroid mix.",
     fact: "Compact version of Monstera with pre-split juvenile leaves.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2169,7 +2173,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium, indirect light.",
     soil: "Peat-based, moisture-retentive mix.",
     fact: "Distinctive red veins and fold leaves upright at night.",
-    lastWatered: "2 days ago",
+    lastWatered: "2026-07-27T12:00:00.000Z",
     nextTask: "Mist today",
     timeline: [
       {
@@ -2214,7 +2218,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium, indirect light.",
     soil: "Peat-based, moisture-retentive mix.",
     fact: "Striking large leaves with silvery patterns and burgundy undersides.",
-    lastWatered: "3 days ago",
+    lastWatered: "2026-07-26T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2259,7 +2263,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Peat-based, moisture-retentive mix.",
     fact: "Tricolored leaves with red, white, and green patterns.",
-    lastWatered: "1 day ago",
+    lastWatered: "2026-07-28T12:00:00.000Z",
     nextTask: "Mist today",
     timeline: [
       {
@@ -2304,7 +2308,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Chunky, well-draining aroid mix.",
     fact: "Dark velvety leaves with striking white vein patterns.",
-    lastWatered: "5 days ago",
+    lastWatered: "2026-07-24T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2349,7 +2353,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium to bright indirect light.",
     soil: "Well-draining potting mix.",
     fact: "Deep red foliage on compact plant with compact growth habit.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2394,7 +2398,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Rich, well-draining potting mix.",
     fact: "Produces vibrant red-orange flowers resembling lipstick.",
-    lastWatered: "3 days ago",
+    lastWatered: "2026-07-26T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2439,7 +2443,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Carnivorous plant mix.",
     fact: "Carnivorous plant that traps insects on sticky leaves.",
-    lastWatered: "2 days ago",
+    lastWatered: "2026-07-27T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2484,7 +2488,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Bark and sphagnum moss mix.",
     fact: "Carnivorous plant with tubular pitcher traps for insects.",
-    lastWatered: "1 day ago",
+    lastWatered: "2026-07-28T12:00:00.000Z",
     nextTask: "Mist today",
     timeline: [
       {
@@ -2529,7 +2533,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Peat and sand mix.",
     fact: "Hardy carnivorous pitcher plant with reddish pitchers.",
-    lastWatered: "3 days ago",
+    lastWatered: "2026-07-26T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2574,7 +2578,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Very bright, 12+ hours needed.",
     soil: "Peat and sand mix.",
     fact: "Carnivorous plant that closes its trap jaws when prey touches trigger hairs.",
-    lastWatered: "2 days ago",
+    lastWatered: "2026-07-27T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2619,7 +2623,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium, indirect light.",
     soil: "Light, well-draining potting mix.",
     fact: "Leaves spiral in a snail-shell pattern with metallic silver markings.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2664,7 +2668,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium, indirect light.",
     soil: "Peat-based, moisture-retentive mix.",
     fact: "Delicate leaves with intricate white vein patterns.",
-    lastWatered: "1 day ago",
+    lastWatered: "2026-07-28T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2709,7 +2713,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Medium, indirect light.",
     soil: "Peat-based, moisture-retentive mix.",
     fact: "Companion to white nerve plant with red vein patterns.",
-    lastWatered: "1 day ago",
+    lastWatered: "2026-07-28T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2754,7 +2758,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect to direct light.",
     soil: "Standard well-draining potting mix.",
     fact: "Trailing plant with purple undersides and green-silver tops on leaves.",
-    lastWatered: "5 days ago",
+    lastWatered: "2026-07-24T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2799,7 +2803,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect to direct light.",
     soil: "Standard well-draining potting mix.",
     fact: "Compact trailing plant with pink, purple, and white variegated foliage.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2844,7 +2848,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Well-draining potting mix.",
     fact: "Waxy star-shaped flowers that emit sweet fragrance and produce sugary nectar.",
-    lastWatered: "8 days ago",
+    lastWatered: "2026-07-21T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2889,7 +2893,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Well-draining potting mix.",
     fact: "Dark burgundy-edged leaves with fragrant pink flower clusters.",
-    lastWatered: "7 days ago",
+    lastWatered: "2026-07-22T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2934,7 +2938,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect to direct light.",
     soil: "Fast-draining succulent mix.",
     fact: "Variegated version with cream and green beaded leaves.",
-    lastWatered: "10 days ago",
+    lastWatered: "2026-07-19T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -2979,7 +2983,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct light.",
     soil: "Fast-draining succulent mix.",
     fact: "Nearly black rosettes that blush red in bright light.",
-    lastWatered: "11 days ago",
+    lastWatered: "2026-07-18T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3024,7 +3028,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct light.",
     soil: "Fast-draining gritty succulent mix.",
     fact: "Rosette covered in fine webbing that resembles a spider's web.",
-    lastWatered: "15 days ago",
+    lastWatered: "2026-07-14T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3069,7 +3073,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct light.",
     soil: "Fast-draining succulent mix.",
     fact: "Tree-like succulent with geometric rosette flowers.",
-    lastWatered: "9 days ago",
+    lastWatered: "2026-07-20T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3114,7 +3118,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct light.",
     soil: "Fast-draining succulent mix.",
     fact: "Pale whitish-pink rosettes that can turn lavender in cool weather.",
-    lastWatered: "12 days ago",
+    lastWatered: "2026-07-17T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3159,7 +3163,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct to indirect light.",
     soil: "Fast-draining succulent mix.",
     fact: "Variegated form with cream and green leaves, occasional red margins.",
-    lastWatered: "10 days ago",
+    lastWatered: "2026-07-19T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3204,7 +3208,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct light.",
     soil: "Fast-draining succulent mix.",
     fact: "Trailing stonecrop with tiny blue-green leaves that turn orange in cold.",
-    lastWatered: "14 days ago",
+    lastWatered: "2026-07-15T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3249,7 +3253,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Well-draining potting mix.",
     fact: "Red bracts are modified leaves; true flowers are small yellow structures.",
-    lastWatered: "2 days ago",
+    lastWatered: "2026-07-27T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3294,7 +3298,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Well-draining potting mix with added organic matter.",
     fact: "Tropical cactus blooming in spring with pink-red flowers.",
-    lastWatered: "4 days ago",
+    lastWatered: "2026-07-25T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3339,7 +3343,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct light.",
     soil: "Fast-draining cactus mix.",
     fact: "Small round cactus covered in soft silky spines with pink flowers.",
-    lastWatered: "13 days ago",
+    lastWatered: "2026-07-16T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3384,7 +3388,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, direct light.",
     soil: "Fast-draining cactus mix.",
     fact: "Tall columnar cactus that produces edible pink fruits.",
-    lastWatered: "15 days ago",
+    lastWatered: "2026-07-14T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3429,7 +3433,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Rich, well-draining potting mix.",
     fact: "Delicate feathery variegated foliage on tree-like structure.",
-    lastWatered: "2 days ago",
+    lastWatered: "2026-07-27T12:00:00.000Z",
     nextTask: "Mist today",
     timeline: [
       {
@@ -3474,7 +3478,7 @@ const catalogPlants: Plant[] = [
     sunlight: "Bright, indirect light.",
     soil: "Rich, well-draining potting mix.",
     fact: "Red and pink variegated compact foliage.",
-    lastWatered: "3 days ago",
+    lastWatered: "2026-07-26T12:00:00.000Z",
     nextTask: "Nothing today",
     timeline: [
       {
@@ -3505,34 +3509,13 @@ const catalogPlants: Plant[] = [
   },
 ];
 
-export const todaysTasks = [
-  { id: "t1", plantId: "monstera", label: "Water Monstera", kind: "Water" as const },
-  { id: "t2", plantId: "pothos", label: "Mist Golden Pothos", kind: "Mist" as const },
-  { id: "t3", plantId: "fiddle", label: "Rotate Fiddle Leaf Fig", kind: "Care" as const },
-  { id: "t4", plantId: "calathea", label: "Inspect Calathea for pests", kind: "Check" as const },
-];
-
-export const statusLabel: Record<PlantStatus, string> = {
-  "needs-water": "Needs water today",
-  healthy: "Healthy",
-  quarantined: "Quarantined",
-  "needs-mist": "Mist today",
-};
-
-export const statusTone: Record<PlantStatus, string> = {
-  "needs-water": "border-border text-foreground",
-  healthy: "border-border text-muted-foreground",
-  quarantined: "border-[oklch(0.5_0.13_35)] text-[oklch(0.4_0.09_35)]",
-  "needs-mist": "border-border text-foreground",
-};
-
 // Bulk species catalog (see plants-catalog-1000.ts for provenance/cleanup
 // notes) — cast through unknown since its plain-JSON PlantStatus type isn't
 // nominally the same type as this file's, even though the values line up.
-import { expandedCatalogPlants, TOTAL_PLANTS as CATALOG_SIZE } from "./plants-catalog-1000";
+import { expandedCatalogPlants } from "./plants-catalog-1000";
 
 // Combine all demo plants (original 5) and catalog plants into one array
-export const plants: Plant[] = [...allDemoPlants, ...catalogPlants];
+export const plants: Plant[] = [...demoPlants, ...catalogPlants];
 
 // Keep speciesCatalog for backward compatibility
 export const speciesCatalog: Plant[] = catalogPlants;
@@ -3550,8 +3533,6 @@ const curatedScientificNames = new Set(
 export const expandedSpeciesCatalog: Plant[] = (expandedCatalogPlants as unknown as Plant[]).filter(
   (p) => !curatedScientificNames.has(p.scientific.toLowerCase().split(" ").slice(0, 2).join(" ")),
 );
-
-export const TOTAL_PLANTS_IN_CATALOG = CATALOG_SIZE;
 
 export function getPlant(id: string) {
   return (

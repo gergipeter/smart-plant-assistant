@@ -103,13 +103,3 @@ export async function getPhoto(entryId: string): Promise<Blob | undefined> {
   return getLocal(entryId);
 }
 
-export async function deletePhoto(entryId: string): Promise<void> {
-  const userId = isSupabaseConfigured ? getCurrentUserId() : null;
-
-  if (userId && supabase) {
-    const { error } = await supabase.storage.from(BUCKET).remove([storagePath(userId, entryId)]);
-    if (error) console.error("Failed to delete photo from Supabase Storage:", error);
-  }
-
-  await deleteLocal(entryId);
-}

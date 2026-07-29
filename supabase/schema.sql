@@ -141,121 +141,21 @@ create policy "Users manage their own photos"
   with check (bucket_id = 'plant-photos' and auth.uid()::text = (storage.foldername(name))[1]);
 
 -- ============================================================
--- Social features — posts (photo + caption about a garden plant), follows,
--- and likes. Posts are public (readable by anyone, including signed-out
--- visitors) since the feed is meant for discovery; writes are restricted
--- to the post's own author.
+-- Social features (posts, follows, likes, and the "post-photos" storage
+-- bucket) have been removed along with the /feed and /profile pages. These
+-- drops clean up a database that previously ran the create statements this
+-- section used to have — safe to re-run, and a no-op on a fresh project.
 -- ============================================================
-create table if not exists public.posts (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users (id) on delete cascade,
-  plant_id text not null,
-  plant_name text not null,
-  caption text not null,
-  photo_path text,
-  -- Set when this post was created from a HealthChecks disease-identify
-  -- result (see plant.$id.tsx's "share to feed" flow) — lets the feed show
-  -- "possible: X (62% confidence)" so other growers can weigh in on
-  -- uncertain diagnoses. Both null for an ordinary post.
-  disease_label text,
-  disease_confidence numeric,
-  created_at timestamptz not null default now()
-);
+drop table if exists public.post_likes;
+drop table if exists public.follows;
+drop table if exists public.posts;
 
-alter table public.posts enable row level security;
-
-drop policy if exists "Posts are viewable by everyone" on public.posts;
-create policy "Posts are viewable by everyone"
-  on public.posts for select
-  using (true);
-
-drop policy if exists "Users manage their own posts" on public.posts;
-create policy "Users manage their own posts"
-  on public.posts for insert
-  with check (auth.uid() = user_id);
-
-drop policy if exists "Users update their own posts" on public.posts;
-create policy "Users update their own posts"
-  on public.posts for update
-  using (auth.uid() = user_id);
-
-drop policy if exists "Users delete their own posts" on public.posts;
-create policy "Users delete their own posts"
-  on public.posts for delete
-  using (auth.uid() = user_id);
-
-create table if not exists public.follows (
-  follower_id uuid not null references auth.users (id) on delete cascade,
-  following_id uuid not null references auth.users (id) on delete cascade,
-  created_at timestamptz not null default now(),
-  primary key (follower_id, following_id),
-  constraint no_self_follow check (follower_id <> following_id)
-);
-
-alter table public.follows enable row level security;
-
-drop policy if exists "Follows are viewable by everyone" on public.follows;
-create policy "Follows are viewable by everyone"
-  on public.follows for select
-  using (true);
-
-drop policy if exists "Users manage their own follows" on public.follows;
-create policy "Users manage their own follows"
-  on public.follows for insert
-  with check (auth.uid() = follower_id);
-
-drop policy if exists "Users remove their own follows" on public.follows;
-create policy "Users remove their own follows"
-  on public.follows for delete
-  using (auth.uid() = follower_id);
-
-create table if not exists public.post_likes (
-  post_id uuid not null references public.posts (id) on delete cascade,
-  user_id uuid not null references auth.users (id) on delete cascade,
-  created_at timestamptz not null default now(),
-  primary key (post_id, user_id)
-);
-
-alter table public.post_likes enable row level security;
-
-drop policy if exists "Likes are viewable by everyone" on public.post_likes;
-create policy "Likes are viewable by everyone"
-  on public.post_likes for select
-  using (true);
-
-drop policy if exists "Users manage their own likes" on public.post_likes;
-create policy "Users manage their own likes"
-  on public.post_likes for insert
-  with check (auth.uid() = user_id);
-
-drop policy if exists "Users remove their own likes" on public.post_likes;
-create policy "Users remove their own likes"
-  on public.post_likes for delete
-  using (auth.uid() = user_id);
-
--- ============================================================
--- Storage — "post-photos" bucket. Public bucket (unlike plant-photos):
--- feed posts are meant to be visible to everyone, including signed-out
--- visitors browsing the public feed. Writes still restricted per-user.
--- ============================================================
-insert into storage.buckets (id, name, public)
-values ('post-photos', 'post-photos', true)
-on conflict (id) do nothing;
+delete from storage.objects where bucket_id = 'post-photos';
+delete from storage.buckets where id = 'post-photos';
 
 drop policy if exists "Post photos are viewable by everyone" on storage.objects;
-create policy "Post photos are viewable by everyone"
-  on storage.objects for select
-  using (bucket_id = 'post-photos');
-
 drop policy if exists "Users manage their own post photos" on storage.objects;
-create policy "Users manage their own post photos"
-  on storage.objects for insert
-  with check (bucket_id = 'post-photos' and auth.uid()::text = (storage.foldername(name))[1]);
-
 drop policy if exists "Users delete their own post photos" on storage.objects;
-create policy "Users delete their own post photos"
-  on storage.objects for delete
-  using (bucket_id = 'post-photos' and auth.uid()::text = (storage.foldername(name))[1]);
 
 -- ============================================================
 -- notification_preferences — replaces the old localStorage-in-a-server-fn
@@ -284,7 +184,7 @@ create policy "Users manage their own notification preferences"
 -- and a token is replaced (not duplicated) if the same device re-registers
 -- (browsers rotate FCM tokens periodically). Read by any Edge Function that
 -- sends push notifications (e.g. send-watering-reminders) to look up all of
--- a user's active tokens and call firebase.server.ts's sendNotificationToMany.
+-- a user's active tokens and send FCM v1 messages to them.
 -- ============================================================
 create table if not exists public.push_subscriptions (
   user_id uuid not null references auth.users (id) on delete cascade,
@@ -300,3 +200,70 @@ create policy "Users manage their own push subscriptions"
   on public.push_subscriptions for all
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
+
+-- ============================================================
+-- sensor_devices / sensor_readings — physical soil-moisture sensors (e.g.
+-- an ESP8266 + capacitive probe, see hardware/sensor-firmware/README.md). A device
+-- can't authenticate as a Supabase user, so it isn't RLS'd against
+-- auth.uid() like the tables above: instead each device carries its own
+-- random secret token, and src/routes/api.sensor-ingest.ts (a raw HTTP
+-- route, not a createServerFn) looks up the device by a SHA-256 hash of
+-- the token — using the service-role client, which bypasses RLS — to
+-- find which plant/user the reading belongs to before inserting. RLS
+-- here only governs what the *app* (signed-in user, anon key) may
+-- read/manage; the ingest route's writes go through the service-role key
+-- and are unaffected by these policies.
+--
+-- The raw token is never stored: only its SHA-256 hash (secret_token_hash)
+-- and last four characters (secret_token_last_four, for display in the
+-- devices list) are persisted. The raw value is returned to the caller
+-- exactly once, at registration/rotation time, by the server function that
+-- generates it — a DB read can never recover it afterwards.
+-- ============================================================
+create table if not exists public.sensor_devices (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users (id) on delete cascade,
+  plant_id text not null,
+  name text not null,
+  -- SHA-256 hash (hex) of the long random token the physical device sends
+  -- as a bearer credential. Token generated with 192 bits of randomness
+  -- client-side (see src/lib/sensorDevices.ts); only its hash is stored.
+  secret_token_hash text not null unique,
+  secret_token_last_four text not null,
+  created_at timestamptz not null default now(),
+  last_seen_at timestamptz,
+  -- Fixed-window rate-limit counter for api.sensor-ingest.ts: window_started_at
+  -- resets (to now, count to 1) whenever a request arrives after the previous
+  -- window has expired; otherwise the route increments window_hit_count and
+  -- rejects once it exceeds the per-window cap. Avoids a separate table/job.
+  window_started_at timestamptz not null default now(),
+  window_hit_count int not null default 0
+);
+
+alter table public.sensor_devices enable row level security;
+
+drop policy if exists "Users manage their own sensor devices" on public.sensor_devices;
+create policy "Users manage their own sensor devices"
+  on public.sensor_devices for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create table if not exists public.sensor_readings (
+  id bigint generated always as identity primary key,
+  device_id uuid not null references public.sensor_devices (id) on delete cascade,
+  user_id uuid not null references auth.users (id) on delete cascade,
+  plant_id text not null,
+  soil_moisture numeric not null check (soil_moisture >= 0 and soil_moisture <= 100),
+  battery_percent numeric check (battery_percent >= 0 and battery_percent <= 100),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists sensor_readings_plant_id_created_at_idx
+  on public.sensor_readings (plant_id, created_at desc);
+
+alter table public.sensor_readings enable row level security;
+
+drop policy if exists "Users view their own sensor readings" on public.sensor_readings;
+create policy "Users view their own sensor readings"
+  on public.sensor_readings for select
+  using (auth.uid() = user_id);

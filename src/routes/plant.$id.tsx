@@ -3,14 +3,19 @@ import { AppShell, PlantThumb } from "@/components/AppShell";
 import { getPlant, type Plant, type TimelineEntry } from "@/lib/plants";
 import { useGardenPlant, updatePlantInGarden, propagatePlant, getFromMyGarden } from "@/lib/myGarden";
 import { useAuth } from "@/lib/auth";
-import { createPost } from "@/lib/socialFeatures";
-import type { DiseaseMatch } from "@/lib/plantnet.server";
 import { savePhoto } from "@/lib/photoStore";
 import { saveEmbedding, getEmbedding, cosineSimilarity } from "@/lib/embeddingStore";
 import { scoreFromSimilarity, adjustEntryForDisease } from "@/lib/healthScoring";
 import { usePhotoUrl } from "@/lib/usePhotoUrl";
 import { getReminderStatus, recordPhotoTaken } from "@/lib/reminders";
 import { getCareToggles, setCareToggle, type CareTask } from "@/lib/careSchedule";
+import {
+  isDueForFertilizing,
+  isDueForRepotting,
+  markFertilized,
+  markRepotted,
+  markWatered,
+} from "@/lib/careDueStatus";
 import { downloadPlantCareIcs } from "@/lib/calendarExport";
 import { printCareHistory } from "@/lib/careHistoryExport";
 import { getPhotoEmbedding } from "@/lib/plantnet.server";
@@ -19,6 +24,7 @@ import { CompareSlider } from "@/components/CompareSlider";
 import { HealthChecks } from "@/components/HealthChecks";
 import { PlantEnrichment, ImageHealthAnalysis } from "@/components/PlantEnrichment";
 import { CommunityPhotos } from "@/components/CommunityPhotos";
+import { SensorReadingCard } from "@/components/SensorReadingCard";
 import { useT, useI18n, dateLocale, type TranslationKey } from "@/lib/i18n";
 import {
   ArrowLeft,
@@ -43,6 +49,8 @@ import {
   Printer,
   GitBranch,
   Scissors,
+  Leaf,
+  CircleDot,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -141,14 +149,39 @@ function TimelineThumb({ entry, className }: { entry: TimelineEntry; className: 
 // resolves its own blob: URL from photoStore.ts, same pattern as
 // TimelineThumb/usePhotoUrl but for a synthetic extra-photo id rather than
 // the entry's primary id.
-function ExtraPhotoThumb({ photoId, onClick }: { photoId: string; onClick: () => void }) {
+function ExtraPhotoThumb({
+  photoId,
+  onClick,
+  square,
+}: {
+  photoId: string;
+  onClick: () => void;
+  square?: boolean;
+}) {
   const url = usePhotoUrl(photoId);
+  const sizeClass = square ? "aspect-square w-full" : "h-16 w-16 shrink-0";
+  // The always-visible grid (square=true) uses the app's leaf-card treatment
+  // (continuous corner radius + soft ambient shadow) so it reads as part of
+  // the designed page rather than a bare utility grid; the horizontal strip
+  // inside an expanded timeline entry stays a plain flat thumbnail, since
+  // that's a compact inline affordance, not its own gallery section.
   if (!url) {
-    return <div className="h-16 w-16 rounded-lg bg-muted shrink-0 animate-pulse" />;
+    return (
+      <div
+        className={`bg-muted animate-pulse ${sizeClass} ${square ? "rounded-xl" : "rounded-lg"}`}
+      />
+    );
   }
   return (
-    <button onClick={onClick} className="ios-tap shrink-0">
-      <img src={url} alt="" className="h-16 w-16 rounded-lg object-cover" />
+    <button
+      onClick={onClick}
+      className={`ios-tap overflow-hidden ${square ? "leaf-card" : "rounded-lg shrink-0"}`}
+    >
+      <img
+        src={url}
+        alt=""
+        className={`object-cover ${sizeClass} ${square ? "" : "rounded-lg"}`}
+      />
     </button>
   );
 }
@@ -223,6 +256,50 @@ function EntryGallery({
   );
 }
 
+// All photos across every timeline entry (primary + any extra angles),
+// newest first — a single always-visible place to see everything you've
+// uploaded for this plant, instead of having to expand each entry one at a
+// time. Reuses ExtraPhotoThumb's per-id blob: URL resolution and the same
+// full-screen viewer overlay pattern as EntryGallery.
+function PhotoGrid({ entries }: { entries: TimelineEntry[] }) {
+  const t = useT();
+  const [viewerId, setViewerId] = useState<string | null>(null);
+  const viewerUrl = usePhotoUrl(viewerId ?? undefined);
+
+  const photoIds = useMemo(() => {
+    const ids: string[] = [];
+    for (const entry of [...entries].reverse()) {
+      if (entry.hasPhoto) ids.push(entry.id);
+      for (const extraId of entry.extraPhotoIds ?? []) ids.push(extraId);
+    }
+    return ids;
+  }, [entries]);
+
+  if (photoIds.length === 0) return null;
+
+  return (
+    <section className="mb-5">
+      <h3 className="text-xs uppercase tracking-wide text-muted-foreground px-1 mb-2">
+        {t("plant.allPhotos", { count: photoIds.length })}
+      </h3>
+      <div className="grid grid-cols-3 gap-3">
+        {photoIds.map((id) => (
+          <ExtraPhotoThumb key={id} photoId={id} onClick={() => setViewerId(id)} square />
+        ))}
+      </div>
+
+      {viewerId && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-6"
+          onClick={() => setViewerId(null)}
+        >
+          {viewerUrl && <img src={viewerUrl} alt="" className="max-h-full max-w-full rounded-2xl" />}
+        </div>
+      )}
+    </section>
+  );
+}
+
 // Cosine similarity between this upload's Pl@ntNet embedding and the
 // previous photo's — a genuine visual-consistency signal (are these two
 // photos of the same plant, roughly the same framing?), distinct from the
@@ -276,6 +353,12 @@ function PlantDetailView({ plant }: { plant: Plant }) {
   useEffect(() => {
     setEntries(plant.timeline);
   }, [plant.timeline]);
+  // In-session patch for care actions (water/fertilize/repot) taken on this
+  // page — same pattern the home dashboard uses for its own quick actions,
+  // since useGardenPlant only reads from storage once per mount and won't
+  // otherwise reflect a just-logged action without a full reload.
+  const [careOverride, setCareOverride] = useState<Partial<Plant>>({});
+  const livePlant = { ...plant, ...careOverride };
   const [uploading, setUploading] = useState(false);
   const [showSlideshow, setShowSlideshow] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
@@ -302,9 +385,6 @@ function PlantDetailView({ plant }: { plant: Plant }) {
   // timeline entries below.
   const ownPhotoUrl = usePhotoUrl(plant.photo ? undefined : plant.id);
   const heroPhoto = plant.photo ?? ownPhotoUrl;
-  const [shareDiseaseMatch, setShareDiseaseMatch] = useState<DiseaseMatch | null>(null);
-  const [sharingDisease, setSharingDisease] = useState(false);
-  const [diseaseShared, setDiseaseShared] = useState(false);
   const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
   const pendingBlobRef = useRef<Blob | null>(null);
@@ -488,38 +568,28 @@ function PlantDetailView({ plant }: { plant: Plant }) {
     });
   };
 
-  // Opens the share confirmation for a disease match found by HealthChecks —
-  // actual posting happens in handleConfirmShareDisease once the user
-  // reviews/confirms, not immediately, since this is community-visible.
-  const handleShareDisease = (match: DiseaseMatch) => {
-    setShareDiseaseMatch(match);
-    setDiseaseShared(false);
+  const handleMarkWatered = () => {
+    const watered = markWatered(livePlant);
+    updatePlantInGarden(watered);
+    setCareOverride((prev) => ({ ...prev, ...watered }));
   };
 
-  const handleConfirmShareDisease = async () => {
-    if (!user || !shareDiseaseMatch || !lastUploadedPhoto) return;
-    setSharingDisease(true);
-    try {
-      const res = await createPost({
-        userId: user.uid,
-        plantId: plant.id,
-        plantName: plant.name,
-        caption: t("plant.shareDiseaseCaption", {
-          name: plant.name,
-          disease: shareDiseaseMatch.name,
-        }),
-        photo: lastUploadedPhoto,
-        diseaseLabel: shareDiseaseMatch.name,
-        diseaseConfidence: shareDiseaseMatch.score,
-      });
-      if (res.ok) {
-        setDiseaseShared(true);
-        setShareDiseaseMatch(null);
-      }
-    } finally {
-      setSharingDisease(false);
-    }
+  const handleMarkFertilized = () => {
+    const fertilized = markFertilized(livePlant);
+    updatePlantInGarden(fertilized);
+    setCareOverride((prev) => ({ ...prev, ...fertilized }));
   };
+
+  const handleMarkRepotted = () => {
+    const repotted = markRepotted(livePlant);
+    updatePlantInGarden(repotted);
+    setCareOverride((prev) => ({ ...prev, ...repotted }));
+  };
+
+  const needsWaterOrMist =
+    livePlant.status === "needs-water" || livePlant.status === "needs-mist";
+  const dueFertilize = isDueForFertilizing(livePlant);
+  const dueRepot = isDueForRepotting(livePlant);
 
   return (
     <AppShell>
@@ -565,6 +635,38 @@ function PlantDetailView({ plant }: { plant: Plant }) {
             />
           </div>
         </div>
+
+        {(needsWaterOrMist || dueFertilize || dueRepot) && (
+          <div className="flex gap-2 mt-3">
+            {needsWaterOrMist && (
+              <button
+                onClick={handleMarkWatered}
+                className="ios-tap flex-1 h-11 rounded-full bg-primary text-primary-foreground text-sm font-semibold flex items-center justify-center gap-1.5"
+              >
+                <Droplets className="h-4 w-4" strokeWidth={1.75} />
+                {t("plant.quickAction.water")}
+              </button>
+            )}
+            {dueFertilize && (
+              <button
+                onClick={handleMarkFertilized}
+                className="ios-tap flex-1 h-11 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold flex items-center justify-center gap-1.5"
+              >
+                <Leaf className="h-4 w-4" strokeWidth={1.75} />
+                {t("plant.quickAction.fertilize")}
+              </button>
+            )}
+            {dueRepot && (
+              <button
+                onClick={handleMarkRepotted}
+                className="ios-tap flex-1 h-11 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold flex items-center justify-center gap-1.5"
+              >
+                <CircleDot className="h-4 w-4" strokeWidth={1.75} />
+                {t("plant.quickAction.repot")}
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Main content tabs */}
@@ -614,6 +716,8 @@ function PlantDetailView({ plant }: { plant: Plant }) {
           <div className="leaf-card p-4 mb-4">
             <p className="text-[15px] leading-relaxed">{careTabContent}</p>
           </div>
+
+          {careTab === "water" && <SensorReadingCard plantId={plant.id} />}
 
           {/* Supplemental data from Trefle, keyed off scientific name — fills
               in bloom months/hardy range/care level/mature size even when
@@ -775,6 +879,8 @@ function PlantDetailView({ plant }: { plant: Plant }) {
           </Link>
         </div>
 
+        <PhotoGrid entries={entries} />
+
         <input
           ref={fileRef}
           type="file"
@@ -809,7 +915,6 @@ function PlantDetailView({ plant }: { plant: Plant }) {
               photo={lastUploadedPhoto}
               variant="standalone"
               onDiseaseDetected={handleDiseaseDetected}
-              onShareDisease={user ? handleShareDisease : undefined}
             />
           </div>
         )}
@@ -947,7 +1052,6 @@ function PlantDetailView({ plant }: { plant: Plant }) {
               photo={lastUploadedPhoto}
               variant="standalone"
               onDiseaseDetected={handleDiseaseDetected}
-              onShareDisease={user ? handleShareDisease : undefined}
             />
             </div>
           )}
@@ -1076,46 +1180,6 @@ function PlantDetailView({ plant }: { plant: Plant }) {
         />
       )}
 
-      {shareDiseaseMatch && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-end" onClick={() => setShareDiseaseMatch(null)}>
-          <div
-            className="w-full max-w-md mx-auto bg-card rounded-t-3xl p-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="font-display text-lg mb-2">{t("plant.shareDiseaseTitle")}</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              {t("plant.shareDiseaseBody", {
-                disease: shareDiseaseMatch.name,
-                pct: Math.round(shareDiseaseMatch.score * 100),
-              })}
-            </p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShareDiseaseMatch(null)}
-                className="ios-tap flex-1 h-11 rounded-full bg-secondary text-secondary-foreground text-sm font-semibold"
-              >
-                {t("plant.shareDiseaseCancel")}
-              </button>
-              <button
-                onClick={handleConfirmShareDisease}
-                disabled={sharingDisease}
-                className="ios-tap flex-1 h-11 rounded-full bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-70"
-              >
-                {sharingDisease ? t("plant.sharing") : t("plant.shareDiseaseConfirm")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {diseaseShared && (
-        <div className="fixed left-1/2 -translate-x-1/2 bottom-24 z-40 px-4 w-full max-w-md pointer-events-none">
-          <div className="flex items-center gap-2 h-11 px-4 rounded-full bg-foreground text-background text-sm font-medium mx-auto w-fit shadow-lg">
-            <Check className="h-4 w-4" strokeWidth={1.75} />
-            {t("plant.sharedToFeed")}
-          </div>
-        </div>
-      )}
     </AppShell>
   );
 }

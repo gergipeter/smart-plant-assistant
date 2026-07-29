@@ -22,7 +22,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy.",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -75,7 +75,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long.",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -116,7 +116,7 @@ export const expandedCatalogPlants = [
   {
     "id": "epipremnum-aureum",
     "name": "Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos)",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -128,7 +128,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across.",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -181,7 +181,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves.",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -234,7 +234,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures.",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -287,7 +287,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike.",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -340,7 +340,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines.",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -393,7 +393,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures.",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -446,7 +446,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures.",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -499,7 +499,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries.",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -552,7 +552,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers.",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -605,7 +605,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string.",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -658,7 +658,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings.",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -711,7 +711,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe.",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -764,7 +764,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature.",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -817,7 +817,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks.",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -870,7 +870,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study.",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -923,7 +923,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors.",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -976,7 +976,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base.",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1029,7 +1029,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems.",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1082,7 +1082,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect.",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1123,7 +1123,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-monstera-deliciosa",
     "name": "Silver Monstera Deliciosa",
-    "scientific": "Monstera deliciosa 'silver'",
+    "scientific": "Monstera deliciosa",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -1135,7 +1135,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy. (Silver variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1176,7 +1176,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-philodendron-hederaceum",
     "name": "Variegated Philodendron Hederaceum",
-    "scientific": "Philodendron hederaceum 'variegated'",
+    "scientific": "Philodendron hederaceum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -1188,7 +1188,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long. (Variegated variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1229,7 +1229,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-epipremnum-aureum",
     "name": "Dwarf Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos) 'dwarf'",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -1241,7 +1241,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across. (Dwarf variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1282,7 +1282,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-rhaphidophora-tetrasperma",
     "name": "Compact Rhaphidophora Tetrasperma",
-    "scientific": "Rhaphidophora tetrasperma 'compact'",
+    "scientific": "Rhaphidophora tetrasperma",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -1294,7 +1294,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves. (Compact variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1335,7 +1335,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-syngonium-podophyllum",
     "name": "Giant Syngonium Podophyllum",
-    "scientific": "Syngonium podophyllum 'giant'",
+    "scientific": "Syngonium podophyllum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -1347,7 +1347,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures. (Giant variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1388,7 +1388,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-anthurium-andraeanum",
     "name": "Golden Anthurium Andraeanum",
-    "scientific": "Anthurium andraeanum 'golden'",
+    "scientific": "Anthurium andraeanum",
     "emoji": "❤️",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -1400,7 +1400,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike. (Golden variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1441,7 +1441,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-scindapsus-pictus",
     "name": "Marble Scindapsus Pictus",
-    "scientific": "Scindapsus pictus 'marble'",
+    "scientific": "Scindapsus pictus",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -1453,7 +1453,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines. (Marble variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1494,7 +1494,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-hedera-helix",
     "name": "Pink Hedera Helix",
-    "scientific": "Hedera helix 'pink'",
+    "scientific": "Hedera helix",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -1506,7 +1506,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures. (Pink variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1547,7 +1547,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-crassula-ovata",
     "name": "White Crassula Ovata",
-    "scientific": "Crassula ovata 'white'",
+    "scientific": "Crassula ovata",
     "emoji": "🍀",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -1559,7 +1559,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures. (White variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1600,7 +1600,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-aloe-vera",
     "name": "Red Aloe Vera",
-    "scientific": "Aloe vera 'red'",
+    "scientific": "Aloe vera",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -1612,7 +1612,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries. (Red variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1653,7 +1653,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-echeveria-elegans",
     "name": "Silver Echeveria Elegans",
-    "scientific": "Echeveria elegans 'silver'",
+    "scientific": "Echeveria elegans",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -1665,7 +1665,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers. (Silver variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1706,7 +1706,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-sedum-morganianum",
     "name": "Variegated Sedum Morganianum",
-    "scientific": "Sedum morganianum 'variegated'",
+    "scientific": "Sedum morganianum",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -1718,7 +1718,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string. (Variegated variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1759,7 +1759,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-sempervivum-tectorum",
     "name": "Dwarf Sempervivum Tectorum",
-    "scientific": "Sempervivum tectorum 'dwarf'",
+    "scientific": "Sempervivum tectorum",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -1771,7 +1771,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings. (Dwarf variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1812,7 +1812,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-curio-rowleyanus",
     "name": "Compact Curio Rowleyanus",
-    "scientific": "Curio rowleyanus 'compact'",
+    "scientific": "Curio rowleyanus",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -1824,7 +1824,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe. (Compact variant)",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1865,7 +1865,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-haworthiopsis-attenuata",
     "name": "Giant Haworthiopsis Attenuata",
-    "scientific": "Haworthiopsis attenuata 'giant'",
+    "scientific": "Haworthiopsis attenuata",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -1877,7 +1877,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature. (Giant variant)",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1918,7 +1918,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-kalanchoe-blossfeldiana",
     "name": "Golden Kalanchoe Blossfeldiana",
-    "scientific": "Kalanchoe blossfeldiana 'golden'",
+    "scientific": "Kalanchoe blossfeldiana",
     "emoji": "🌷",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -1930,7 +1930,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks. (Golden variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -1971,7 +1971,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-dypsis-lutescens",
     "name": "Marble Dypsis Lutescens",
-    "scientific": "Dypsis lutescens 'marble'",
+    "scientific": "Dypsis lutescens",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -1983,7 +1983,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study. (Marble variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2024,7 +2024,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-strelitzia-nicolai",
     "name": "Pink Strelitzia Nicolai",
-    "scientific": "Strelitzia nicolai 'pink'",
+    "scientific": "Strelitzia nicolai",
     "emoji": "🦅",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -2036,7 +2036,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors. (Pink variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2077,7 +2077,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-beaucarnea-recurvata",
     "name": "White Beaucarnea Recurvata",
-    "scientific": "Beaucarnea recurvata 'white'",
+    "scientific": "Beaucarnea recurvata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -2089,7 +2089,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base. (White variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2130,7 +2130,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-dracaena-marginata",
     "name": "Red Dracaena Marginata",
-    "scientific": "Dracaena marginata 'red'",
+    "scientific": "Dracaena marginata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -2142,7 +2142,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems. (Red variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2183,7 +2183,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-zamioculcas-zamiifolia",
     "name": "Silver Zamioculcas Zamiifolia",
-    "scientific": "Zamioculcas zamiifolia 'silver'",
+    "scientific": "Zamioculcas zamiifolia",
     "emoji": "🪴",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -2195,7 +2195,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect. (Silver variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2236,7 +2236,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-monstera-deliciosa",
     "name": "Variegated Monstera Deliciosa",
-    "scientific": "Monstera deliciosa 'variegated'",
+    "scientific": "Monstera deliciosa",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -2248,7 +2248,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy. (Variegated variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2289,7 +2289,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-philodendron-hederaceum",
     "name": "Dwarf Philodendron Hederaceum",
-    "scientific": "Philodendron hederaceum 'dwarf'",
+    "scientific": "Philodendron hederaceum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -2301,7 +2301,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long. (Dwarf variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2342,7 +2342,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-epipremnum-aureum",
     "name": "Compact Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos) 'compact'",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -2354,7 +2354,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across. (Compact variant)",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2395,7 +2395,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-rhaphidophora-tetrasperma",
     "name": "Giant Rhaphidophora Tetrasperma",
-    "scientific": "Rhaphidophora tetrasperma 'giant'",
+    "scientific": "Rhaphidophora tetrasperma",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -2407,7 +2407,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves. (Giant variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2448,7 +2448,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-syngonium-podophyllum",
     "name": "Golden Syngonium Podophyllum",
-    "scientific": "Syngonium podophyllum 'golden'",
+    "scientific": "Syngonium podophyllum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -2460,7 +2460,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures. (Golden variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2501,7 +2501,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-anthurium-andraeanum",
     "name": "Marble Anthurium Andraeanum",
-    "scientific": "Anthurium andraeanum 'marble'",
+    "scientific": "Anthurium andraeanum",
     "emoji": "❤️",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -2513,7 +2513,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike. (Marble variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2554,7 +2554,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-scindapsus-pictus",
     "name": "Pink Scindapsus Pictus",
-    "scientific": "Scindapsus pictus 'pink'",
+    "scientific": "Scindapsus pictus",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -2566,7 +2566,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines. (Pink variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2607,7 +2607,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-hedera-helix",
     "name": "White Hedera Helix",
-    "scientific": "Hedera helix 'white'",
+    "scientific": "Hedera helix",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -2619,7 +2619,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures. (White variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2660,7 +2660,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-crassula-ovata",
     "name": "Red Crassula Ovata",
-    "scientific": "Crassula ovata 'red'",
+    "scientific": "Crassula ovata",
     "emoji": "🍀",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -2672,7 +2672,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures. (Red variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2713,7 +2713,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-aloe-vera",
     "name": "Silver Aloe Vera",
-    "scientific": "Aloe vera 'silver'",
+    "scientific": "Aloe vera",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -2725,7 +2725,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries. (Silver variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2766,7 +2766,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-echeveria-elegans",
     "name": "Variegated Echeveria Elegans",
-    "scientific": "Echeveria elegans 'variegated'",
+    "scientific": "Echeveria elegans",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -2778,7 +2778,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers. (Variegated variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2819,7 +2819,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-sedum-morganianum",
     "name": "Dwarf Sedum Morganianum",
-    "scientific": "Sedum morganianum 'dwarf'",
+    "scientific": "Sedum morganianum",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -2831,7 +2831,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string. (Dwarf variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2872,7 +2872,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-sempervivum-tectorum",
     "name": "Compact Sempervivum Tectorum",
-    "scientific": "Sempervivum tectorum 'compact'",
+    "scientific": "Sempervivum tectorum",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -2884,7 +2884,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings. (Compact variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2925,7 +2925,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-curio-rowleyanus",
     "name": "Giant Curio Rowleyanus",
-    "scientific": "Curio rowleyanus 'giant'",
+    "scientific": "Curio rowleyanus",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -2937,7 +2937,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe. (Giant variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -2978,7 +2978,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-haworthiopsis-attenuata",
     "name": "Golden Haworthiopsis Attenuata",
-    "scientific": "Haworthiopsis attenuata 'golden'",
+    "scientific": "Haworthiopsis attenuata",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -2990,7 +2990,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature. (Golden variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3031,7 +3031,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-kalanchoe-blossfeldiana",
     "name": "Marble Kalanchoe Blossfeldiana",
-    "scientific": "Kalanchoe blossfeldiana 'marble'",
+    "scientific": "Kalanchoe blossfeldiana",
     "emoji": "🌷",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -3043,7 +3043,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks. (Marble variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3084,7 +3084,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-dypsis-lutescens",
     "name": "Pink Dypsis Lutescens",
-    "scientific": "Dypsis lutescens 'pink'",
+    "scientific": "Dypsis lutescens",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -3096,7 +3096,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study. (Pink variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3137,7 +3137,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-strelitzia-nicolai",
     "name": "White Strelitzia Nicolai",
-    "scientific": "Strelitzia nicolai 'white'",
+    "scientific": "Strelitzia nicolai",
     "emoji": "🦅",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -3149,7 +3149,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors. (White variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3190,7 +3190,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-beaucarnea-recurvata",
     "name": "Red Beaucarnea Recurvata",
-    "scientific": "Beaucarnea recurvata 'red'",
+    "scientific": "Beaucarnea recurvata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -3202,7 +3202,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base. (Red variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3243,7 +3243,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-dracaena-marginata",
     "name": "Silver Dracaena Marginata",
-    "scientific": "Dracaena marginata 'silver'",
+    "scientific": "Dracaena marginata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -3255,7 +3255,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems. (Silver variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3296,7 +3296,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-zamioculcas-zamiifolia",
     "name": "Variegated Zamioculcas Zamiifolia",
-    "scientific": "Zamioculcas zamiifolia 'variegated'",
+    "scientific": "Zamioculcas zamiifolia",
     "emoji": "🪴",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -3308,7 +3308,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect. (Variegated variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3349,7 +3349,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-monstera-deliciosa",
     "name": "Dwarf Monstera Deliciosa",
-    "scientific": "Monstera deliciosa 'dwarf'",
+    "scientific": "Monstera deliciosa",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -3361,7 +3361,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy. (Dwarf variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3402,7 +3402,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-philodendron-hederaceum",
     "name": "Compact Philodendron Hederaceum",
-    "scientific": "Philodendron hederaceum 'compact'",
+    "scientific": "Philodendron hederaceum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -3414,7 +3414,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long. (Compact variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3455,7 +3455,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-epipremnum-aureum",
     "name": "Giant Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos) 'giant'",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -3467,7 +3467,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across. (Giant variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3508,7 +3508,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-rhaphidophora-tetrasperma",
     "name": "Golden Rhaphidophora Tetrasperma",
-    "scientific": "Rhaphidophora tetrasperma 'golden'",
+    "scientific": "Rhaphidophora tetrasperma",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -3520,7 +3520,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves. (Golden variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3561,7 +3561,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-syngonium-podophyllum",
     "name": "Marble Syngonium Podophyllum",
-    "scientific": "Syngonium podophyllum 'marble'",
+    "scientific": "Syngonium podophyllum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -3573,7 +3573,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures. (Marble variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3614,7 +3614,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-anthurium-andraeanum",
     "name": "Pink Anthurium Andraeanum",
-    "scientific": "Anthurium andraeanum 'pink'",
+    "scientific": "Anthurium andraeanum",
     "emoji": "❤️",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -3626,7 +3626,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike. (Pink variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3667,7 +3667,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-scindapsus-pictus",
     "name": "White Scindapsus Pictus",
-    "scientific": "Scindapsus pictus 'white'",
+    "scientific": "Scindapsus pictus",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -3679,7 +3679,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines. (White variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3720,7 +3720,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-hedera-helix",
     "name": "Red Hedera Helix",
-    "scientific": "Hedera helix 'red'",
+    "scientific": "Hedera helix",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -3732,7 +3732,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures. (Red variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3773,7 +3773,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-crassula-ovata",
     "name": "Silver Crassula Ovata",
-    "scientific": "Crassula ovata 'silver'",
+    "scientific": "Crassula ovata",
     "emoji": "🍀",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -3785,7 +3785,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures. (Silver variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3826,7 +3826,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-aloe-vera",
     "name": "Variegated Aloe Vera",
-    "scientific": "Aloe vera 'variegated'",
+    "scientific": "Aloe vera",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -3838,7 +3838,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries. (Variegated variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3879,7 +3879,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-echeveria-elegans",
     "name": "Dwarf Echeveria Elegans",
-    "scientific": "Echeveria elegans 'dwarf'",
+    "scientific": "Echeveria elegans",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -3891,7 +3891,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers. (Dwarf variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3932,7 +3932,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-sedum-morganianum",
     "name": "Compact Sedum Morganianum",
-    "scientific": "Sedum morganianum 'compact'",
+    "scientific": "Sedum morganianum",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -3944,7 +3944,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string. (Compact variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -3985,7 +3985,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-sempervivum-tectorum",
     "name": "Giant Sempervivum Tectorum",
-    "scientific": "Sempervivum tectorum 'giant'",
+    "scientific": "Sempervivum tectorum",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -3997,7 +3997,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings. (Giant variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4038,7 +4038,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-curio-rowleyanus",
     "name": "Golden Curio Rowleyanus",
-    "scientific": "Curio rowleyanus 'golden'",
+    "scientific": "Curio rowleyanus",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -4050,7 +4050,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe. (Golden variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4091,7 +4091,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-haworthiopsis-attenuata",
     "name": "Marble Haworthiopsis Attenuata",
-    "scientific": "Haworthiopsis attenuata 'marble'",
+    "scientific": "Haworthiopsis attenuata",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -4103,7 +4103,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature. (Marble variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4144,7 +4144,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-kalanchoe-blossfeldiana",
     "name": "Pink Kalanchoe Blossfeldiana",
-    "scientific": "Kalanchoe blossfeldiana 'pink'",
+    "scientific": "Kalanchoe blossfeldiana",
     "emoji": "🌷",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -4156,7 +4156,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks. (Pink variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4197,7 +4197,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-dypsis-lutescens",
     "name": "White Dypsis Lutescens",
-    "scientific": "Dypsis lutescens 'white'",
+    "scientific": "Dypsis lutescens",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -4209,7 +4209,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study. (White variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4250,7 +4250,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-strelitzia-nicolai",
     "name": "Red Strelitzia Nicolai",
-    "scientific": "Strelitzia nicolai 'red'",
+    "scientific": "Strelitzia nicolai",
     "emoji": "🦅",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -4262,7 +4262,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors. (Red variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4303,7 +4303,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-beaucarnea-recurvata",
     "name": "Silver Beaucarnea Recurvata",
-    "scientific": "Beaucarnea recurvata 'silver'",
+    "scientific": "Beaucarnea recurvata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -4315,7 +4315,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base. (Silver variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4356,7 +4356,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-dracaena-marginata",
     "name": "Variegated Dracaena Marginata",
-    "scientific": "Dracaena marginata 'variegated'",
+    "scientific": "Dracaena marginata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -4368,7 +4368,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems. (Variegated variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4409,7 +4409,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-zamioculcas-zamiifolia",
     "name": "Dwarf Zamioculcas Zamiifolia",
-    "scientific": "Zamioculcas zamiifolia 'dwarf'",
+    "scientific": "Zamioculcas zamiifolia",
     "emoji": "🪴",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -4421,7 +4421,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect. (Dwarf variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4462,7 +4462,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-monstera-deliciosa",
     "name": "Compact Monstera Deliciosa",
-    "scientific": "Monstera deliciosa 'compact'",
+    "scientific": "Monstera deliciosa",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -4474,7 +4474,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy. (Compact variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4515,7 +4515,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-philodendron-hederaceum",
     "name": "Giant Philodendron Hederaceum",
-    "scientific": "Philodendron hederaceum 'giant'",
+    "scientific": "Philodendron hederaceum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -4527,7 +4527,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long. (Giant variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4568,7 +4568,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-epipremnum-aureum",
     "name": "Golden Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos) 'golden'",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -4580,7 +4580,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across. (Golden variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4621,7 +4621,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-rhaphidophora-tetrasperma",
     "name": "Marble Rhaphidophora Tetrasperma",
-    "scientific": "Rhaphidophora tetrasperma 'marble'",
+    "scientific": "Rhaphidophora tetrasperma",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -4633,7 +4633,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves. (Marble variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4674,7 +4674,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-syngonium-podophyllum",
     "name": "Pink Syngonium Podophyllum",
-    "scientific": "Syngonium podophyllum 'pink'",
+    "scientific": "Syngonium podophyllum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -4686,7 +4686,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures. (Pink variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4727,7 +4727,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-anthurium-andraeanum",
     "name": "White Anthurium Andraeanum",
-    "scientific": "Anthurium andraeanum 'white'",
+    "scientific": "Anthurium andraeanum",
     "emoji": "❤️",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -4739,7 +4739,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike. (White variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4780,7 +4780,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-scindapsus-pictus",
     "name": "Red Scindapsus Pictus",
-    "scientific": "Scindapsus pictus 'red'",
+    "scientific": "Scindapsus pictus",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -4792,7 +4792,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines. (Red variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4833,7 +4833,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-hedera-helix",
     "name": "Silver Hedera Helix",
-    "scientific": "Hedera helix 'silver'",
+    "scientific": "Hedera helix",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -4845,7 +4845,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures. (Silver variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4886,7 +4886,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-crassula-ovata",
     "name": "Variegated Crassula Ovata",
-    "scientific": "Crassula ovata 'variegated'",
+    "scientific": "Crassula ovata",
     "emoji": "🍀",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -4898,7 +4898,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures. (Variegated variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4939,7 +4939,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-aloe-vera",
     "name": "Dwarf Aloe Vera",
-    "scientific": "Aloe vera 'dwarf'",
+    "scientific": "Aloe vera",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -4951,7 +4951,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries. (Dwarf variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -4992,7 +4992,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-echeveria-elegans",
     "name": "Compact Echeveria Elegans",
-    "scientific": "Echeveria elegans 'compact'",
+    "scientific": "Echeveria elegans",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -5004,7 +5004,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers. (Compact variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5045,7 +5045,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-sedum-morganianum",
     "name": "Giant Sedum Morganianum",
-    "scientific": "Sedum morganianum 'giant'",
+    "scientific": "Sedum morganianum",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -5057,7 +5057,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string. (Giant variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5098,7 +5098,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-sempervivum-tectorum",
     "name": "Golden Sempervivum Tectorum",
-    "scientific": "Sempervivum tectorum 'golden'",
+    "scientific": "Sempervivum tectorum",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -5110,7 +5110,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings. (Golden variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5151,7 +5151,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-curio-rowleyanus",
     "name": "Marble Curio Rowleyanus",
-    "scientific": "Curio rowleyanus 'marble'",
+    "scientific": "Curio rowleyanus",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -5163,7 +5163,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe. (Marble variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5204,7 +5204,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-haworthiopsis-attenuata",
     "name": "Pink Haworthiopsis Attenuata",
-    "scientific": "Haworthiopsis attenuata 'pink'",
+    "scientific": "Haworthiopsis attenuata",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -5216,7 +5216,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature. (Pink variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5257,7 +5257,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-kalanchoe-blossfeldiana",
     "name": "White Kalanchoe Blossfeldiana",
-    "scientific": "Kalanchoe blossfeldiana 'white'",
+    "scientific": "Kalanchoe blossfeldiana",
     "emoji": "🌷",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -5269,7 +5269,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks. (White variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5310,7 +5310,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-dypsis-lutescens",
     "name": "Red Dypsis Lutescens",
-    "scientific": "Dypsis lutescens 'red'",
+    "scientific": "Dypsis lutescens",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -5322,7 +5322,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study. (Red variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5363,7 +5363,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-strelitzia-nicolai",
     "name": "Silver Strelitzia Nicolai",
-    "scientific": "Strelitzia nicolai 'silver'",
+    "scientific": "Strelitzia nicolai",
     "emoji": "🦅",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -5375,7 +5375,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors. (Silver variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5416,7 +5416,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-beaucarnea-recurvata",
     "name": "Variegated Beaucarnea Recurvata",
-    "scientific": "Beaucarnea recurvata 'variegated'",
+    "scientific": "Beaucarnea recurvata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -5428,7 +5428,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base. (Variegated variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5469,7 +5469,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-dracaena-marginata",
     "name": "Dwarf Dracaena Marginata",
-    "scientific": "Dracaena marginata 'dwarf'",
+    "scientific": "Dracaena marginata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -5481,7 +5481,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems. (Dwarf variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5522,7 +5522,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-zamioculcas-zamiifolia",
     "name": "Compact Zamioculcas Zamiifolia",
-    "scientific": "Zamioculcas zamiifolia 'compact'",
+    "scientific": "Zamioculcas zamiifolia",
     "emoji": "🪴",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -5534,7 +5534,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect. (Compact variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5575,7 +5575,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-monstera-deliciosa",
     "name": "Giant Monstera Deliciosa",
-    "scientific": "Monstera deliciosa 'giant'",
+    "scientific": "Monstera deliciosa",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -5587,7 +5587,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy. (Giant variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5628,7 +5628,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-philodendron-hederaceum",
     "name": "Golden Philodendron Hederaceum",
-    "scientific": "Philodendron hederaceum 'golden'",
+    "scientific": "Philodendron hederaceum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -5640,7 +5640,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long. (Golden variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5681,7 +5681,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-epipremnum-aureum",
     "name": "Marble Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos) 'marble'",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -5693,7 +5693,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across. (Marble variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5734,7 +5734,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-rhaphidophora-tetrasperma",
     "name": "Pink Rhaphidophora Tetrasperma",
-    "scientific": "Rhaphidophora tetrasperma 'pink'",
+    "scientific": "Rhaphidophora tetrasperma",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -5746,7 +5746,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves. (Pink variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5787,7 +5787,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-syngonium-podophyllum",
     "name": "White Syngonium Podophyllum",
-    "scientific": "Syngonium podophyllum 'white'",
+    "scientific": "Syngonium podophyllum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -5799,7 +5799,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures. (White variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5840,7 +5840,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-anthurium-andraeanum",
     "name": "Red Anthurium Andraeanum",
-    "scientific": "Anthurium andraeanum 'red'",
+    "scientific": "Anthurium andraeanum",
     "emoji": "❤️",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -5852,7 +5852,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike. (Red variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5893,7 +5893,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-scindapsus-pictus",
     "name": "Silver Scindapsus Pictus",
-    "scientific": "Scindapsus pictus 'silver'",
+    "scientific": "Scindapsus pictus",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -5905,7 +5905,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines. (Silver variant)",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5946,7 +5946,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-hedera-helix",
     "name": "Variegated Hedera Helix",
-    "scientific": "Hedera helix 'variegated'",
+    "scientific": "Hedera helix",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -5958,7 +5958,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures. (Variegated variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -5999,7 +5999,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-crassula-ovata",
     "name": "Dwarf Crassula Ovata",
-    "scientific": "Crassula ovata 'dwarf'",
+    "scientific": "Crassula ovata",
     "emoji": "🍀",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -6011,7 +6011,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures. (Dwarf variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6052,7 +6052,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-aloe-vera",
     "name": "Compact Aloe Vera",
-    "scientific": "Aloe vera 'compact'",
+    "scientific": "Aloe vera",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -6064,7 +6064,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries. (Compact variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6105,7 +6105,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-echeveria-elegans",
     "name": "Giant Echeveria Elegans",
-    "scientific": "Echeveria elegans 'giant'",
+    "scientific": "Echeveria elegans",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -6117,7 +6117,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers. (Giant variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6158,7 +6158,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-sedum-morganianum",
     "name": "Golden Sedum Morganianum",
-    "scientific": "Sedum morganianum 'golden'",
+    "scientific": "Sedum morganianum",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -6170,7 +6170,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string. (Golden variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6211,7 +6211,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-sempervivum-tectorum",
     "name": "Marble Sempervivum Tectorum",
-    "scientific": "Sempervivum tectorum 'marble'",
+    "scientific": "Sempervivum tectorum",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -6223,7 +6223,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings. (Marble variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6264,7 +6264,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-curio-rowleyanus",
     "name": "Pink Curio Rowleyanus",
-    "scientific": "Curio rowleyanus 'pink'",
+    "scientific": "Curio rowleyanus",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -6276,7 +6276,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe. (Pink variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6317,7 +6317,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-haworthiopsis-attenuata",
     "name": "White Haworthiopsis Attenuata",
-    "scientific": "Haworthiopsis attenuata 'white'",
+    "scientific": "Haworthiopsis attenuata",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -6329,7 +6329,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature. (White variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6370,7 +6370,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-kalanchoe-blossfeldiana",
     "name": "Red Kalanchoe Blossfeldiana",
-    "scientific": "Kalanchoe blossfeldiana 'red'",
+    "scientific": "Kalanchoe blossfeldiana",
     "emoji": "🌷",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -6382,7 +6382,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks. (Red variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6423,7 +6423,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-dypsis-lutescens",
     "name": "Silver Dypsis Lutescens",
-    "scientific": "Dypsis lutescens 'silver'",
+    "scientific": "Dypsis lutescens",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -6435,7 +6435,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study. (Silver variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6476,7 +6476,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-strelitzia-nicolai",
     "name": "Variegated Strelitzia Nicolai",
-    "scientific": "Strelitzia nicolai 'variegated'",
+    "scientific": "Strelitzia nicolai",
     "emoji": "🦅",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -6488,7 +6488,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors. (Variegated variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6529,7 +6529,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-beaucarnea-recurvata",
     "name": "Dwarf Beaucarnea Recurvata",
-    "scientific": "Beaucarnea recurvata 'dwarf'",
+    "scientific": "Beaucarnea recurvata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -6541,7 +6541,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base. (Dwarf variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6582,7 +6582,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-dracaena-marginata",
     "name": "Compact Dracaena Marginata",
-    "scientific": "Dracaena marginata 'compact'",
+    "scientific": "Dracaena marginata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -6594,7 +6594,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems. (Compact variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6635,7 +6635,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-zamioculcas-zamiifolia",
     "name": "Giant Zamioculcas Zamiifolia",
-    "scientific": "Zamioculcas zamiifolia 'giant'",
+    "scientific": "Zamioculcas zamiifolia",
     "emoji": "🪴",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -6647,7 +6647,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect. (Giant variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6688,7 +6688,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-monstera-deliciosa",
     "name": "Golden Monstera Deliciosa",
-    "scientific": "Monstera deliciosa 'golden'",
+    "scientific": "Monstera deliciosa",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -6700,7 +6700,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy. (Golden variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6741,7 +6741,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-philodendron-hederaceum",
     "name": "Marble Philodendron Hederaceum",
-    "scientific": "Philodendron hederaceum 'marble'",
+    "scientific": "Philodendron hederaceum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -6753,7 +6753,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long. (Marble variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6794,7 +6794,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-epipremnum-aureum",
     "name": "Pink Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos) 'pink'",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -6806,7 +6806,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across. (Pink variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6847,7 +6847,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-rhaphidophora-tetrasperma",
     "name": "White Rhaphidophora Tetrasperma",
-    "scientific": "Rhaphidophora tetrasperma 'white'",
+    "scientific": "Rhaphidophora tetrasperma",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -6859,7 +6859,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves. (White variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6900,7 +6900,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-syngonium-podophyllum",
     "name": "Red Syngonium Podophyllum",
-    "scientific": "Syngonium podophyllum 'red'",
+    "scientific": "Syngonium podophyllum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -6912,7 +6912,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures. (Red variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -6953,7 +6953,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-anthurium-andraeanum",
     "name": "Silver Anthurium Andraeanum",
-    "scientific": "Anthurium andraeanum 'silver'",
+    "scientific": "Anthurium andraeanum",
     "emoji": "❤️",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -6965,7 +6965,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike. (Silver variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7006,7 +7006,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-scindapsus-pictus",
     "name": "Variegated Scindapsus Pictus",
-    "scientific": "Scindapsus pictus 'variegated'",
+    "scientific": "Scindapsus pictus",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -7018,7 +7018,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines. (Variegated variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7059,7 +7059,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-hedera-helix",
     "name": "Dwarf Hedera Helix",
-    "scientific": "Hedera helix 'dwarf'",
+    "scientific": "Hedera helix",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -7071,7 +7071,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures. (Dwarf variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7112,7 +7112,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-crassula-ovata",
     "name": "Compact Crassula Ovata",
-    "scientific": "Crassula ovata 'compact'",
+    "scientific": "Crassula ovata",
     "emoji": "🍀",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -7124,7 +7124,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures. (Compact variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7165,7 +7165,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-aloe-vera",
     "name": "Giant Aloe Vera",
-    "scientific": "Aloe vera 'giant'",
+    "scientific": "Aloe vera",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -7177,7 +7177,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries. (Giant variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7218,7 +7218,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-echeveria-elegans",
     "name": "Golden Echeveria Elegans",
-    "scientific": "Echeveria elegans 'golden'",
+    "scientific": "Echeveria elegans",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -7230,7 +7230,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers. (Golden variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7271,7 +7271,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-sedum-morganianum",
     "name": "Marble Sedum Morganianum",
-    "scientific": "Sedum morganianum 'marble'",
+    "scientific": "Sedum morganianum",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -7283,7 +7283,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string. (Marble variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7324,7 +7324,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-sempervivum-tectorum",
     "name": "Pink Sempervivum Tectorum",
-    "scientific": "Sempervivum tectorum 'pink'",
+    "scientific": "Sempervivum tectorum",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -7336,7 +7336,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings. (Pink variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7377,7 +7377,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-curio-rowleyanus",
     "name": "White Curio Rowleyanus",
-    "scientific": "Curio rowleyanus 'white'",
+    "scientific": "Curio rowleyanus",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -7389,7 +7389,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe. (White variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7430,7 +7430,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-haworthiopsis-attenuata",
     "name": "Red Haworthiopsis Attenuata",
-    "scientific": "Haworthiopsis attenuata 'red'",
+    "scientific": "Haworthiopsis attenuata",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -7442,7 +7442,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature. (Red variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7483,7 +7483,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-kalanchoe-blossfeldiana",
     "name": "Silver Kalanchoe Blossfeldiana",
-    "scientific": "Kalanchoe blossfeldiana 'silver'",
+    "scientific": "Kalanchoe blossfeldiana",
     "emoji": "🌷",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -7495,7 +7495,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks. (Silver variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7536,7 +7536,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-dypsis-lutescens",
     "name": "Variegated Dypsis Lutescens",
-    "scientific": "Dypsis lutescens 'variegated'",
+    "scientific": "Dypsis lutescens",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -7548,7 +7548,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study. (Variegated variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7589,7 +7589,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-strelitzia-nicolai",
     "name": "Dwarf Strelitzia Nicolai",
-    "scientific": "Strelitzia nicolai 'dwarf'",
+    "scientific": "Strelitzia nicolai",
     "emoji": "🦅",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -7601,7 +7601,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors. (Dwarf variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7642,7 +7642,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-beaucarnea-recurvata",
     "name": "Compact Beaucarnea Recurvata",
-    "scientific": "Beaucarnea recurvata 'compact'",
+    "scientific": "Beaucarnea recurvata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -7654,7 +7654,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base. (Compact variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7695,7 +7695,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-dracaena-marginata",
     "name": "Giant Dracaena Marginata",
-    "scientific": "Dracaena marginata 'giant'",
+    "scientific": "Dracaena marginata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -7707,7 +7707,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems. (Giant variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7748,7 +7748,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-zamioculcas-zamiifolia",
     "name": "Golden Zamioculcas Zamiifolia",
-    "scientific": "Zamioculcas zamiifolia 'golden'",
+    "scientific": "Zamioculcas zamiifolia",
     "emoji": "🪴",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -7760,7 +7760,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect. (Golden variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7801,7 +7801,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-monstera-deliciosa",
     "name": "Marble Monstera Deliciosa",
-    "scientific": "Monstera deliciosa 'marble'",
+    "scientific": "Monstera deliciosa",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -7813,7 +7813,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy. (Marble variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7854,7 +7854,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-philodendron-hederaceum",
     "name": "Pink Philodendron Hederaceum",
-    "scientific": "Philodendron hederaceum 'pink'",
+    "scientific": "Philodendron hederaceum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -7866,7 +7866,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long. (Pink variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7907,7 +7907,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-epipremnum-aureum",
     "name": "White Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos) 'white'",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -7919,7 +7919,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across. (White variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -7960,7 +7960,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-rhaphidophora-tetrasperma",
     "name": "Red Rhaphidophora Tetrasperma",
-    "scientific": "Rhaphidophora tetrasperma 'red'",
+    "scientific": "Rhaphidophora tetrasperma",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -7972,7 +7972,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves. (Red variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8013,7 +8013,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-syngonium-podophyllum",
     "name": "Silver Syngonium Podophyllum",
-    "scientific": "Syngonium podophyllum 'silver'",
+    "scientific": "Syngonium podophyllum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -8025,7 +8025,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures. (Silver variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8066,7 +8066,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-anthurium-andraeanum",
     "name": "Variegated Anthurium Andraeanum",
-    "scientific": "Anthurium andraeanum 'variegated'",
+    "scientific": "Anthurium andraeanum",
     "emoji": "❤️",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -8078,7 +8078,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike. (Variegated variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8119,7 +8119,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-scindapsus-pictus",
     "name": "Dwarf Scindapsus Pictus",
-    "scientific": "Scindapsus pictus 'dwarf'",
+    "scientific": "Scindapsus pictus",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -8131,7 +8131,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines. (Dwarf variant)",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8172,7 +8172,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-hedera-helix",
     "name": "Compact Hedera Helix",
-    "scientific": "Hedera helix 'compact'",
+    "scientific": "Hedera helix",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -8184,7 +8184,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures. (Compact variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8225,7 +8225,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-crassula-ovata",
     "name": "Giant Crassula Ovata",
-    "scientific": "Crassula ovata 'giant'",
+    "scientific": "Crassula ovata",
     "emoji": "🍀",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -8237,7 +8237,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures. (Giant variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8278,7 +8278,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-aloe-vera",
     "name": "Golden Aloe Vera",
-    "scientific": "Aloe vera 'golden'",
+    "scientific": "Aloe vera",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -8290,7 +8290,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries. (Golden variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8331,7 +8331,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-echeveria-elegans",
     "name": "Marble Echeveria Elegans",
-    "scientific": "Echeveria elegans 'marble'",
+    "scientific": "Echeveria elegans",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -8343,7 +8343,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers. (Marble variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8384,7 +8384,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-sedum-morganianum",
     "name": "Pink Sedum Morganianum",
-    "scientific": "Sedum morganianum 'pink'",
+    "scientific": "Sedum morganianum",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -8396,7 +8396,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string. (Pink variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8437,7 +8437,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-sempervivum-tectorum",
     "name": "White Sempervivum Tectorum",
-    "scientific": "Sempervivum tectorum 'white'",
+    "scientific": "Sempervivum tectorum",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -8449,7 +8449,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings. (White variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8490,7 +8490,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-curio-rowleyanus",
     "name": "Red Curio Rowleyanus",
-    "scientific": "Curio rowleyanus 'red'",
+    "scientific": "Curio rowleyanus",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -8502,7 +8502,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe. (Red variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8543,7 +8543,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-haworthiopsis-attenuata",
     "name": "Silver Haworthiopsis Attenuata",
-    "scientific": "Haworthiopsis attenuata 'silver'",
+    "scientific": "Haworthiopsis attenuata",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -8555,7 +8555,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature. (Silver variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8596,7 +8596,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-kalanchoe-blossfeldiana",
     "name": "Variegated Kalanchoe Blossfeldiana",
-    "scientific": "Kalanchoe blossfeldiana 'variegated'",
+    "scientific": "Kalanchoe blossfeldiana",
     "emoji": "🌷",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -8608,7 +8608,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks. (Variegated variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8649,7 +8649,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-dypsis-lutescens",
     "name": "Dwarf Dypsis Lutescens",
-    "scientific": "Dypsis lutescens 'dwarf'",
+    "scientific": "Dypsis lutescens",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -8661,7 +8661,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study. (Dwarf variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8702,7 +8702,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-strelitzia-nicolai",
     "name": "Compact Strelitzia Nicolai",
-    "scientific": "Strelitzia nicolai 'compact'",
+    "scientific": "Strelitzia nicolai",
     "emoji": "🦅",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -8714,7 +8714,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors. (Compact variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8755,7 +8755,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-beaucarnea-recurvata",
     "name": "Giant Beaucarnea Recurvata",
-    "scientific": "Beaucarnea recurvata 'giant'",
+    "scientific": "Beaucarnea recurvata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -8767,7 +8767,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base. (Giant variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8808,7 +8808,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-dracaena-marginata",
     "name": "Golden Dracaena Marginata",
-    "scientific": "Dracaena marginata 'golden'",
+    "scientific": "Dracaena marginata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -8820,7 +8820,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems. (Golden variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8861,7 +8861,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-zamioculcas-zamiifolia",
     "name": "Marble Zamioculcas Zamiifolia",
-    "scientific": "Zamioculcas zamiifolia 'marble'",
+    "scientific": "Zamioculcas zamiifolia",
     "emoji": "🪴",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -8873,7 +8873,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect. (Marble variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8914,7 +8914,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-monstera-deliciosa",
     "name": "Pink Monstera Deliciosa",
-    "scientific": "Monstera deliciosa 'pink'",
+    "scientific": "Monstera deliciosa",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -8926,7 +8926,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy. (Pink variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -8967,7 +8967,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-philodendron-hederaceum",
     "name": "White Philodendron Hederaceum",
-    "scientific": "Philodendron hederaceum 'white'",
+    "scientific": "Philodendron hederaceum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -8979,7 +8979,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long. (White variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9020,7 +9020,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-epipremnum-aureum",
     "name": "Red Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos) 'red'",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -9032,7 +9032,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across. (Red variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9073,7 +9073,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-rhaphidophora-tetrasperma",
     "name": "Silver Rhaphidophora Tetrasperma",
-    "scientific": "Rhaphidophora tetrasperma 'silver'",
+    "scientific": "Rhaphidophora tetrasperma",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -9085,7 +9085,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves. (Silver variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9126,7 +9126,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-syngonium-podophyllum",
     "name": "Variegated Syngonium Podophyllum",
-    "scientific": "Syngonium podophyllum 'variegated'",
+    "scientific": "Syngonium podophyllum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -9138,7 +9138,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures. (Variegated variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9179,7 +9179,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-anthurium-andraeanum",
     "name": "Dwarf Anthurium Andraeanum",
-    "scientific": "Anthurium andraeanum 'dwarf'",
+    "scientific": "Anthurium andraeanum",
     "emoji": "❤️",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -9191,7 +9191,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike. (Dwarf variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9232,7 +9232,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-scindapsus-pictus",
     "name": "Compact Scindapsus Pictus",
-    "scientific": "Scindapsus pictus 'compact'",
+    "scientific": "Scindapsus pictus",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -9244,7 +9244,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines. (Compact variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9285,7 +9285,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-hedera-helix",
     "name": "Giant Hedera Helix",
-    "scientific": "Hedera helix 'giant'",
+    "scientific": "Hedera helix",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -9297,7 +9297,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures. (Giant variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9338,7 +9338,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-crassula-ovata",
     "name": "Golden Crassula Ovata",
-    "scientific": "Crassula ovata 'golden'",
+    "scientific": "Crassula ovata",
     "emoji": "🍀",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -9350,7 +9350,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures. (Golden variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9391,7 +9391,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-aloe-vera",
     "name": "Marble Aloe Vera",
-    "scientific": "Aloe vera 'marble'",
+    "scientific": "Aloe vera",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -9403,7 +9403,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries. (Marble variant)",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9444,7 +9444,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-echeveria-elegans",
     "name": "Pink Echeveria Elegans",
-    "scientific": "Echeveria elegans 'pink'",
+    "scientific": "Echeveria elegans",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -9456,7 +9456,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers. (Pink variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9497,7 +9497,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-sedum-morganianum",
     "name": "White Sedum Morganianum",
-    "scientific": "Sedum morganianum 'white'",
+    "scientific": "Sedum morganianum",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -9509,7 +9509,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string. (White variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9550,7 +9550,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-sempervivum-tectorum",
     "name": "Red Sempervivum Tectorum",
-    "scientific": "Sempervivum tectorum 'red'",
+    "scientific": "Sempervivum tectorum",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -9562,7 +9562,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings. (Red variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9603,7 +9603,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-curio-rowleyanus",
     "name": "Silver Curio Rowleyanus",
-    "scientific": "Curio rowleyanus 'silver'",
+    "scientific": "Curio rowleyanus",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -9615,7 +9615,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe. (Silver variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9656,7 +9656,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-haworthiopsis-attenuata",
     "name": "Variegated Haworthiopsis Attenuata",
-    "scientific": "Haworthiopsis attenuata 'variegated'",
+    "scientific": "Haworthiopsis attenuata",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -9668,7 +9668,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature. (Variegated variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9709,7 +9709,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-kalanchoe-blossfeldiana",
     "name": "Dwarf Kalanchoe Blossfeldiana",
-    "scientific": "Kalanchoe blossfeldiana 'dwarf'",
+    "scientific": "Kalanchoe blossfeldiana",
     "emoji": "🌷",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -9721,7 +9721,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks. (Dwarf variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9762,7 +9762,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-dypsis-lutescens",
     "name": "Compact Dypsis Lutescens",
-    "scientific": "Dypsis lutescens 'compact'",
+    "scientific": "Dypsis lutescens",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -9774,7 +9774,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study. (Compact variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9815,7 +9815,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-strelitzia-nicolai",
     "name": "Giant Strelitzia Nicolai",
-    "scientific": "Strelitzia nicolai 'giant'",
+    "scientific": "Strelitzia nicolai",
     "emoji": "🦅",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -9827,7 +9827,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors. (Giant variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9868,7 +9868,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-beaucarnea-recurvata",
     "name": "Golden Beaucarnea Recurvata",
-    "scientific": "Beaucarnea recurvata 'golden'",
+    "scientific": "Beaucarnea recurvata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -9880,7 +9880,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base. (Golden variant)",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9921,7 +9921,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-dracaena-marginata",
     "name": "Marble Dracaena Marginata",
-    "scientific": "Dracaena marginata 'marble'",
+    "scientific": "Dracaena marginata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -9933,7 +9933,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems. (Marble variant)",
-    "lastWatered": "5 days ago",
+    "lastWatered": "2026-07-24T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -9974,7 +9974,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-zamioculcas-zamiifolia",
     "name": "Pink Zamioculcas Zamiifolia",
-    "scientific": "Zamioculcas zamiifolia 'pink'",
+    "scientific": "Zamioculcas zamiifolia",
     "emoji": "🪴",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -9986,7 +9986,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect. (Pink variant)",
-    "lastWatered": "12 days ago",
+    "lastWatered": "2026-07-17T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10027,7 +10027,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-monstera-deliciosa",
     "name": "White Monstera Deliciosa",
-    "scientific": "Monstera deliciosa 'white'",
+    "scientific": "Monstera deliciosa",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -10039,7 +10039,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy. (White variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10080,7 +10080,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-philodendron-hederaceum",
     "name": "Red Philodendron Hederaceum",
-    "scientific": "Philodendron hederaceum 'red'",
+    "scientific": "Philodendron hederaceum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -10092,7 +10092,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long. (Red variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10133,7 +10133,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-epipremnum-aureum",
     "name": "Silver Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos) 'silver'",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -10145,7 +10145,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across. (Silver variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10186,7 +10186,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-rhaphidophora-tetrasperma",
     "name": "Variegated Rhaphidophora Tetrasperma",
-    "scientific": "Rhaphidophora tetrasperma 'variegated'",
+    "scientific": "Rhaphidophora tetrasperma",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -10198,7 +10198,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves. (Variegated variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10239,7 +10239,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-syngonium-podophyllum",
     "name": "Dwarf Syngonium Podophyllum",
-    "scientific": "Syngonium podophyllum 'dwarf'",
+    "scientific": "Syngonium podophyllum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -10251,7 +10251,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures. (Dwarf variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10292,7 +10292,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-anthurium-andraeanum",
     "name": "Compact Anthurium Andraeanum",
-    "scientific": "Anthurium andraeanum 'compact'",
+    "scientific": "Anthurium andraeanum",
     "emoji": "❤️",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -10304,7 +10304,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike. (Compact variant)",
-    "lastWatered": "10 days ago",
+    "lastWatered": "2026-07-19T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10345,7 +10345,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-scindapsus-pictus",
     "name": "Giant Scindapsus Pictus",
-    "scientific": "Scindapsus pictus 'giant'",
+    "scientific": "Scindapsus pictus",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -10357,7 +10357,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines. (Giant variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10398,7 +10398,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-hedera-helix",
     "name": "Golden Hedera Helix",
-    "scientific": "Hedera helix 'golden'",
+    "scientific": "Hedera helix",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -10410,7 +10410,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures. (Golden variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10451,7 +10451,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-crassula-ovata",
     "name": "Marble Crassula Ovata",
-    "scientific": "Crassula ovata 'marble'",
+    "scientific": "Crassula ovata",
     "emoji": "🍀",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -10463,7 +10463,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures. (Marble variant)",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10504,7 +10504,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-aloe-vera",
     "name": "Pink Aloe Vera",
-    "scientific": "Aloe vera 'pink'",
+    "scientific": "Aloe vera",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -10516,7 +10516,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries. (Pink variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10557,7 +10557,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-echeveria-elegans",
     "name": "White Echeveria Elegans",
-    "scientific": "Echeveria elegans 'white'",
+    "scientific": "Echeveria elegans",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -10569,7 +10569,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers. (White variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10610,7 +10610,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-sedum-morganianum",
     "name": "Red Sedum Morganianum",
-    "scientific": "Sedum morganianum 'red'",
+    "scientific": "Sedum morganianum",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -10622,7 +10622,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string. (Red variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10663,7 +10663,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-sempervivum-tectorum",
     "name": "Silver Sempervivum Tectorum",
-    "scientific": "Sempervivum tectorum 'silver'",
+    "scientific": "Sempervivum tectorum",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -10675,7 +10675,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings. (Silver variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10716,7 +10716,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-curio-rowleyanus",
     "name": "Variegated Curio Rowleyanus",
-    "scientific": "Curio rowleyanus 'variegated'",
+    "scientific": "Curio rowleyanus",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -10728,7 +10728,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe. (Variegated variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10769,7 +10769,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-haworthiopsis-attenuata",
     "name": "Dwarf Haworthiopsis Attenuata",
-    "scientific": "Haworthiopsis attenuata 'dwarf'",
+    "scientific": "Haworthiopsis attenuata",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -10781,7 +10781,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature. (Dwarf variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10822,7 +10822,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-kalanchoe-blossfeldiana",
     "name": "Compact Kalanchoe Blossfeldiana",
-    "scientific": "Kalanchoe blossfeldiana 'compact'",
+    "scientific": "Kalanchoe blossfeldiana",
     "emoji": "🌷",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -10834,7 +10834,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks. (Compact variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10875,7 +10875,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-dypsis-lutescens",
     "name": "Giant Dypsis Lutescens",
-    "scientific": "Dypsis lutescens 'giant'",
+    "scientific": "Dypsis lutescens",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -10887,7 +10887,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study. (Giant variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10928,7 +10928,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-strelitzia-nicolai",
     "name": "Golden Strelitzia Nicolai",
-    "scientific": "Strelitzia nicolai 'golden'",
+    "scientific": "Strelitzia nicolai",
     "emoji": "🦅",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -10940,7 +10940,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors. (Golden variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -10981,7 +10981,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-beaucarnea-recurvata",
     "name": "Marble Beaucarnea Recurvata",
-    "scientific": "Beaucarnea recurvata 'marble'",
+    "scientific": "Beaucarnea recurvata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -10993,7 +10993,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base. (Marble variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11034,7 +11034,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-dracaena-marginata",
     "name": "Pink Dracaena Marginata",
-    "scientific": "Dracaena marginata 'pink'",
+    "scientific": "Dracaena marginata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -11046,7 +11046,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems. (Pink variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11087,7 +11087,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-zamioculcas-zamiifolia",
     "name": "White Zamioculcas Zamiifolia",
-    "scientific": "Zamioculcas zamiifolia 'white'",
+    "scientific": "Zamioculcas zamiifolia",
     "emoji": "🪴",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -11099,7 +11099,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect. (White variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11140,7 +11140,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-monstera-deliciosa",
     "name": "Red Monstera Deliciosa",
-    "scientific": "Monstera deliciosa 'red'",
+    "scientific": "Monstera deliciosa",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -11152,7 +11152,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light. Avoid direct afternoon sun.",
     "soil": "Well-draining aroid mix with bark and perlite.",
     "fact": "Its iconic leaf holes (fenestrations) evolved to let sunlight reach lower leaves in rainforest canopy. (Red variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11193,7 +11193,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-philodendron-hederaceum",
     "name": "Silver Philodendron Hederaceum",
-    "scientific": "Philodendron hederaceum 'silver'",
+    "scientific": "Philodendron hederaceum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -11205,7 +11205,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Heart-shaped leaves on trailing vines that can grow several feet long. (Silver variant)",
-    "lastWatered": "0 days ago",
+    "lastWatered": "2026-07-29T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11246,7 +11246,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-epipremnum-aureum",
     "name": "Variegated Epipremnum Aureum",
-    "scientific": "Epipremnum aureum (Pothos) 'variegated'",
+    "scientific": "Epipremnum aureum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -11258,7 +11258,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect. Variegation deepens with light.",
     "soil": "Standard indoor mix with good drainage.",
     "fact": "In tropical climates it can grow leaves up to 3 feet across. (Variegated variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11299,7 +11299,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-rhaphidophora-tetrasperma",
     "name": "Dwarf Rhaphidophora Tetrasperma",
-    "scientific": "Rhaphidophora tetrasperma 'dwarf'",
+    "scientific": "Rhaphidophora tetrasperma",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -11311,7 +11311,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Well-draining aroid mix.",
     "fact": "Compact version of Monstera with naturally split juvenile leaves. (Dwarf variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11352,7 +11352,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-syngonium-podophyllum",
     "name": "Compact Syngonium Podophyllum",
-    "scientific": "Syngonium podophyllum 'compact'",
+    "scientific": "Syngonium podophyllum",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -11364,7 +11364,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Arrow-shaped leaves that develop lobes as the plant matures. (Compact variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11405,7 +11405,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-anthurium-andraeanum",
     "name": "Giant Anthurium Andraeanum",
-    "scientific": "Anthurium andraeanum 'giant'",
+    "scientific": "Anthurium andraeanum",
     "emoji": "❤️",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -11417,7 +11417,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Chunky, well-draining aroid mix.",
     "fact": "Heart-shaped waxy spathe with true flowers on central spike. (Giant variant)",
-    "lastWatered": "9 days ago",
+    "lastWatered": "2026-07-20T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11458,7 +11458,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-scindapsus-pictus",
     "name": "Golden Scindapsus Pictus",
-    "scientific": "Scindapsus pictus 'golden'",
+    "scientific": "Scindapsus pictus",
     "emoji": "🌿",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -11470,7 +11470,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium, indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Satin Pothos features silver-spotted leaves on trailing vines. (Golden variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11511,7 +11511,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-hedera-helix",
     "name": "Marble Hedera Helix",
-    "scientific": "Hedera helix 'marble'",
+    "scientific": "Hedera helix",
     "emoji": "🍃",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -11523,7 +11523,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Medium to bright indirect light.",
     "soil": "Standard well-draining potting mix.",
     "fact": "Vigorous climber that can attach to surfaces with tiny root-like structures. (Marble variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11564,7 +11564,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-crassula-ovata",
     "name": "Pink Crassula Ovata",
-    "scientific": "Crassula ovata 'pink'",
+    "scientific": "Crassula ovata",
     "emoji": "🍀",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -11576,7 +11576,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Considered a symbol of good luck and prosperity in many cultures. (Pink variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11617,7 +11617,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-aloe-vera",
     "name": "White Aloe Vera",
-    "scientific": "Aloe vera 'white'",
+    "scientific": "Aloe vera",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -11629,7 +11629,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Gel inside leaves used topically for burns for centuries. (White variant)",
-    "lastWatered": "7 days ago",
+    "lastWatered": "2026-07-22T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11670,7 +11670,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-echeveria-elegans",
     "name": "Red Echeveria Elegans",
-    "scientific": "Echeveria elegans 'red'",
+    "scientific": "Echeveria elegans",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -11682,7 +11682,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Rosette-forming with pale blue-green leaves and delicate pink flowers. (Red variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11723,7 +11723,7 @@ export const expandedCatalogPlants = [
   {
     "id": "silver-sedum-morganianum",
     "name": "Silver Sedum Morganianum",
-    "scientific": "Sedum morganianum 'silver'",
+    "scientific": "Sedum morganianum",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -11735,7 +11735,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Trailing succulent resembling beads on a string. (Silver variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11776,7 +11776,7 @@ export const expandedCatalogPlants = [
   {
     "id": "variegated-sempervivum-tectorum",
     "name": "Variegated Sempervivum Tectorum",
-    "scientific": "Sempervivum tectorum 'variegated'",
+    "scientific": "Sempervivum tectorum",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.72_0.11_35)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -11788,7 +11788,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Full sun.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Historically planted on roofs to protect buildings. (Variegated variant)",
-    "lastWatered": "8 days ago",
+    "lastWatered": "2026-07-21T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11829,7 +11829,7 @@ export const expandedCatalogPlants = [
   {
     "id": "dwarf-curio-rowleyanus",
     "name": "Dwarf Curio Rowleyanus",
-    "scientific": "Curio rowleyanus 'dwarf'",
+    "scientific": "Curio rowleyanus",
     "emoji": "📿",
     "gradient": "bg-[oklch(0.85_0.06_20)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -11841,7 +11841,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect to direct light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Each bead-like leaf is a water-storing sphere with translucent stripe. (Dwarf variant)",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11882,7 +11882,7 @@ export const expandedCatalogPlants = [
   {
     "id": "compact-haworthiopsis-attenuata",
     "name": "Compact Haworthiopsis Attenuata",
-    "scientific": "Haworthiopsis attenuata 'compact'",
+    "scientific": "Haworthiopsis attenuata",
     "emoji": "🌵",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -11894,7 +11894,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "White bumpy stripes mimic natural camouflage in nature. (Compact variant)",
-    "lastWatered": "13 days ago",
+    "lastWatered": "2026-07-16T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11935,7 +11935,7 @@ export const expandedCatalogPlants = [
   {
     "id": "giant-kalanchoe-blossfeldiana",
     "name": "Giant Kalanchoe Blossfeldiana",
-    "scientific": "Kalanchoe blossfeldiana 'giant'",
+    "scientific": "Kalanchoe blossfeldiana",
     "emoji": "🌷",
     "gradient": "bg-[oklch(0.62_0.12_145)]",
     "tone": "text-[oklch(0.35_0.05_140)]",
@@ -11947,7 +11947,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining succulent mix.",
     "fact": "Clusters of tiny flowers stay in bloom for several weeks. (Giant variant)",
-    "lastWatered": "2 days ago",
+    "lastWatered": "2026-07-27T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -11988,7 +11988,7 @@ export const expandedCatalogPlants = [
   {
     "id": "golden-dypsis-lutescens",
     "name": "Golden Dypsis Lutescens",
-    "scientific": "Dypsis lutescens 'golden'",
+    "scientific": "Dypsis lutescens",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.68_0.14_50)]",
     "tone": "text-[oklch(0.38_0.04_55)]",
@@ -12000,7 +12000,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Top air-purifying plant identified in NASA's clean air study. (Golden variant)",
-    "lastWatered": "11 days ago",
+    "lastWatered": "2026-07-18T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -12041,7 +12041,7 @@ export const expandedCatalogPlants = [
   {
     "id": "marble-strelitzia-nicolai",
     "name": "Marble Strelitzia Nicolai",
-    "scientific": "Strelitzia nicolai 'marble'",
+    "scientific": "Strelitzia nicolai",
     "emoji": "🦅",
     "gradient": "bg-[oklch(0.58_0.1_155)]",
     "tone": "text-[oklch(0.42_0.09_15)]",
@@ -12053,7 +12053,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Rich, well-draining potting mix.",
     "fact": "Named for exotic flowers resembling a bird's crest, rare indoors. (Marble variant)",
-    "lastWatered": "4 days ago",
+    "lastWatered": "2026-07-25T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -12094,7 +12094,7 @@ export const expandedCatalogPlants = [
   {
     "id": "pink-beaucarnea-recurvata",
     "name": "Pink Beaucarnea Recurvata",
-    "scientific": "Beaucarnea recurvata 'pink'",
+    "scientific": "Beaucarnea recurvata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.78_0.13_95)]",
     "tone": "text-[oklch(0.4_0.09_35)]",
@@ -12106,7 +12106,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright, direct to indirect light.",
     "soil": "Fast-draining cactus/succulent mix.",
     "fact": "Not a true palm - succulent with swollen water-storing trunk base. (Pink variant)",
-    "lastWatered": "1 days ago",
+    "lastWatered": "2026-07-28T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -12147,7 +12147,7 @@ export const expandedCatalogPlants = [
   {
     "id": "white-dracaena-marginata",
     "name": "White Dracaena Marginata",
-    "scientific": "Dracaena marginata 'white'",
+    "scientific": "Dracaena marginata",
     "emoji": "🌴",
     "gradient": "bg-[oklch(0.85_0.05_140)]",
     "tone": "text-[oklch(0.42_0.08_40)]",
@@ -12159,7 +12159,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Bright to medium indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Thin, red-edged leaves radiate from narrow, sculptural stems. (White variant)",
-    "lastWatered": "6 days ago",
+    "lastWatered": "2026-07-23T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {
@@ -12200,7 +12200,7 @@ export const expandedCatalogPlants = [
   {
     "id": "red-zamioculcas-zamiifolia",
     "name": "Red Zamioculcas Zamiifolia",
-    "scientific": "Zamioculcas zamiifolia 'red'",
+    "scientific": "Zamioculcas zamiifolia",
     "emoji": "🪴",
     "gradient": "bg-[oklch(0.86_0.05_45)]",
     "tone": "text-[oklch(0.45_0.09_75)]",
@@ -12212,7 +12212,7 @@ export const expandedCatalogPlants = [
     "sunlight": "Low to bright indirect light.",
     "soil": "Well-draining potting mix.",
     "fact": "Stores water in thick rhizomes, survives months of neglect. (Red variant)",
-    "lastWatered": "3 days ago",
+    "lastWatered": "2026-07-26T12:00:00.000Z",
     "nextTask": "Check soil moisture",
     "timeline": [
       {

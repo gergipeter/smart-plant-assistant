@@ -29,9 +29,8 @@ function TermsPage() {
 
         <Section title="1. The service">
           <p>
-            Verdant helps you identify plants, track watering and care, get AI-assisted diagnosis
-            for plant problems, and connect with other plant owners through a social feed.
-            Plant identification, diagnosis, and care suggestions are provided for informational
+            Verdant helps you identify plants, track watering and care, and get AI-assisted
+            diagnosis for plant problems. Plant identification, diagnosis, and care suggestions are provided for informational
             purposes only and are not a substitute for professional horticultural, agricultural,
             or safety advice — including on whether a plant is edible or safe around children and
             pets. Always verify independently before acting on that basis.
@@ -60,7 +59,6 @@ function TermsPage() {
         <Section title="4. Content you submit">
           <ul className="list-disc pl-5 space-y-1">
             <li>You retain ownership of photos, captions, and questions you submit.</li>
-            <li>By posting to the community feed, you grant us a license to display that content within the App to other users.</li>
             <li>You're responsible for content you post — don't post anything illegal, infringing, harassing, or that you don't have the right to share.</li>
             <li>We may remove content or suspend accounts that violate these Terms.</li>
           </ul>

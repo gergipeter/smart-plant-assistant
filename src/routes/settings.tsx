@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { hideDemoCatalog, showDemoCatalog, useGardenPlants } from "@/lib/myGarden";
+import { showDemoCatalog } from "@/lib/myGarden";
 import { seedDemoData } from "@/lib/seedDemoData";
-import { Wand2, Sprout, ChevronRight, Settings2, Languages, Check, User, Crown, MessageCircle, LogOut, LogIn, Users, Bell, Smartphone, Shield, FileText } from "lucide-react";
+import { Wand2, ChevronRight, Settings2, Languages, Check, Crown, MessageCircle, LogOut, LogIn, Bell, Smartphone, Shield, FileText, Cpu } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useI18n, LOCALES } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
@@ -67,9 +67,7 @@ function SettingsRow({
 }
 
 function SettingsPage() {
-  const gardenPlants = useGardenPlants();
   const [seeding, setSeeding] = useState(false);
-  const [busy, setBusy] = useState(false);
   const { locale, setLocale, t } = useI18n();
   const { user, signOut } = useAuth();
   const [wateringReminders, setWateringReminders] = useState(true);
@@ -128,12 +126,6 @@ function SettingsPage() {
     }
   };
 
-  const handleClearDemo = () => {
-    setBusy(true);
-    hideDemoCatalog();
-    window.location.reload();
-  };
-
   return (
     <AppShell>
       <header className="mb-6 flex items-center gap-3">
@@ -151,18 +143,11 @@ function SettingsPage() {
           Account
         </h2>
         <div className="ios-group">
-          {user ? (
-            <SettingsRow
-              icon={<User className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />}
-              label={user.displayName || "My Profile"}
-              sub={user.email || "View your profile and activity"}
-              to="/profile"
-            />
-          ) : (
+          {!user && (
             <SettingsRow
               icon={<LogIn className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />}
               label="Sign In"
-              sub="Sign in to sync your garden and profile"
+              sub="Sign in to sync your garden"
               to="/login"
             />
           )}
@@ -173,16 +158,16 @@ function SettingsPage() {
             to="/premium"
           />
           <SettingsRow
-            icon={<Users className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />}
-            label="Feed"
-            sub="See what other plant parents are growing"
-            to="/feed"
-          />
-          <SettingsRow
             icon={<MessageCircle className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />}
             label="Ask an Expert"
             sub="Get answers from plant experts"
             to="/ask-expert"
+          />
+          <SettingsRow
+            icon={<Cpu className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />}
+            label="Sensors"
+            sub="Connect a physical soil-moisture sensor"
+            to="/sensors"
           />
           {user && (
             <SettingsRow
@@ -315,16 +300,8 @@ function SettingsPage() {
             sub={t("settings.seedDemoSub")}
             onClick={handleSeedDemoData}
           />
-          {gardenPlants.length > 0 && (
-            <SettingsRow
-              icon={<Sprout className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />}
-              label={t("settings.startFresh")}
-              sub={t("settings.startFreshSub")}
-              onClick={handleClearDemo}
-            />
-          )}
         </div>
-        {(seeding || busy) && (
+        {seeding && (
           <p className="text-xs text-muted-foreground text-center mt-3">{t("settings.working")}</p>
         )}
       </section>

@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import type { ApiResult, Json } from "./plantnet.server";
+import type { ApiResult } from "./plantnet.server";
 
 export type HealthIndicator = {
   name: string;
@@ -338,3 +338,125 @@ async function blobToBase64(blob: Blob): Promise<string> {
     reader.readAsDataURL(blob);
   });
 }
+
+// ---------------------------------------------------------------------------
+// Claude vision fallback (scan flow, last resort) — used only when Pl@ntNet
+// and the Vision-based species guess above have both failed or come back
+// unrecognized. Claude's multimodal reasoning about visual traits (leaf
+// shape, growth habit, distinguishing features) is a different signal than
+// Vision's web-image-similarity search, so it sometimes succeeds where that
+// approach can't find a visually-similar match at all.
+// ---------------------------------------------------------------------------
+
+export type ClaudeSpeciesGuess = {
+  scientificName: string;
+  commonName: string;
+  confidence: "low" | "medium" | "high";
+  reasoning: string;
+};
+
+const CLAUDE_VISION_MODEL = "claude-opus-5";
+
+// Only formats the Messages API vision `image` block accepts — reject
+// anything else up front instead of sending a request Claude will 400 on.
+const SUPPORTED_IMAGE_MEDIA_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+]);
+
+export const identifyPlantViaClaude = createServerFn({ method: "POST" })
+  .validator((data: unknown) => {
+    if (!(data instanceof FormData)) throw new Error("Expected FormData");
+    return data;
+  })
+  .handler(async ({ data }): Promise<ApiResult<ClaudeSpeciesGuess | null>> => {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      return { status: "error", message: "Plant identification service not configured." };
+    }
+
+    const image = data.get("image");
+    if (!(image instanceof Blob)) {
+      return { status: "error", message: "No image provided." };
+    }
+
+    const mediaType = image.type;
+    if (!SUPPORTED_IMAGE_MEDIA_TYPES.has(mediaType)) {
+      return { status: "error", message: "Unsupported image format." };
+    }
+
+    try {
+      const base64 = await blobToBase64(image);
+
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: CLAUDE_VISION_MODEL,
+          max_tokens: 512,
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "image",
+                  source: { type: "base64", media_type: mediaType, data: base64 },
+                },
+                {
+                  type: "text",
+                  text: `Identify the plant species in this photo. Look at leaf shape, arrangement, growth habit, and any visible flowers or fruit.
+
+Respond ONLY with valid JSON (no markdown, no extra text) matching this exact structure. If you cannot identify the plant with reasonable confidence, respond with {"result": null} instead.
+
+{
+  "result": {
+    "scientificName": "Genus species",
+    "commonName": "Common name",
+    "confidence": "low|medium|high",
+    "reasoning": "One-sentence explanation of the identifying features you observed"
+  }
+}`,
+                },
+              ],
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        return { status: "error", message: "Plant identification request failed." };
+      }
+
+      const body = (await response.json()) as {
+        stop_reason?: string;
+        content?: { type?: string; text?: string }[];
+      };
+
+      if (body.stop_reason === "refusal") {
+        return { status: "error", message: "Could not analyze this image." };
+      }
+
+      const text = body.content?.[0]?.text ?? "";
+      const parsed = JSON.parse(text) as { result: ClaudeSpeciesGuess | null };
+
+      if (!parsed.result) {
+        return { status: "ok", data: null };
+      }
+
+      const { scientificName, commonName, confidence, reasoning } = parsed.result;
+      if (!scientificName || !commonName || !confidence || !reasoning) {
+        return { status: "error", message: "Invalid response from plant identification service." };
+      }
+
+      return { status: "ok", data: parsed.result };
+    } catch (error) {
+      console.error("Claude plant identification error:", error);
+      return { status: "error", message: "Could not analyze plant image." };
+    }
+  });

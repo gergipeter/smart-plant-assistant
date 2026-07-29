@@ -6,6 +6,8 @@
 import type { Plant } from "@/lib/plants";
 import { getWeather } from "@/lib/weather.server";
 import { getHardinessZone } from "@/lib/hardiness-zone.server";
+import { daysSinceCareDate } from "@/lib/careDates";
+import { getLatestSensorReading } from "@/lib/sensorReadings";
 import {
   predictWateringForGarden,
   type EnvironmentData,
@@ -35,15 +37,28 @@ function parseZoneNumber(zoneRange: string): number {
   return Number.isFinite(first) ? first : 7;
 }
 
-function daysSinceLastWatered(lastWatered: string): string {
-  const match = lastWatered.match(/(\d+)\s*day/);
-  const days = match ? parseInt(match[1], 10) : 0;
+// plant.lastWatered is a real ISO timestamp (see plants.ts's doc comment),
+// EXCEPT for any not-yet-backfilled garden_plants row still holding the old
+// "N days ago" display-string format — daysSinceCareDate's temporary
+// fallback (see careDates.ts) handles those transparently. Re-deriving an
+// ISO string here (rather than passing plant.lastWatered straight through)
+// keeps this working correctly during that transition; once the backfill is
+// confirmed complete this can become `lastWatered: plant.lastWatered,`.
+function toIsoLastWatered(lastWatered: string): string {
+  const days = daysSinceCareDate(lastWatered);
   const date = new Date();
   date.setDate(date.getDate() - days);
   return date.toISOString();
 }
 
-export function plantToWateringProfile(plant: Plant): PlantWateringProfile {
+// lastPhotoSoilMoisture is named for its original visual-analysis source,
+// but predictWateringNeed only cares about "most recent known soil
+// moisture %" — a real sensor reading (see sensorReadings.ts) is strictly
+// better ground truth than a photo estimate, so it takes priority whenever
+// a sensor is registered for this plant.
+export async function plantToWateringProfile(plant: Plant): Promise<PlantWateringProfile> {
+  const sensorReading = await getLatestSensorReading(plant.id);
+
   return {
     plantId: plant.id,
     baseWateringDays: plant.waterIntervalDays ?? 10,
@@ -51,7 +66,8 @@ export function plantToWateringProfile(plant: Plant): PlantWateringProfile {
     drainageQuality: plant.drainageQuality ?? DEFAULT_DRAINAGE,
     sunExposure: plant.sunExposure ?? DEFAULT_SUN_EXPOSURE,
     containerSize: plant.containerSizeLiters ?? DEFAULT_CONTAINER_LITERS,
-    lastWatered: daysSinceLastWatered(plant.lastWatered),
+    lastWatered: toIsoLastWatered(plant.lastWatered),
+    lastPhotoSoilMoisture: sensorReading?.soilMoisture,
   };
 }
 
@@ -82,6 +98,6 @@ export async function getAdvancedWateringPredictions(
   const environment = await fetchEnvironmentData(lat, lon);
   if (!environment) return null;
 
-  const profiles = plants.map(plantToWateringProfile);
+  const profiles = await Promise.all(plants.map(plantToWateringProfile));
   return predictWateringForGarden(profiles, environment);
 }

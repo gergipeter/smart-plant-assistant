@@ -34,6 +34,9 @@ export function HardinessZoneInfo({
 
   if (loading || !info) return null;
 
+  const minTempC = Math.round(((info.minTemp - 32) * 5) / 9);
+  const maxTempC = Math.round(((info.maxTemp - 32) * 5) / 9);
+
   return (
     <div className="leaf-card p-4 mb-7">
       <div className="flex items-start gap-3">
@@ -45,7 +48,7 @@ export function HardinessZoneInfo({
             Estimated climate zone {info.zone}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {info.region} · {info.minTemp}°F to {info.maxTemp}°F
+            {info.region} · {minTempC}°C to {maxTempC}°C
           </p>
           <p className="text-xs text-muted-foreground mt-1.5">
             {info.seasonalTips}

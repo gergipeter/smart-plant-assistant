@@ -199,23 +199,6 @@ function generateWateringReason(
   return `Water in ${daysUntilWatering} day${daysUntilWatering === 1 ? '' : 's'}. Conditions are normal.`;
 }
 
-// Learn from user's actual watering behavior
-export function calibrateWateringProfile(
-  profile: PlantWateringProfile,
-  actualIntervalDays: number
-): PlantWateringProfile {
-  // Adjust base watering days based on user's actual pattern
-  const adjustment = actualIntervalDays / profile.baseWateringDays;
-
-  // Don't adjust too much - take 25% of the difference
-  const newBase = profile.baseWateringDays + (actualIntervalDays - profile.baseWateringDays) * 0.25;
-
-  return {
-    ...profile,
-    baseWateringDays: Math.round(newBase * 10) / 10, // Round to 1 decimal
-  };
-}
-
 // Batch predict for all plants
 export function predictWateringForGarden(
   profiles: PlantWateringProfile[],
@@ -228,14 +211,4 @@ export function predictWateringForGarden(
   }
 
   return predictions;
-}
-
-// Get plants needing water soon
-export function getPlantsNeedingWater(
-  predictions: Record<string, WateringPrediction>,
-  urgencyDays: number = 2
-): string[] {
-  return Object.entries(predictions)
-    .filter(([_, pred]) => pred.daysUntilWatering <= urgencyDays)
-    .map(([plantId, _]) => plantId);
 }
