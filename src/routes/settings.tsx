@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { showDemoCatalog } from "@/lib/myGarden";
+import { PremiumStatusCard } from "@/components/PremiumStatusCard";
 import { seedDemoData } from "@/lib/seedDemoData";
 import { Wand2, ChevronRight, Settings2, Languages, Check, Crown, MessageCircle, LogOut, LogIn, Bell, Smartphone, Shield, FileText, Cpu } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -142,6 +143,7 @@ function SettingsPage() {
         <h2 className="text-xs uppercase tracking-widest text-muted-foreground mb-2 px-1">
           Account
         </h2>
+        <PremiumStatusCard />
         <div className="ios-group">
           {!user && (
             <SettingsRow

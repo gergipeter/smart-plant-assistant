@@ -13,10 +13,6 @@ import {
   Droplets,
   Sun,
   CircleAlert,
-  Leaf,
-  Flower2,
-  Apple,
-  TreeDeciduous,
   ExternalLink,
   ShieldAlert,
   BadgeCheck,
@@ -117,44 +113,6 @@ const HIGH_CONFIDENCE_SCORE = 0.4;
 // giving up and falling all the way back to on-device MobileNet.
 const PLANTNET_FALLBACK_THRESHOLD = 0.15;
 
-// Pl@ntNet's /v2/identify `organs` param — picking the right one measurably
-// improves match confidence over always sending "auto".
-const ORGANS = [
-  { id: "auto", labelKey: "scan.organ.auto" satisfies TranslationKey, icon: Zap },
-  { id: "leaf", labelKey: "scan.organ.leaf" satisfies TranslationKey, icon: Leaf },
-  { id: "flower", labelKey: "scan.organ.flower" satisfies TranslationKey, icon: Flower2 },
-  { id: "fruit", labelKey: "scan.organ.fruit" satisfies TranslationKey, icon: Apple },
-  { id: "bark", labelKey: "scan.organ.bark" satisfies TranslationKey, icon: TreeDeciduous },
-] as const;
-type Organ = (typeof ORGANS)[number]["id"];
-
-function OrganPicker({ value, onChange }: { value: Organ; onChange: (o: Organ) => void }) {
-  const t = useT();
-  return (
-    <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
-      {ORGANS.map((o) => {
-        const Icon = o.icon;
-        const active = value === o.id;
-        return (
-          <button
-            key={o.id}
-            type="button"
-            onClick={() => onChange(o.id)}
-            className={`ios-tap shrink-0 flex items-center gap-1.5 text-[13px] font-medium px-3 h-8 rounded-full transition-colors ${
-              active
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-secondary-foreground"
-            }`}
-          >
-            <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
-            {t(o.labelKey)}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 // IUCN Red List category → translation key + tone. Only a few categories are
 // meaningfully "at risk"; the rest render neutrally or not at all.
 const IUCN_LABELS: Record<string, { labelKey: TranslationKey; urgent: boolean }> = {
@@ -253,6 +211,148 @@ function NextSteps({ plant }: { plant: Plant }) {
         );
       })}
     </ul>
+  );
+}
+
+const ANALYZING_STEP_KEYS = [
+  "scan.analyzingStep1",
+  "scan.analyzingStep2",
+  "scan.analyzingStep3",
+  "scan.analyzingStep4",
+  "scan.analyzingStep5",
+] as const satisfies readonly TranslationKey[];
+const ANALYZING_STEP_MS = 850;
+
+// Fixed set of "detected keypoint" positions (percent of frame) that light
+// up one at a time — reads as a vision model finding features on the leaf,
+// like a pose-estimation/object-detection overlay. Deterministic (not
+// random) so it doesn't reshuffle every render.
+const KEYPOINTS = [
+  { x: 32, y: 28 },
+  { x: 58, y: 22 },
+  { x: 71, y: 44 },
+  { x: 45, y: 52 },
+  { x: 25, y: 61 },
+  { x: 63, y: 68 },
+  { x: 50, y: 38 },
+  { x: 38, y: 74 },
+] as const;
+
+// Purely cosmetic "it's really working" animation shown while the real
+// identify call (Pl@ntNet, then Vision/Claude/MobileNet fallbacks — see
+// runClassification) is in flight. None of the readouts (keypoints, percent,
+// step text) reflect real model internals — this is a HUD-style stand-in so
+// the wait reads as active computer-vision analysis rather than a frozen
+// spinner.
+function ScanningOverlay() {
+  const t = useT();
+  const [step, setStep] = useState(0);
+  const [visibleKeypoints, setVisibleKeypoints] = useState(0);
+  const [percent, setPercent] = useState(4);
+
+  useEffect(() => {
+    const stepId = setInterval(() => {
+      setStep((s) => (s + 1) % ANALYZING_STEP_KEYS.length);
+    }, ANALYZING_STEP_MS);
+
+    const keypointId = setInterval(() => {
+      setVisibleKeypoints((k) => (k + 1) % (KEYPOINTS.length + 2));
+    }, 320);
+
+    // Climbs toward ~96% and holds — never hits 100 on its own, since the
+    // real result can land at any moment and the jump to the actual result
+    // screen is what should read as "done," not this counter.
+    const percentId = setInterval(() => {
+      setPercent((p) => (p >= 96 ? 96 : p + Math.max(1, Math.round((96 - p) * 0.08))));
+    }, 180);
+
+    return () => {
+      clearInterval(stepId);
+      clearInterval(keypointId);
+      clearInterval(percentId);
+    };
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden font-mono">
+      {/* Fine grid — gives the frame a "machine vision" texture */}
+      <div
+        className="absolute inset-0 opacity-25"
+        style={{
+          backgroundImage:
+            "linear-gradient(color-mix(in oklch, var(--primary) 70%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklch, var(--primary) 70%, transparent) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
+
+      {/* Sweeping scan line */}
+      <div
+        className="absolute left-0 right-0 h-24 opacity-90"
+        style={{
+          background:
+            "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--primary) 65%, transparent), transparent)",
+          animation: "scan-sweep 1.8s ease-in-out infinite",
+        }}
+      />
+
+      {/* Detected keypoints — pop in one at a time with a small crosshair */}
+      {KEYPOINTS.map((p, i) => (
+        <div
+          key={i}
+          className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            opacity: i < visibleKeypoints ? 1 : 0,
+            transform: `translate(-50%, -50%) scale(${i < visibleKeypoints ? 1 : 0.3})`,
+          }}
+        >
+          <div className="absolute inset-0 rounded-full border border-primary" />
+          <div className="absolute left-1/2 top-1/2 h-1 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary" />
+        </div>
+      ))}
+
+      {/* Corner brackets pulse to reinforce "actively scanning" */}
+      {[
+        "top-6 left-6 border-t-2 border-l-2 rounded-tl-2xl",
+        "top-6 right-6 border-t-2 border-r-2 rounded-tr-2xl",
+        "bottom-6 left-6 border-b-2 border-l-2 rounded-bl-2xl",
+        "bottom-6 right-6 border-b-2 border-r-2 rounded-br-2xl",
+      ].map((c) => (
+        <div
+          key={c}
+          className={`absolute h-10 w-10 border-primary/80 pointer-events-none animate-pulse ${c}`}
+        />
+      ))}
+
+      {/* Top-left readout, like a debug HUD corner */}
+      <div className="absolute top-4 left-4 text-[10px] leading-tight text-primary/90 tracking-wide">
+        <p>NODES {Math.min(visibleKeypoints, KEYPOINTS.length)}/{KEYPOINTS.length}</p>
+        <p>CONF {percent}%</p>
+      </div>
+
+      <div className="absolute inset-0 grid place-items-center bg-black/45">
+        <div className="text-center text-white px-8">
+          {/* Radar-style spinning reticle instead of a plain ring */}
+          <div className="relative h-16 w-16 mx-auto">
+            <div className="absolute inset-0 rounded-full border border-primary/30" />
+            <div className="absolute inset-2 rounded-full border border-primary/40" />
+            <div className="absolute inset-0 rounded-full border-t-2 border-primary animate-spin" />
+            <div
+              className="absolute inset-0 rounded-full border-t-2 border-primary/50"
+              style={{ animation: "spin 1.4s linear infinite reverse" }}
+            />
+            <div className="absolute inset-0 grid place-items-center text-xs tabular-nums text-primary">
+              {percent}%
+            </div>
+          </div>
+          <p className="mt-4 font-display text-lg">{t("scan.analyzing")}</p>
+          <p key={step} className="text-xs text-white/70 mt-1 animate-[fadeIn_0.3s_ease]">
+            {t(ANALYZING_STEP_KEYS[step])}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -414,6 +514,12 @@ function loadSpeciesCorpus(): Promise<ProjectSpeciesEntry[]> {
   return speciesCorpusPromise;
 }
 
+// Pl@ntNet accepts multiple images/organs per identify request and returns
+// one combined, more-confident result — confirmed against the live API.
+// Capped at 4: comfortably enough angles (leaf, flower, fruit, whole plant)
+// without turning one scan into an open-ended photo shoot.
+const MAX_SHOTS = 4;
+
 function Scan() {
   const { t, locale } = useI18n();
   const [state, setState] = useState<State>("idle");
@@ -426,8 +532,12 @@ function Scan() {
   // recording, since the viewfinder otherwise looks identical to one.
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const previewSourceRef = useRef<HTMLCanvasElement | HTMLImageElement | null>(null);
-  const [organ, setOrgan] = useState<Organ>("auto");
-  const [showOrganPicker, setShowOrganPicker] = useState(false);
+  // Additional angles captured via "Add another angle" on the preview
+  // screen, beyond the first shot held in previewSourceRef/previewUrl —
+  // resolved to blobs immediately (rather than kept as DOM sources) since
+  // there's no single "current" element to re-render once more than one
+  // shot exists.
+  const [extraShots, setExtraShots] = useState<{ blob: Blob; url: string }[]>([]);
   const [limitReached, setLimitReached] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -580,6 +690,7 @@ function Scan() {
 
   const runClassification = async (
     source: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement,
+    extraBlobs: Blob[] = [],
   ) => {
     setState("analyzing");
     const start = Date.now();
@@ -590,8 +701,16 @@ function Scan() {
       const blob = await toBlob(source);
       photoBlob = blob;
       const formData = new FormData();
-      formData.append("image", blob);
-      formData.append("organs", organ);
+      // Primary shot plus any extra angles — Pl@ntNet combines all of them
+      // into one result. Vision/Claude/MobileNet below only ever see the
+      // primary shot (photoBlob/source) since none of those fallbacks
+      // support multi-image input.
+      formData.append("images", blob);
+      formData.append("organs", "auto");
+      for (const extra of extraBlobs) {
+        formData.append("images", extra);
+        formData.append("organs", "auto");
+      }
       const response = await identifyPlant({ data: formData });
 
       if (response.status === "quota-exceeded") {
@@ -646,7 +765,12 @@ function Scan() {
     setState("result");
   };
 
-  const captureFromCamera = () => {
+  // True while the camera is reopened to capture an additional angle (as
+  // opposed to the very first shot of a new scan) — set by
+  // handleAddAnotherAngle, read once the next capture completes.
+  const capturingExtraRef = useRef(false);
+
+  const captureFromCamera = async () => {
     const video = videoRef.current;
     if (!video || !cameraReady) return;
     const canvas = document.createElement("canvas");
@@ -654,6 +778,15 @@ function Scan() {
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
     ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    if (capturingExtraRef.current) {
+      capturingExtraRef.current = false;
+      const blob = await toBlob(canvas);
+      setExtraShots((prev) => [...prev, { blob, url: canvas.toDataURL("image/jpeg", 0.9) }]);
+      setState("preview");
+      return;
+    }
+
     previewSourceRef.current = canvas;
     setPreviewUrl(canvas.toDataURL("image/jpeg", 0.9));
     setState("preview");
@@ -663,7 +796,14 @@ function Scan() {
     const file = fileRef.current?.files?.[0];
     if (!file) return;
     const img = new Image();
-    img.onload = () => {
+    img.onload = async () => {
+      if (capturingExtraRef.current) {
+        capturingExtraRef.current = false;
+        const blob = await toBlob(img);
+        setExtraShots((prev) => [...prev, { blob, url: img.src }]);
+        setState("preview");
+        return;
+      }
       previewSourceRef.current = img;
       setPreviewUrl(img.src);
       setState("preview");
@@ -671,21 +811,38 @@ function Scan() {
     img.src = URL.createObjectURL(file);
   };
 
+  // Sends the user back to the live camera view to capture one more angle
+  // of the same plant — extraShots accumulates alongside the first shot
+  // rather than replacing it, up to MAX_SHOTS total.
+  const handleAddAnotherAngle = () => {
+    capturingExtraRef.current = true;
+    setState("idle");
+  };
+
+  const removeExtraShot = (index: number) => {
+    setExtraShots((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const confirmPreview = () => {
     const source = previewSourceRef.current;
     if (!source) return;
-    runClassification(source);
+    runClassification(
+      source,
+      extraShots.map((s) => s.blob),
+    );
   };
 
   const retakePreview = () => {
     previewSourceRef.current = null;
     setPreviewUrl(null);
+    setExtraShots([]);
     setState("idle");
   };
 
   const reset = () => {
     previewSourceRef.current = null;
     setPreviewUrl(null);
+    setExtraShots([]);
     setResult(null);
     setCapturedPhoto(null);
     setState("idle");
@@ -703,6 +860,13 @@ function Scan() {
       return;
     }
     const savedId = addToMyGarden(plant);
+    // The catalog plant's own reference photo is generic (same for every
+    // owner of this species) — prefer the photo the user just took, same as
+    // the uncataloged-species paths below, so their own garden shows their
+    // own plant rather than a stock picture.
+    if (capturedPhoto) {
+      await savePhoto(savedId, capturedPhoto);
+    }
     navigate({ to: "/plant/$id", params: { id: savedId } });
   };
 
@@ -711,15 +875,21 @@ function Scan() {
       setLimitReached(true);
       return;
     }
-    // No user-uploaded photo is persisted anywhere at this point (the
-    // captured frame is a transient Blob used only for the on-device
-    // health check, see capturedPhoto) — fall back to a real reference
-    // photo the same way Explore's "add to garden" does, instead of
-    // leaving the plant on the generic emoji placeholder.
-    const photoResult = await getSpeciesPhoto({ data: { scientificName: top.scientificName } });
-    const photoUrl = photoResult.status === "ok" ? photoResult.url : undefined;
+    // Prefer the user's own just-captured photo (saved via photoStore and
+    // picked up by usePhotoUrl, same mechanism as the plant detail timeline)
+    // over a generic species reference photo — only fall back to the
+    // reference photo when no capture is available (e.g. added from a
+    // low-confidence match without a usable frame).
+    let photoUrl: string | undefined;
+    if (!capturedPhoto) {
+      const photoResult = await getSpeciesPhoto({ data: { scientificName: top.scientificName } });
+      photoUrl = photoResult.status === "ok" ? photoResult.url : undefined;
+    }
     const plant = buildScannedPlant(top, t, locale, photoUrl);
     const savedId = addToMyGarden(plant);
+    if (capturedPhoto) {
+      await savePhoto(savedId, capturedPhoto);
+    }
     navigate({ to: "/plant/$id", params: { id: savedId } });
   };
 
@@ -728,12 +898,18 @@ function Scan() {
       setLimitReached(true);
       return;
     }
-    const photoResult = await getSpeciesPhoto({
-      data: { scientificName: entry.scientificNameWithoutAuthor },
-    });
-    const photoUrl = photoResult.status === "ok" ? photoResult.url : undefined;
+    let photoUrl: string | undefined;
+    if (!capturedPhoto) {
+      const photoResult = await getSpeciesPhoto({
+        data: { scientificName: entry.scientificNameWithoutAuthor },
+      });
+      photoUrl = photoResult.status === "ok" ? photoResult.url : undefined;
+    }
     const plant = buildPlantFromSpecies(entry, t, locale, photoUrl);
     const savedId = addToMyGarden(plant);
+    if (capturedPhoto) {
+      await savePhoto(savedId, capturedPhoto);
+    }
     navigate({ to: "/plant/$id", params: { id: savedId } });
   };
 
@@ -792,20 +968,6 @@ function Scan() {
           <QuotaBadge />
         </div>
         <div className="flex items-center gap-2">
-          {state === "idle" && (
-            <button
-              onClick={() => setShowOrganPicker((s) => !s)}
-              className={`ios-tap h-9 w-9 rounded-full grid place-items-center ${
-                showOrganPicker || organ !== "auto"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary"
-              }`}
-              aria-label={t("scan.organPickerToggle")}
-              aria-pressed={showOrganPicker}
-            >
-              <Leaf className="h-4 w-4" strokeWidth={1.75} />
-            </button>
-          )}
           <button
             onClick={() => navigate({ to: "/" })}
             className="ios-tap h-9 w-9 rounded-full bg-secondary grid place-items-center"
@@ -816,20 +978,16 @@ function Scan() {
         </div>
       </header>
 
-      {/* Organ picker — tells Pl@ntNet what part of the plant is in frame,
-          which measurably improves identification confidence over "auto".
-          Optional and tucked behind a toggle since "auto" already works well
-          for most photos — the default view is just the camera + shutter. */}
-      {state === "idle" && showOrganPicker && (
-        <div className="mb-4">
-          <OrganPicker value={organ} onChange={setOrgan} />
-        </div>
-      )}
-
-      {/* Viewfinder — a live preview while framing, or (once the shutter is
-          tapped) a frozen still with Retake/Use photo, so it's unambiguous
-          this is a single-photo capture rather than a video recording. */}
-      <div className="relative aspect-[3/4] overflow-hidden rounded-[1.75rem] bg-[oklch(0.22_0.02_45)]">
+      {/* Viewfinder — a live preview while framing, or (once captured) a
+          frozen still with Retake/Use photo, so it's unambiguous this is a
+          single-photo capture rather than a video recording. Tapping
+          anywhere on the frame captures, same as the shutter button below. */}
+      <div
+        onClick={state === "idle" && cameraReady ? captureFromCamera : undefined}
+        className={`relative aspect-[3/4] overflow-hidden rounded-[1.75rem] bg-[oklch(0.22_0.02_45)] ${
+          state === "idle" && cameraReady ? "cursor-pointer" : ""
+        }`}
+      >
         {(state === "preview" || state === "analyzing") && previewUrl ? (
           <img
             src={previewUrl}
@@ -871,24 +1029,12 @@ function Scan() {
               />
             ))}
             <p className="absolute top-6 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 rounded-full px-3 py-1">
-              {organ === "auto"
-                ? t("scan.frameHint.default")
-                : t("scan.frameHint.organ", {
-                    organ: t(`scan.organ.${organ}` as TranslationKey).toLowerCase(),
-                  })}
+              {t("scan.frameHint.default")}
             </p>
           </>
         )}
 
-        {state === "analyzing" && (
-          <div className="absolute inset-0 grid place-items-center bg-black/50">
-            <div className="text-center text-white">
-              <div className="h-10 w-10 mx-auto rounded-full border-2 border-white/40 border-t-white animate-spin" />
-              <p className="mt-4 font-display text-lg">{t("scan.analyzing")}</p>
-              <p className="text-xs text-white/70 mt-1">{t("scan.analyzingHint")}</p>
-            </div>
-          </div>
-        )}
+        {state === "analyzing" && <ScanningOverlay />}
       </div>
 
       <input
@@ -902,20 +1048,67 @@ function Scan() {
 
       {/* Controls */}
       {state === "preview" ? (
-        <div className="flex items-center justify-center gap-3 mt-8">
-          <button
-            onClick={retakePreview}
-            className="ios-tap h-12 flex-1 max-w-[10rem] rounded-full bg-secondary text-secondary-foreground font-semibold"
-          >
-            {t("scan.retake")}
-          </button>
-          <button
-            onClick={confirmPreview}
-            className="ios-tap h-12 flex-1 max-w-[10rem] rounded-full bg-primary text-primary-foreground font-semibold"
-          >
-            {t("scan.usePhoto")}
-          </button>
-        </div>
+        <>
+          {/* Thumbnail row — main shot plus any extra angles added so far.
+              Extras can be removed individually; the main shot can't (retake
+              starts the whole scan over instead). */}
+          <div className="flex items-center gap-2 mt-4 overflow-x-auto no-scrollbar">
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt=""
+                aria-hidden
+                className="h-14 w-14 shrink-0 rounded-xl object-cover ring-2 ring-primary"
+              />
+            )}
+            {extraShots.map((shot, i) => (
+              <div key={i} className="relative shrink-0">
+                <img
+                  src={shot.url}
+                  alt=""
+                  aria-hidden
+                  className="h-14 w-14 rounded-xl object-cover"
+                />
+                <button
+                  onClick={() => removeExtraShot(i)}
+                  aria-label={t("scan.removeAngle")}
+                  className="ios-tap absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-foreground text-background grid place-items-center"
+                >
+                  <X className="h-3 w-3" strokeWidth={2} />
+                </button>
+              </div>
+            ))}
+            {1 + extraShots.length < MAX_SHOTS && (
+              <button
+                onClick={handleAddAnotherAngle}
+                className="ios-tap h-14 w-14 shrink-0 rounded-xl border-2 border-dashed border-border grid place-items-center text-muted-foreground"
+                aria-label={t("scan.addAnotherAngle")}
+              >
+                <Plus className="h-5 w-5" strokeWidth={1.75} />
+              </button>
+            )}
+          </div>
+          {extraShots.length > 0 && (
+            <p className="text-xs text-muted-foreground text-center mt-2">
+              {t("scan.multiPhotoHint")}
+            </p>
+          )}
+
+          <div className="flex items-center justify-center gap-3 mt-4">
+            <button
+              onClick={retakePreview}
+              className="ios-tap h-12 flex-1 max-w-[10rem] rounded-full bg-secondary text-secondary-foreground font-semibold"
+            >
+              {t("scan.retake")}
+            </button>
+            <button
+              onClick={confirmPreview}
+              className="ios-tap h-12 flex-1 max-w-[10rem] rounded-full bg-primary text-primary-foreground font-semibold"
+            >
+              {extraShots.length > 0 ? t("scan.usePhotos") : t("scan.usePhoto")}
+            </button>
+          </div>
+        </>
       ) : (
         <div className="flex items-center justify-around mt-8">
           <button
@@ -1084,9 +1277,27 @@ function Scan() {
                   <Plus className="h-4 w-4" strokeWidth={1.75} /> {t("scan.addAnyway")}
                 </button>
               </div>
+
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <Link
+                  to="/explore"
+                  className="ios-tap h-11 rounded-full border border-border text-sm font-medium flex items-center justify-center gap-2"
+                >
+                  <BookOpen className="h-4 w-4" strokeWidth={1.75} /> {t("scan.searchByName")}
+                </Link>
+                <a
+                  href="https://www.google.com/search?tbm=isch&q=identify+this+houseplant"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ios-tap h-11 rounded-full border border-border text-sm font-medium flex items-center justify-center gap-2"
+                >
+                  <ExternalLink className="h-4 w-4" strokeWidth={1.75} /> {t("scan.searchOnGoogle")}
+                </a>
+              </div>
+
               <Link
                 to="/"
-                className="ios-tap w-full mt-2 text-xs text-muted-foreground text-center block"
+                className="ios-tap w-full mt-3 text-xs text-muted-foreground text-center block"
               >
                 {t("scan.myGarden")}
               </Link>

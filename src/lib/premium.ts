@@ -135,11 +135,18 @@ export function getSubscription(userId: string): Subscription {
 
 export async function getSubscriptionAsync(userId: string): Promise<Subscription> {
   if (isSupabaseConfigured && supabase) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("subscriptions")
       .select("*")
       .eq("user_id", userId)
       .maybeSingle();
+    if (error) {
+      // A silently-swallowed error here (e.g. an RLS policy denying the
+      // select, or a transient network failure) previously fell straight
+      // through to the localStorage default — meaning a real paid user could
+      // read back as "free" with zero visibility into why.
+      console.error("Failed to load subscription from Supabase:", error);
+    }
     if (data) {
       const sub = fromRow(data as SubscriptionRow);
       if (sub.endDate && new Date(sub.endDate) < new Date()) return defaultSubscription(userId);

@@ -42,6 +42,7 @@ import { WeatherCard } from "@/components/WeatherCard";
 import { HardinessZoneInfo } from "@/components/HardinessZoneInfo";
 import { seedDemoData } from "@/lib/seedDemoData";
 import { getUserLocation } from "@/lib/geolocation.server";
+import { usePhotoUrl } from "@/lib/usePhotoUrl";
 import { useT, statusLabelKeys, type TranslationKey } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
@@ -246,17 +247,21 @@ function GardenBentoCard({
   const t = useT();
   const needsAttention = plant.status !== "healthy";
   const needsWaterOrMist = plant.status === "needs-water" || plant.status === "needs-mist";
+  // Falls back to the user's own captured photo (saved via photoStore under
+  // the plant's own id — see scan.tsx's add-to-garden handlers) when there's
+  // no reference photo URL set, same as plant.$id.tsx's heroPhoto.
+  const ownPhotoUrl = usePhotoUrl(plant.photo ? undefined : plant.id);
+  const photo = plant.photo ?? ownPhotoUrl;
   return (
     <Link
       to="/plant/$id"
       params={{ id: plant.id }}
-      className={`ios-tap leaf-card relative overflow-hidden flex flex-col justify-end ${
-        featured ? "col-span-2 aspect-[16/10]" : "aspect-square"
-      }`}
+      className={`ios-tap leaf-card relative overflow-hidden flex flex-col justify-end ${featured ? "col-span-2 aspect-[16/10]" : "aspect-square"
+        }`}
     >
-      {plant.photo ? (
+      {photo ? (
         <img
-          src={plant.photo}
+          src={photo}
           alt=""
           aria-hidden
           className="absolute inset-0 h-full w-full object-cover"
@@ -304,9 +309,8 @@ function GardenBentoCard({
         )}
         <div className="flex items-center justify-between mt-2">
           <span
-            className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-wide px-2 py-1 rounded-full backdrop-blur-sm ${
-              needsAttention ? "bg-primary/90 text-primary-foreground" : "bg-white/20 text-white"
-            }`}
+            className={`inline-flex items-center gap-1 text-[10px] uppercase tracking-wide px-2 py-1 rounded-full backdrop-blur-sm ${needsAttention ? "bg-primary/90 text-primary-foreground" : "bg-white/20 text-white"
+              }`}
           >
             {t(statusLabelKeys[plant.status])}
           </span>
@@ -724,11 +728,10 @@ function Dashboard() {
                           className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all ${isCompleted ? "opacity-60" : ""}`}
                         >
                           <div
-                            className={`h-6 w-6 shrink-0 rounded-full border-2 flex items-center justify-center transition-all ${
-                              isCompleted
+                            className={`h-6 w-6 shrink-0 rounded-full border-2 flex items-center justify-center transition-all ${isCompleted
                                 ? "bg-primary border-primary"
                                 : "border-muted-foreground/30"
-                            }`}
+                              }`}
                           >
                             {isCompleted && (
                               <Check
@@ -745,9 +748,8 @@ function Dashboard() {
                           />
                           <div className="flex-1 min-w-0">
                             <p
-                              className={`text-sm font-medium transition-all ${
-                                isCompleted ? "line-through text-muted-foreground" : ""
-                              }`}
+                              className={`text-sm font-medium transition-all ${isCompleted ? "line-through text-muted-foreground" : ""
+                                }`}
                             >
                               {t(task.labelKey, { name: task.plant.name })}
                             </p>
@@ -818,17 +820,16 @@ function Dashboard() {
                       </button>
                     )}
                   </div>
-                  <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
+                  <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2.5">
                     {(["all", "needs-water", "needs-mist", "quarantined", "healthy"] as const).map(
                       (s) => (
                         <button
                           key={s}
                           onClick={() => setStatusFilter(s)}
-                          className={`ios-tap shrink-0 h-7 px-3 rounded-full text-xs font-medium transition-colors ${
-                            statusFilter === s
+                          className={`ios-tap shrink-0 h-7 px-3 rounded-full text-xs font-medium transition-colors ${statusFilter === s
                               ? "bg-primary text-primary-foreground"
                               : "bg-secondary text-secondary-foreground"
-                          }`}
+                            }`}
                         >
                           {s === "all" ? t("home.search.filterAll") : t(statusLabelKeys[s])}
                         </button>

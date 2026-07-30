@@ -166,10 +166,17 @@ export const getVarieties = createServerFn({ method: "GET" }).handler(() =>
 
 export type VarietyMatch = { name: string; score: number };
 
-// Pl@ntNet's identify-family endpoints all follow the same
-// `{results: [{score, <entity>: {...}}]}` shape as /v2/identify — tolerant
-// parsing here since the exact nested key for varieties isn't documented.
-function parseRankedMatches(body: Json, entityKeys: string[]): { name: string; score: number }[] {
+// Pl@ntNet's diseases/varieties identify endpoints return
+// `{results: [{name, score, description}]}` — `name` is a short internal
+// code (e.g. "BOTRCI"), `description` is the human-readable label (e.g.
+// "Botrytis cinerea - Brownish-grey mildew"), confirmed against the live
+// API. `entityKeys` is unused now but kept as a parameter so call sites
+// don't need updating; a prior version of this function assumed a nested
+// `{disease: {label}}`/`{variety: {label}}` shape that doesn't exist on the
+// real response, which meant every match was silently filtered out as
+// unparseable — this always returned an empty list regardless of what was
+// actually in the photo.
+function parseRankedMatches(body: Json, _entityKeys: string[]): { name: string; score: number }[] {
   if (typeof body !== "object" || body === null || Array.isArray(body)) return [];
   const results = (body as Record<string, Json>).results;
   if (!Array.isArray(results)) return [];
@@ -179,18 +186,12 @@ function parseRankedMatches(body: Json, entityKeys: string[]): { name: string; s
       if (typeof r !== "object" || r === null || Array.isArray(r)) return null;
       const rec = r as Record<string, Json>;
       const score = typeof rec.score === "number" ? rec.score : null;
-      let name: string | null = null;
-      for (const key of entityKeys) {
-        const entity = rec[key];
-        if (typeof entity === "object" && entity !== null && !Array.isArray(entity)) {
-          const label =
-            (entity as Record<string, Json>).label ?? (entity as Record<string, Json>).name;
-          if (typeof label === "string") {
-            name = label;
-            break;
-          }
-        }
-      }
+      const name =
+        typeof rec.description === "string"
+          ? rec.description
+          : typeof rec.name === "string"
+            ? rec.name
+            : null;
       if (score === null || name === null) return null;
       return { name, score };
     })
@@ -404,13 +405,25 @@ export const identifyPlant = createServerFn({ method: "POST" })
     const auth = requireApiKey();
     if (!auth.ok) return { status: "error", message: auth.message };
 
-    const image = data.get("image");
-    if (!(image instanceof Blob)) {
+    // Multi-photo submission (up to 4 angles/organs of the same plant in one
+    // request) measurably improves Pl@ntNet's match confidence over a single
+    // photo — confirmed against the live API, which accepts repeated
+    // `images`/`organs` field pairs and returns one combined result. Older
+    // callers sending a single "image" field still work via the fallback.
+    const images: Blob[] = data.getAll("images").filter((v): v is File => v instanceof File);
+    const legacyImage = data.get("image");
+    if (images.length === 0 && legacyImage instanceof Blob) {
+      images.push(legacyImage);
+    }
+    if (images.length === 0) {
       return { status: "error", message: "No image provided." };
     }
 
-    const organRaw = data.get("organs");
-    const organ = typeof organRaw === "string" && VALID_ORGANS.has(organRaw) ? organRaw : "auto";
+    const organsRaw = data.getAll("organs").filter((v): v is string => typeof v === "string");
+    const organs =
+      organsRaw.length > 0
+        ? organsRaw.map((o) => (VALID_ORGANS.has(o) ? o : "auto"))
+        : images.map(() => "auto");
 
     // Project ids are lowercase slugs (e.g. "all", "k-world-flora",
     // "useful") — anything else falls back to "all" rather than 404ing.
@@ -419,8 +432,10 @@ export const identifyPlant = createServerFn({ method: "POST" })
       typeof projectRaw === "string" && /^[a-z0-9-]+$/.test(projectRaw) ? projectRaw : "all";
 
     const forwardBody = new FormData();
-    forwardBody.append("images", image, "capture.jpg");
-    forwardBody.append("organs", organ);
+    images.forEach((image, i) => {
+      forwardBody.append("images", image, `capture-${i}.jpg`);
+      forwardBody.append("organs", organs[i] ?? "auto");
+    });
 
     let response: Response;
     try {
