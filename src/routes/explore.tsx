@@ -24,7 +24,7 @@ export const Route = createFileRoute("/explore")({
       { title: "Explore species — Verdant" },
       {
         name: "description",
-        content: "Search Pl@ntNet's full species database beyond your own garden.",
+        content: "Search our full species database beyond your own garden.",
       },
     ],
   }),

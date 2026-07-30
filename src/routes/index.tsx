@@ -81,6 +81,7 @@ function PullToRefresh({
   children: React.ReactNode;
 }) {
   const [pull, setPull] = useState(0);
+  const [dragging, setDragging] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const startY = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -89,19 +90,26 @@ function PullToRefresh({
     if (refreshing) return;
     if ((containerRef.current?.scrollTop ?? 0) > 0) return;
     startY.current = e.clientY;
+    setDragging(true);
   };
 
   const onPointerMove = (e: ReactPointerEvent) => {
     if (startY.current === null || refreshing) return;
     const delta = e.clientY - startY.current;
     if (delta > 0) {
-      setPull(Math.min(delta * 0.5, 100));
+      // rubber-band: linear at first, increasingly resistant past the threshold
+      const eased =
+        delta <= PULL_THRESHOLD
+          ? delta * 0.5
+          : PULL_THRESHOLD * 0.5 + (delta - PULL_THRESHOLD) * 0.15;
+      setPull(Math.min(eased, 100));
     }
   };
 
   const endPull = async () => {
     if (startY.current === null) return;
     startY.current = null;
+    setDragging(false);
     if (pull > PULL_THRESHOLD) {
       setRefreshing(true);
       setPull(PULL_THRESHOLD);
@@ -121,7 +129,7 @@ function PullToRefresh({
       style={{ touchAction: pull > 0 ? "none" : "pan-y" }}
     >
       <div
-        className="flex items-center justify-center overflow-hidden transition-[height] duration-200"
+        className={`flex items-center justify-center overflow-hidden ${dragging ? "" : "transition-[height] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)]"}`}
         style={{ height: pull }}
       >
         <RefreshCw
@@ -150,6 +158,7 @@ function SwipeableTaskRow({
   children: React.ReactNode;
 }) {
   const [dragX, setDragX] = useState(0);
+  const [settling, setSettling] = useState(false);
   const startX = useRef<number | null>(null);
   const dragging = useRef(false);
 
@@ -157,21 +166,31 @@ function SwipeableTaskRow({
     if (isCompleted) return;
     startX.current = e.clientX;
     dragging.current = true;
+    setSettling(false);
   };
 
   const onPointerMove = (e: ReactPointerEvent) => {
     if (!dragging.current || startX.current === null || isCompleted) return;
     const delta = e.clientX - startX.current;
-    // only allow left swipe (reveal complete action to the right edge)
-    setDragX(Math.max(Math.min(delta, 0), -140));
+    // only allow left swipe (reveal complete action to the right edge);
+    // rubber-band past the threshold so it doesn't feel like it snaps away
+    const clamped = Math.max(Math.min(delta, 0), -220);
+    const dragged =
+      clamped < -SWIPE_THRESHOLD
+        ? -SWIPE_THRESHOLD + (clamped + SWIPE_THRESHOLD) * 0.35
+        : clamped;
+    setDragX(dragged);
   };
 
   const endDrag = () => {
     if (!dragging.current) return;
     dragging.current = false;
     startX.current = null;
+    setSettling(true);
     if (dragX < -SWIPE_THRESHOLD) {
-      onComplete();
+      setDragX(-140);
+      // let the row glide the rest of the way before it disappears from the list
+      setTimeout(onComplete, 180);
     } else {
       setDragX(0);
     }
@@ -190,9 +209,12 @@ function SwipeableTaskRow({
         className="relative bg-card"
         style={{
           transform: `translateX(${dragX}px)`,
-          transition: dragging.current
-            ? "none"
-            : "transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease",
+          transition:
+            dragging.current
+              ? "none"
+              : settling
+                ? "transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease"
+                : "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease",
           opacity: isCompleted ? 0.6 : 1,
           touchAction: "pan-y",
         }}
@@ -265,7 +287,7 @@ function GardenBentoCard({
             onWater(plant);
           }}
           aria-label={t("home.waterThisPlant")}
-          className="ios-tap absolute top-2.5 right-2.5 h-11 w-11 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-[0_4px_14px_-2px_var(--primary)] ring-2 ring-white animate-pulse"
+          className="ios-tap absolute top-2.5 right-2.5 h-11 w-11 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-[0_4px_14px_-2px_var(--primary)] ring-2 ring-white animate-gentle-pulse"
         >
           <Droplets className="h-5 w-5" strokeWidth={2.25} />
         </button>
