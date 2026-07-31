@@ -26,6 +26,7 @@ import {
   matchPlantByVisionGuess,
   matchVisionGuessToSpecies,
   matchPlantByClaudeGuess,
+  mergeIdentificationResults,
 } from "@/lib/classify";
 import {
   identifyPlant,
@@ -34,6 +35,7 @@ import {
   type PlantNetResult,
   type ProjectSpeciesEntry,
 } from "@/lib/plantnet.server";
+import { identifyPlantViaPlantId } from "@/lib/plantid.server";
 import { identifyPlantViaVision, identifyPlantViaClaude } from "@/lib/image-recognition.server";
 import { getSpeciesPhoto } from "@/lib/speciesPhoto.server";
 import { savePhoto } from "@/lib/photoStore";
@@ -514,12 +516,6 @@ function loadSpeciesCorpus(): Promise<ProjectSpeciesEntry[]> {
   return speciesCorpusPromise;
 }
 
-// Pl@ntNet accepts multiple images/organs per identify request and returns
-// one combined, more-confident result — confirmed against the live API.
-// Capped at 4: comfortably enough angles (leaf, flower, fruit, whole plant)
-// without turning one scan into an open-ended photo shoot.
-const MAX_SHOTS = 4;
-
 function Scan() {
   const { t, locale } = useI18n();
   const [state, setState] = useState<State>("idle");
@@ -532,12 +528,6 @@ function Scan() {
   // recording, since the viewfinder otherwise looks identical to one.
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const previewSourceRef = useRef<HTMLCanvasElement | HTMLImageElement | null>(null);
-  // Additional angles captured via "Add another angle" on the preview
-  // screen, beyond the first shot held in previewSourceRef/previewUrl —
-  // resolved to blobs immediately (rather than kept as DOM sources) since
-  // there's no single "current" element to re-render once more than one
-  // shot exists.
-  const [extraShots, setExtraShots] = useState<{ blob: Blob; url: string }[]>([]);
   const [limitReached, setLimitReached] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -690,7 +680,6 @@ function Scan() {
 
   const runClassification = async (
     source: HTMLVideoElement | HTMLImageElement | HTMLCanvasElement,
-    extraBlobs: Blob[] = [],
   ) => {
     setState("analyzing");
     const start = Date.now();
@@ -700,31 +689,36 @@ function Scan() {
     try {
       const blob = await toBlob(source);
       photoBlob = blob;
-      const formData = new FormData();
-      // Primary shot plus any extra angles — Pl@ntNet combines all of them
-      // into one result. Vision/Claude/MobileNet below only ever see the
-      // primary shot (photoBlob/source) since none of those fallbacks
-      // support multi-image input.
-      formData.append("images", blob);
-      formData.append("organs", "auto");
-      for (const extra of extraBlobs) {
-        formData.append("images", extra);
-        formData.append("organs", "auto");
-      }
-      const response = await identifyPlant({ data: formData });
 
-      if (response.status === "quota-exceeded") {
+      // Single photo, sent to both botanical classifiers in parallel — their
+      // scores are merged (mergeIdentificationResults) into one combined
+      // ranking rather than picking one source and discarding the other.
+      const plantNetForm = new FormData();
+      plantNetForm.append("images", blob);
+      plantNetForm.append("organs", "auto");
+
+      const plantIdForm = new FormData();
+      plantIdForm.append("image", blob);
+
+      const [plantNetResponse, plantIdResponse] = await Promise.all([
+        identifyPlant({ data: plantNetForm }),
+        identifyPlantViaPlantId({ data: plantIdForm }).catch(
+          () => ({ status: "error", message: "Plant.id request failed." }) as const,
+        ),
+      ]);
+
+      if (plantNetResponse.status === "quota-exceeded") {
         setState("quota-exceeded");
         return;
       }
-      if (response.status === "error") {
+      if (plantNetResponse.status === "error") {
         // Hard failure (network/service down) — try Vision, then Claude.
         result = (await runViaVision(blob)) ?? (await runViaClaude(blob));
       } else {
-        const { plant, top, identifiedButUncataloged } = matchPlantByScientificName(
-          response.results,
-        );
-        // A present-but-weak top score means Pl@ntNet itself isn't
+        const plantIdResults = plantIdResponse.status === "ok" ? plantIdResponse.data : [];
+        const mergedResults = mergeIdentificationResults(plantNetResponse.results, plantIdResults);
+        const { plant, top, identifiedButUncataloged } = matchPlantByScientificName(mergedResults);
+        // A present-but-weak top combined score means neither classifier is
         // confident — worth trying Vision, then Claude, before settling for this.
         if (!top || top.score < PLANTNET_FALLBACK_THRESHOLD) {
           result = (await runViaVision(blob)) ?? (await runViaClaude(blob));
@@ -741,7 +735,7 @@ function Scan() {
               : t("scan.plantnetUnrecognized"),
             identifiedName: identifiedButUncataloged ? top!.scientificName : undefined,
             top,
-            alternatives: response.results.slice(1, 4),
+            alternatives: mergedResults.slice(1, 4),
           };
         }
       }
@@ -765,11 +759,6 @@ function Scan() {
     setState("result");
   };
 
-  // True while the camera is reopened to capture an additional angle (as
-  // opposed to the very first shot of a new scan) — set by
-  // handleAddAnotherAngle, read once the next capture completes.
-  const capturingExtraRef = useRef(false);
-
   const captureFromCamera = async () => {
     const video = videoRef.current;
     if (!video || !cameraReady) return;
@@ -778,14 +767,6 @@ function Scan() {
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
     ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    if (capturingExtraRef.current) {
-      capturingExtraRef.current = false;
-      const blob = await toBlob(canvas);
-      setExtraShots((prev) => [...prev, { blob, url: canvas.toDataURL("image/jpeg", 0.9) }]);
-      setState("preview");
-      return;
-    }
 
     previewSourceRef.current = canvas;
     setPreviewUrl(canvas.toDataURL("image/jpeg", 0.9));
@@ -796,14 +777,7 @@ function Scan() {
     const file = fileRef.current?.files?.[0];
     if (!file) return;
     const img = new Image();
-    img.onload = async () => {
-      if (capturingExtraRef.current) {
-        capturingExtraRef.current = false;
-        const blob = await toBlob(img);
-        setExtraShots((prev) => [...prev, { blob, url: img.src }]);
-        setState("preview");
-        return;
-      }
+    img.onload = () => {
       previewSourceRef.current = img;
       setPreviewUrl(img.src);
       setState("preview");
@@ -811,38 +785,21 @@ function Scan() {
     img.src = URL.createObjectURL(file);
   };
 
-  // Sends the user back to the live camera view to capture one more angle
-  // of the same plant — extraShots accumulates alongside the first shot
-  // rather than replacing it, up to MAX_SHOTS total.
-  const handleAddAnotherAngle = () => {
-    capturingExtraRef.current = true;
-    setState("idle");
-  };
-
-  const removeExtraShot = (index: number) => {
-    setExtraShots((prev) => prev.filter((_, i) => i !== index));
-  };
-
   const confirmPreview = () => {
     const source = previewSourceRef.current;
     if (!source) return;
-    runClassification(
-      source,
-      extraShots.map((s) => s.blob),
-    );
+    runClassification(source);
   };
 
   const retakePreview = () => {
     previewSourceRef.current = null;
     setPreviewUrl(null);
-    setExtraShots([]);
     setState("idle");
   };
 
   const reset = () => {
     previewSourceRef.current = null;
     setPreviewUrl(null);
-    setExtraShots([]);
     setResult(null);
     setCapturedPhoto(null);
     setState("idle");
@@ -1048,67 +1005,20 @@ function Scan() {
 
       {/* Controls */}
       {state === "preview" ? (
-        <>
-          {/* Thumbnail row — main shot plus any extra angles added so far.
-              Extras can be removed individually; the main shot can't (retake
-              starts the whole scan over instead). */}
-          <div className="flex items-center gap-2 mt-4 overflow-x-auto no-scrollbar">
-            {previewUrl && (
-              <img
-                src={previewUrl}
-                alt=""
-                aria-hidden
-                className="h-14 w-14 shrink-0 rounded-xl object-cover ring-2 ring-primary"
-              />
-            )}
-            {extraShots.map((shot, i) => (
-              <div key={i} className="relative shrink-0">
-                <img
-                  src={shot.url}
-                  alt=""
-                  aria-hidden
-                  className="h-14 w-14 rounded-xl object-cover"
-                />
-                <button
-                  onClick={() => removeExtraShot(i)}
-                  aria-label={t("scan.removeAngle")}
-                  className="ios-tap absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-foreground text-background grid place-items-center"
-                >
-                  <X className="h-3 w-3" strokeWidth={2} />
-                </button>
-              </div>
-            ))}
-            {1 + extraShots.length < MAX_SHOTS && (
-              <button
-                onClick={handleAddAnotherAngle}
-                className="ios-tap h-14 w-14 shrink-0 rounded-xl border-2 border-dashed border-border grid place-items-center text-muted-foreground"
-                aria-label={t("scan.addAnotherAngle")}
-              >
-                <Plus className="h-5 w-5" strokeWidth={1.75} />
-              </button>
-            )}
-          </div>
-          {extraShots.length > 0 && (
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              {t("scan.multiPhotoHint")}
-            </p>
-          )}
-
-          <div className="flex items-center justify-center gap-3 mt-4">
-            <button
-              onClick={retakePreview}
-              className="ios-tap h-12 flex-1 max-w-[10rem] rounded-full bg-secondary text-secondary-foreground font-semibold"
-            >
-              {t("scan.retake")}
-            </button>
-            <button
-              onClick={confirmPreview}
-              className="ios-tap h-12 flex-1 max-w-[10rem] rounded-full bg-primary text-primary-foreground font-semibold"
-            >
-              {extraShots.length > 0 ? t("scan.usePhotos") : t("scan.usePhoto")}
-            </button>
-          </div>
-        </>
+        <div className="flex items-center justify-center gap-3 mt-4">
+          <button
+            onClick={retakePreview}
+            className="ios-tap h-12 flex-1 max-w-[10rem] rounded-full bg-secondary text-secondary-foreground font-semibold"
+          >
+            {t("scan.retake")}
+          </button>
+          <button
+            onClick={confirmPreview}
+            className="ios-tap h-12 flex-1 max-w-[10rem] rounded-full bg-primary text-primary-foreground font-semibold"
+          >
+            {t("scan.usePhoto")}
+          </button>
+        </div>
       ) : (
         <div className="flex items-center justify-around mt-8">
           <button

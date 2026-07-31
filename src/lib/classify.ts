@@ -2,6 +2,7 @@ import { plants, speciesCatalog, expandedSpeciesCatalog, type Plant } from "@/li
 import type { PlantNetResult } from "@/lib/plantnet.server";
 import type { ProjectSpeciesEntry } from "@/lib/plantnet.server";
 import type { VisionSpeciesGuess, ClaudeSpeciesGuess } from "@/lib/image-recognition.server";
+import type { PlantIdResult } from "@/lib/plantid.server";
 
 // expandedSpeciesCatalog is already deduped against plants/speciesCatalog by
 // scientific name in plants.ts, so no overlap to worry about here.
@@ -213,6 +214,58 @@ export function matchPlantByScientificName(results: PlantNetResult[]): {
     top,
     identifiedButUncataloged: !plant && top.score >= MIN_IDENTIFIED_SCORE,
   };
+}
+
+// Genus+species used as the merge key across providers — same comparison
+// PlantNet-vs-catalog matching uses, so two providers naming the same
+// species (even with different cultivar suffixes/authorship) collapse into
+// one combined candidate instead of appearing as separate rows.
+function speciesKey(scientificName: string): string {
+  const words = normalize(scientificName).split(" ");
+  return words.slice(0, 2).join(" ");
+}
+
+// Combines Pl@ntNet and Plant.id results into one ranked list so the scan
+// flow can show a single "best guess" backed by two independent botanical
+// classifiers instead of picking one source and ignoring the other. Each
+// provider's score for a species is weighted equally and averaged across
+// only the providers that actually returned that species — a species named
+// by both sources this way outranks one only one source found, even if that
+// single source's score was higher, since agreement between two independent
+// classifiers is a stronger confidence signal than either alone.
+export function mergeIdentificationResults(
+  plantNetResults: PlantNetResult[],
+  plantIdResults: PlantIdResult[],
+): PlantNetResult[] {
+  const merged = new Map<string, PlantNetResult & { scoreSum: number; sourceCount: number }>();
+
+  for (const r of plantNetResults) {
+    const key = speciesKey(r.scientificName);
+    merged.set(key, { ...r, scoreSum: r.score, sourceCount: 1 });
+  }
+
+  for (const r of plantIdResults) {
+    const key = speciesKey(r.scientificName);
+    const existing = merged.get(key);
+    if (existing) {
+      existing.scoreSum += r.score;
+      existing.sourceCount += 1;
+      existing.commonNames = [...new Set([...existing.commonNames, ...r.commonNames])];
+    } else {
+      merged.set(key, {
+        scientificName: r.scientificName,
+        commonNames: r.commonNames,
+        score: r.score,
+        scoreSum: r.score,
+        sourceCount: 1,
+      });
+    }
+  }
+
+  return Array.from(merged.values())
+    .map((r) => ({ ...r, score: r.scoreSum / r.sourceCount }))
+    .sort((a, b) => b.score - a.score)
+    .map(({ scoreSum: _scoreSum, sourceCount: _sourceCount, ...rest }) => rest);
 }
 
 // Vision's guesses are free-text (web-entity titles, ImageNet-style labels)
